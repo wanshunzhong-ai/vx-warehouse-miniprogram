@@ -32,7 +32,9 @@ Page({
     stat: {},
     overview: {},
     ability: [],
-    isAdmin: false
+    isAdmin: false,
+    /* 概览数据是否已回来；没回来时用灰条占位，避免数字从 0 跳变 */
+    statsReady: false
   },
 
   onShow() {
@@ -49,7 +51,8 @@ Page({
     this.setData({
       me: util.decorateStaff(Object.assign({}, session)),
       ability: ABILITY[role] || ABILITY.staff,
-      isAdmin: isAdmin
+      isAdmin: isAdmin,
+      statsReady: false
     })
 
     try {
@@ -62,6 +65,8 @@ Page({
       })
     } catch (e) {
       // 概览失败不阻塞页面
+    } finally {
+      this.setData({ statsReady: true })
     }
   },
 

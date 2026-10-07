@@ -123,6 +123,15 @@
   display: flex;
 }
 
+/* 同一张卡里区分「仓库整体」与「我的今日」两段 */
+.mini-sub {
+  margin: 26rpx 0 20rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid #f1f3f7;
+  font-size: 24rpx;
+  color: #8a9099;
+}
+
 .mini-cell {
   flex: 1;
   text-align: center;

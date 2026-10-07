@@ -21,6 +21,8 @@ Page({
 
     todayText: '',
     greeting: '',
+    /* 概览数据是否已回来；没回来时用灰条占位，避免数字从 0 跳变 */
+    statsReady: false,
     /* 共用 */
     stat: {},
     lowItems: [],
@@ -69,6 +71,7 @@ Page({
 
     this.setData({
       ready: true,
+      statsReady: false,
       role: me.role,
       roleMeta: roles.info(me.role),
       profile: util.decorateStaff(Object.assign({}, me)),
@@ -81,6 +84,9 @@ Page({
       else await this.loadStaff()
     } catch (e) {
       util.toast(util.friendlyError(e))
+    } finally {
+      // 无论成功失败都要收掉骨架，否则加载失败时页面会一直停在灰条上
+      this.setData({ statsReady: true })
     }
 
     if (done) done()

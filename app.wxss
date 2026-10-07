@@ -82,7 +82,7 @@ view, text, input, textarea, button, scroll-view {
 }
 
 .t-dim {
-  color: #9aa1ad;
+  color: #7b828d;
 }
 
 .t-primary {
@@ -97,12 +97,17 @@ view, text, input, textarea, button, scroll-view {
   color: #f97316;
 }
 
+/* 库存预警专用色：与「出库」的橙色区分开，同时和 tag-orange / c-warn 保持一致 */
+.t-warn {
+  color: #ea580c;
+}
+
 .f-xs {
-  font-size: 22rpx;
+  font-size: 24rpx;
 }
 
 .f-sm {
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 .f-md {
@@ -198,8 +203,8 @@ view, text, input, textarea, button, scroll-view {
 }
 
 .btn-sm {
-  height: 64rpx;
-  line-height: 64rpx;
+  height: 72rpx;
+  line-height: 72rpx;
   font-size: 26rpx;
   padding: 0 28rpx;
   border-radius: 16rpx;
@@ -210,10 +215,10 @@ view, text, input, textarea, button, scroll-view {
 
 .tag {
   display: inline-block;
-  padding: 4rpx 14rpx;
+  padding: 6rpx 16rpx;
   border-radius: 10rpx;
-  font-size: 22rpx;
-  line-height: 32rpx;
+  font-size: 24rpx;
+  line-height: 34rpx;
 }
 
 .tag-blue {
@@ -251,7 +256,7 @@ view, text, input, textarea, button, scroll-view {
 .notice {
   padding: 22rpx 26rpx;
   border-radius: 18rpx;
-  font-size: 25rpx;
+  font-size: 26rpx;
   line-height: 1.6;
   margin-bottom: 24rpx;
 }
@@ -351,9 +356,44 @@ view, text, input, textarea, button, scroll-view {
 }
 
 .empty-desc {
-  font-size: 26rpx;
-  color: #9aa1ad;
+  font-size: 28rpx;
+  color: #7b828d;
   line-height: 1.6;
+}
+
+/* ---------- 加载占位（骨架） ---------- */
+/*
+ * 数字类卡片在数据回来之前如果直接渲染 {{x || 0}}，会先显示 0 再跳成真实值，
+ * 看起来像"数据闪了一下"。统一用灰条占位，等真实数据到了再换成数字。
+ */
+.sk {
+  background: #e9edf4;
+  border-radius: 8rpx;
+  margin: 0 auto;
+}
+
+.sk-num {
+  width: 72rpx;
+  height: 40rpx;
+}
+
+.sk-lbl {
+  width: 88rpx;
+  height: 22rpx;
+  margin-top: 12rpx;
+}
+
+.sk-val {
+  width: 72rpx;
+  height: 30rpx;
+  margin-top: 10rpx;
+}
+
+.sk-line {
+  height: 28rpx;
+  border-radius: 8rpx;
+  background: #e9edf4;
+  margin-bottom: 18rpx;
 }
 
 /* ---------- 列表项 ---------- */
@@ -378,8 +418,8 @@ view, text, input, textarea, button, scroll-view {
 }
 
 .sec-title {
-  font-size: 26rpx;
-  color: #8a9099;
+  font-size: 28rpx;
+  color: #7b828d;
   padding: 32rpx 4rpx 16rpx;
   font-weight: 500;
 }

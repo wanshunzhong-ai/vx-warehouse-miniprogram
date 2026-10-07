@@ -105,8 +105,8 @@
 
 .todo-lbl {
   margin-top: 6rpx;
-  font-size: 22rpx;
-  color: #8b8f99;
+  font-size: 24rpx;
+  color: #767c87;
 }
 
 .todo-item {
@@ -123,8 +123,8 @@
 }
 
 .todo-meta {
-  font-size: 22rpx;
-  color: #9aa1ad;
+  font-size: 24rpx;
+  color: #7b828d;
 }
 
 .todo-empty {
@@ -159,8 +159,8 @@
 
 .g4-lbl {
   margin-top: 8rpx;
-  font-size: 22rpx;
-  color: #8b8f99;
+  font-size: 24rpx;
+  color: #767c87;
 }
 
 .grid3 {
@@ -181,14 +181,15 @@
 
 .g3-lbl {
   margin-top: 8rpx;
-  font-size: 22rpx;
-  color: #8b8f99;
+  font-size: 24rpx;
+  color: #767c87;
 }
 
 .c-admin { color: #7c4dff; }
 .c-manager { color: #2f6df6; }
 .c-staff { color: #0ca678; }
-.c-warn { color: #f97316; }
+/* 与 tag-orange / t-warn 同一个橙，预警色全站统一 */
+.c-warn { color: #ea580c; }
 
 .flow-row {
   display: flex;
@@ -205,8 +206,8 @@
 }
 
 .flow-lbl {
-  font-size: 22rpx;
-  color: #9aa1ad;
+  font-size: 24rpx;
+  color: #7b828d;
 }
 
 .flow-val {
@@ -221,6 +222,11 @@
 .act-grid {
   display: flex;
   flex-wrap: wrap;
+}
+
+/* 两列版：条目少时把热区放大一倍（员工「更多操作」用） */
+.act-grid-2 .act {
+  width: 50%;
 }
 
 .act {
@@ -260,7 +266,7 @@
 
 .act-txt {
   margin-top: 12rpx;
-  font-size: 23rpx;
+  font-size: 25rpx;
   color: #4b5563;
 }
 
@@ -296,8 +302,8 @@
 
 .rec-meta {
   margin-top: 6rpx;
-  font-size: 22rpx;
-  color: #9aa1ad;
+  font-size: 24rpx;
+  color: #7b828d;
 }
 
 .rec-qty {
@@ -333,8 +339,8 @@
 
 .low-meta {
   margin-top: 6rpx;
-  font-size: 22rpx;
-  color: #9aa1ad;
+  font-size: 24rpx;
+  color: #7b828d;
 }
 
 .low-qty {
@@ -401,15 +407,15 @@
 
 .dir-desc {
   margin-top: 10rpx;
-  font-size: 22rpx;
-  color: #9aa1ad;
+  font-size: 24rpx;
+  color: #7b828d;
 }
 
 .dir-tip {
   margin-top: 22rpx;
   text-align: center;
-  font-size: 22rpx;
-  color: #a3a9b3;
+  font-size: 24rpx;
+  color: #8a9099;
 }
 
 /* ============ 页脚提示 ============ */
@@ -417,7 +423,7 @@
 .tips {
   margin-top: 36rpx;
   text-align: center;
-  font-size: 22rpx;
-  color: #a3a9b3;
+  font-size: 24rpx;
+  color: #8a9099;
   line-height: 1.6;
 }

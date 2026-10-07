@@ -58,6 +58,13 @@
 
   <!-- 列表 -->
   <view class="wrap list-wrap">
+    <!-- 首屏加载占位：之前 loading 期间整片空白，现在用骨架卡撑住 -->
+    <block wx:if="{{loading && list.length === 0}}">
+      <view class="card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="sk-line" style="width:46%"></view>
+        <view class="sk-line" style="width:72%;margin-bottom:0"></view>
+      </view>
+    </block>
     <view wx:if="{{!loading && list.length === 0}}" class="empty">
       <view class="empty-icon"><view class="ei-box"></view></view>
       <view class="empty-title">{{emptyTitle}}</view>
@@ -77,7 +84,7 @@
           <view class="ic-code">{{item.code}}{{item.spec ? ' · ' + item.spec : ''}}</view>
         </view>
         <view class="ic-qty">
-          <text class="ic-qty-num {{item.qty <= 0 ? 't-out' : ''}}">{{item.qty}}</text>
+          <text class="ic-qty-num {{item.isLow ? 't-out' : ''}}">{{item.qty}}</text>
           <text class="ic-qty-unit">{{item.unit || '个'}}</text>
         </view>
       </view>

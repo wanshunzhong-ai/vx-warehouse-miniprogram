@@ -17,6 +17,14 @@
   </view>
 
   <view class="wrap">
+    <!-- 首屏加载占位 -->
+    <block wx:if="{{loading && groups.length === 0}}">
+      <view class="card" wx:for="{{[1,2]}}" wx:key="*this">
+        <view class="sk-line" style="width:40%"></view>
+        <view class="sk-line" style="width:78%"></view>
+        <view class="sk-line" style="width:58%;margin-bottom:0"></view>
+      </view>
+    </block>
     <view wx:if="{{!loading && groups.length === 0}}" class="empty">
       <view class="empty-icon"><view class="ei-lines"></view></view>
       <view class="empty-title">还没有出入库记录</view>

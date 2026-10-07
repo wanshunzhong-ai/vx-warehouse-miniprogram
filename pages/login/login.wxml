@@ -43,9 +43,9 @@
     </view>
 
     <button
-      class="btn btn-primary login-btn {{canSubmit ? '' : 'btn-disabled'}}"
+      class="btn btn-primary login-btn {{canSubmit && !loading ? '' : 'btn-disabled'}}"
       loading="{{loading}}"
-      disabled="{{loading}}"
+      disabled="{{loading || !canSubmit}}"
       bindtap="onLogin"
     >{{loading ? '登录中…' : '登 录'}}</button>
 

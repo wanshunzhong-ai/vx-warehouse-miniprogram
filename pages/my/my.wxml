@@ -30,32 +30,33 @@
 
     <!-- 数据概览 -->
     <view class="card">
-      <view class="card-title">{{role === 'staff' ? '我的数据' : '仓库概览'}}</view>
+      <view class="card-title">仓库概览</view>
       <view class="mini-grid">
         <view class="mini-cell">
-          <view class="mini-num">{{stat.item_count || 0}}</view>
+          <view class="mini-num {{statsReady ? '' : 'sk sk-num'}}">{{statsReady ? (stat.item_count || 0) : ''}}</view>
           <view class="mini-lbl">物品种类</view>
         </view>
         <view class="mini-cell">
-          <view class="mini-num">{{stat.total_qty || 0}}</view>
+          <view class="mini-num {{statsReady ? '' : 'sk sk-num'}}">{{statsReady ? (stat.total_qty || 0) : ''}}</view>
           <view class="mini-lbl">库存总量</view>
         </view>
         <view class="mini-cell">
-          <view class="mini-num {{stat.low_count > 0 ? 't-out' : ''}}">{{stat.low_count || 0}}</view>
+          <view class="mini-num {{statsReady ? (stat.low_count > 0 ? 't-warn' : '') : 'sk sk-num'}}">{{statsReady ? (stat.low_count || 0) : ''}}</view>
           <view class="mini-lbl">库存预警</view>
         </view>
       </view>
-      <view class="mini-grid" style="margin-top:24rpx">
+      <view class="mini-sub">{{role === 'staff' ? '我的今日' : '今日动向'}}</view>
+      <view class="mini-grid">
         <view class="mini-cell">
-          <view class="mini-num t-in">+{{role === 'staff' ? (stat.my_today_in || 0) : (stat.today_in || 0)}}</view>
+          <view class="mini-num t-in {{statsReady ? '' : 'sk sk-num'}}">{{statsReady ? '+' + (role === 'staff' ? (stat.my_today_in || 0) : (stat.today_in || 0)) : ''}}</view>
           <view class="mini-lbl">{{role === 'staff' ? '我今日入库' : '今日入库'}}</view>
         </view>
         <view class="mini-cell">
-          <view class="mini-num t-out">-{{role === 'staff' ? (stat.my_today_out || 0) : (stat.today_out || 0)}}</view>
+          <view class="mini-num t-out {{statsReady ? '' : 'sk sk-num'}}">{{statsReady ? '-' + (role === 'staff' ? (stat.my_today_out || 0) : (stat.today_out || 0)) : ''}}</view>
           <view class="mini-lbl">{{role === 'staff' ? '我今日出库' : '今日出库'}}</view>
         </view>
         <view class="mini-cell">
-          <view class="mini-num">{{role === 'staff' ? (stat.my_total_count || 0) : (stat.today_count || 0)}}</view>
+          <view class="mini-num {{statsReady ? '' : 'sk sk-num'}}">{{statsReady ? (role === 'staff' ? (stat.my_total_count || 0) : (stat.today_count || 0)) : ''}}</view>
           <view class="mini-lbl">{{role === 'staff' ? '累计操作' : '今日单数'}}</view>
         </view>
       </view>

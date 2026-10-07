@@ -21,6 +21,8 @@ Page({
     keyword: '',
     list: [],
     overview: {},
+    /* 顶部概览是否已回来；没回来时用灰条占位，避免数字从 0 跳变 */
+    ovReady: false,
     loading: true,
     isAdmin: false
   },
@@ -86,6 +88,7 @@ Page({
       this.setData({
         list: util.decorateStaffList(results[0] || []),
         overview: results[1] || {},
+        ovReady: true,
         loading: false
       })
     } catch (e) {
@@ -104,35 +107,56 @@ Page({
     wx.navigateTo({ url: '/pages/staff-edit/staff-edit' })
   },
 
-  /** 列表上直接快速审批（管理员） */
+  /**
+   * 列表上直接快速审批（管理员）。
+   * 通过＝把对方变成可登录的正式账号（选「主管」还会连带提权），
+   * 一旦点错就生效、且账号立刻能登录，所以这里一律先弹二次确认。
+   */
   quickReview(e) {
     const d = e.currentTarget.dataset
+    const doApply = (approve, role, note) => {
+      util.loading('处理中')
+      api
+        .reviewStaff(d.id, approve, role, note)
+        .then(() => {
+          util.hideLoading()
+          util.toast(approve ? '已通过' : '已驳回', 'success')
+          this.reload()
+        })
+        .catch((err) => {
+          util.hideLoading()
+          util.toast(util.friendlyError(err))
+        })
+    }
+
+    const confirmThen = (approve, role, note) => {
+      const roleText = role === 'manager' ? '主管' : '员工'
+      const action = approve ? '通过并设为' + roleText : '驳回'
+      wx.showModal({
+        title: '确认' + (approve ? '通过' : '驳回'),
+        content: approve
+          ? '将「' + d.name + '」的申请通过，身份设为' + roleText + '。\n通过后该账号可以立即登录。'
+          : '将「' + d.name + '」的申请标记为已驳回。',
+        confirmText: '确认' + (approve ? '通过' : '驳回'),
+        confirmColor: approve ? '#2f6df6' : '#ef4444',
+        success: (r) => {
+          if (r.confirm) doApply(approve, role, note)
+        }
+      })
+    }
+
     wx.showActionSheet({
       itemList: ['通过 · 设为员工', '通过 · 设为主管', '驳回'],
       success: (res) => {
-        const apply = (approve, role, note) => {
-          util.loading('处理中')
-          api
-            .reviewStaff(d.id, approve, role, note)
-            .then(() => {
-              util.hideLoading()
-              util.toast(approve ? '已通过' : '已驳回', 'success')
-              this.reload()
-            })
-            .catch((err) => {
-              util.hideLoading()
-              util.toast(util.friendlyError(err))
-            })
-        }
-        if (res.tapIndex === 0) apply(true, 'staff', '')
-        else if (res.tapIndex === 1) apply(true, 'manager', '')
+        if (res.tapIndex === 0) confirmThen(true, 'staff', '')
+        else if (res.tapIndex === 1) confirmThen(true, 'manager', '')
         else if (res.tapIndex === 2) {
           wx.showModal({
             title: '驳回「' + d.name + '」的申请',
             editable: true,
             placeholderText: '填写驳回原因（可选）',
             success: (m) => {
-              if (m.confirm) apply(false, null, m.content || '')
+              if (m.confirm) confirmThen(false, null, m.content || '')
             }
           })
         }

@@ -151,12 +151,8 @@ Page({
       util.toast('导出记录需要主管及以上身份')
       return
     }
-    wx.showActionSheet({
-      itemList: ['复制全部记录（可粘贴到表格）'],
-      success: (res) => {
-        if (res.tapIndex === 0) this.copyRecords()
-      }
-    })
+    // 只有一种导出方式，直接执行；原先弹一个单选项的 ActionSheet 纯属多余一步
+    this.copyRecords()
   },
 
   async copyRecords() {

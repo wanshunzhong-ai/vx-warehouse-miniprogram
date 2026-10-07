@@ -42,7 +42,13 @@
           <text>人员概览</text>
           <text class="t-primary f-sm" catchtap="goStaff">全部人员 ›</text>
         </view>
-        <view class="grid4">
+        <view wx:if="{{!statsReady}}" class="grid4">
+          <view class="g4-cell" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+            <view class="sk sk-num"></view>
+            <view class="sk sk-lbl"></view>
+          </view>
+        </view>
+        <view wx:else class="grid4">
           <view class="g4-cell">
             <view class="g4-num c-admin">{{overview.admin || 0}}</view>
             <view class="g4-lbl">管理员</view>
@@ -67,7 +73,13 @@
           <text>仓库概览</text>
           <text class="t-primary f-sm" catchtap="goRecords">全仓记录 ›</text>
         </view>
-        <view class="grid3">
+        <view wx:if="{{!statsReady}}" class="grid3">
+          <view class="g3-cell" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-num"></view>
+            <view class="sk sk-lbl"></view>
+          </view>
+        </view>
+        <view wx:else class="grid3">
           <view class="g3-cell" bindtap="goItems" hover-class="hover">
             <view class="g3-num">{{stat.item_count || 0}}</view>
             <view class="g3-lbl">物品种类</view>
@@ -81,7 +93,13 @@
             <view class="g3-lbl">库存预警</view>
           </view>
         </view>
-        <view class="flow-row">
+        <view wx:if="{{!statsReady}}" class="flow-row">
+          <view class="flow-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-lbl"></view>
+            <view class="sk sk-val"></view>
+          </view>
+        </view>
+        <view wx:else class="flow-row">
           <view class="flow-item">
             <text class="flow-lbl">今日入库</text>
             <text class="flow-val t-in">+{{stat.today_in || 0}}</text>
@@ -172,7 +190,13 @@
           <text>我的员工</text>
           <text class="t-primary f-sm" catchtap="goStaff">全部员工 ›</text>
         </view>
-        <view class="grid3">
+        <view wx:if="{{!statsReady}}" class="grid3">
+          <view class="g3-cell" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-num"></view>
+            <view class="sk sk-lbl"></view>
+          </view>
+        </view>
+        <view wx:else class="grid3">
           <view class="g3-cell" bindtap="goStaff" data-status="pending" hover-class="hover">
             <view class="g3-num {{overview.my_pending > 0 ? 'c-warn' : ''}}">{{overview.my_pending || 0}}</view>
             <view class="g3-lbl">待审批</view>
@@ -195,7 +219,13 @@
           <text>仓库概览</text>
           <text class="t-primary f-sm" catchtap="goRecords">出入库记录 ›</text>
         </view>
-        <view class="grid3">
+        <view wx:if="{{!statsReady}}" class="grid3">
+          <view class="g3-cell" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-num"></view>
+            <view class="sk sk-lbl"></view>
+          </view>
+        </view>
+        <view wx:else class="grid3">
           <view class="g3-cell" bindtap="goItems" hover-class="hover">
             <view class="g3-num">{{stat.item_count || 0}}</view>
             <view class="g3-lbl">物品种类</view>
@@ -209,7 +239,13 @@
             <view class="g3-lbl">库存预警</view>
           </view>
         </view>
-        <view class="flow-row">
+        <view wx:if="{{!statsReady}}" class="flow-row">
+          <view class="flow-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-lbl"></view>
+            <view class="sk sk-val"></view>
+          </view>
+        </view>
+        <view wx:else class="flow-row">
           <view class="flow-item">
             <text class="flow-lbl">今日入库</text>
             <text class="flow-val t-in">+{{stat.today_in || 0}}</text>
@@ -329,7 +365,13 @@
 
       <view class="card">
         <view class="card-title">我的今日</view>
-        <view class="grid3">
+        <view wx:if="{{!statsReady}}" class="grid3">
+          <view class="g3-cell" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-num"></view>
+            <view class="sk sk-lbl"></view>
+          </view>
+        </view>
+        <view wx:else class="grid3">
           <view class="g3-cell">
             <view class="g3-num t-in">+{{myStat.my_today_in || 0}}</view>
             <view class="g3-lbl">今日入库</view>
@@ -343,7 +385,13 @@
             <view class="g3-lbl">累计操作</view>
           </view>
         </view>
-        <view class="flow-row">
+        <view wx:if="{{!statsReady}}" class="flow-row">
+          <view class="flow-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk sk-lbl"></view>
+            <view class="sk sk-val"></view>
+          </view>
+        </view>
+        <view wx:else class="flow-row">
           <view class="flow-item" bindtap="goItems" hover-class="hover">
             <text class="flow-lbl">物品种类</text>
             <text class="flow-val">{{stat.item_count || 0}}</text>
@@ -360,16 +408,9 @@
       </view>
 
       <view class="card">
-        <view class="card-title">快捷操作</view>
-        <view class="act-grid">
-          <view class="act" data-dir="in" bindtap="goScanDir" hover-class="hover">
-            <view class="act-ico act-green">入</view>
-            <view class="act-txt">扫码入库</view>
-          </view>
-          <view class="act" data-dir="out" bindtap="goScanDir" hover-class="hover">
-            <view class="act-ico act-green">出</view>
-            <view class="act-txt">扫码出库</view>
-          </view>
+        <view class="card-title">更多操作</view>
+        <!-- 扫码入口已经在上面的两个方向大卡里了，这里不再重复，只放扫码之外的事 -->
+        <view class="act-grid act-grid-2">
           <view class="act" bindtap="goManual" hover-class="hover">
             <view class="act-ico act-green">输</view>
             <view class="act-txt">手动输编号</view>

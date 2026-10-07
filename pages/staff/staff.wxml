@@ -3,7 +3,13 @@
   <view wx:if="{{isAdmin}}" class="head">
     <view class="head-title">人员与权限</view>
     <view class="head-desc">员工的账号由主管提交，必须经管理员审批后才能登录</view>
-    <view class="ov-row">
+    <view wx:if="{{!ovReady}}" class="ov-row">
+      <view class="ov-cell" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+        <view class="sk sk-num"></view>
+        <view class="sk sk-lbl"></view>
+      </view>
+    </view>
+    <view wx:else class="ov-row">
       <view class="ov-cell" data-key="pending" bindtap="pickFilter" hover-class="hover">
         <view class="ov-num {{overview.pending > 0 ? 'c-warn' : ''}}">{{overview.pending || 0}}</view>
         <view class="ov-lbl">待审批</view>
@@ -27,7 +33,13 @@
   <view wx:else class="head head-manager">
     <view class="head-title">我的员工</view>
     <view class="head-desc">你添加的员工需管理员审批后才能登录；通过后你可以直接改资料、重置密码、启用或停用</view>
-    <view class="ov-row">
+    <view wx:if="{{!ovReady}}" class="ov-row">
+      <view class="ov-cell" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="sk sk-num"></view>
+        <view class="sk sk-lbl"></view>
+      </view>
+    </view>
+    <view wx:else class="ov-row">
       <view class="ov-cell">
         <view class="ov-num {{overview.my_pending > 0 ? 'c-warn' : ''}}">{{overview.my_pending || 0}}</view>
         <view class="ov-lbl">待审批</view>
@@ -70,6 +82,14 @@
   </scroll-view>
 
   <view class="wrap">
+    <!-- 首屏加载占位 -->
+    <block wx:if="{{loading && list.length === 0}}">
+      <view class="card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="sk-line" style="width:34%"></view>
+        <view class="sk-line" style="width:70%"></view>
+        <view class="sk-line" style="width:52%;margin-bottom:0"></view>
+      </view>
+    </block>
     <view wx:if="{{!loading && list.length === 0}}" class="empty">
       <view class="empty-icon"><view class="ei-user"></view></view>
       <view class="empty-title">没有符合条件的账号</view>

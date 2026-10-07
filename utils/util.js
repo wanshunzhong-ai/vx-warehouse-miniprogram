@@ -66,6 +66,8 @@ const ERROR_MAP = [
   [/USERNAME_TAKEN/, '这个登录账号已经被占用了'],
   [/USERNAME_INVALID/, '登录账号只能是 3-24 位字母、数字、下划线、点或横线'],
   [/USERNAME_REQUIRED/, '请填写登录账号'],
+  // 必须排在 NAME_REQUIRED 之前：/NAME_REQUIRED/ 会命中 ITEM_NAME_REQUIRED 的子串
+  [/ITEM_NAME_REQUIRED/, '请填写物品名称'],
   [/NAME_REQUIRED/, '请填写姓名'],
   [/PASSWORD_TOO_SHORT/, '密码至少 6 位'],
   [/OLD_PASSWORD_WRONG/, '原密码不正确'],
@@ -172,7 +174,10 @@ function decorateItem(it) {
   const qty = Number(it.qty || 0)
   // 已停用的物品不该再报"库存偏低"——那是用于补货提醒的，停用了就不补了
   it.isArchived = it.status === 'archived'
-  it.isLow = !it.isArchived && qty <= min
+  // min > 0 这个前提很关键：逐件赋码的物品安全库存恒为 0，
+  // 领用出去后 qty 也是 0，若只判 qty <= min 就会把"已被领走"读成"库存告急"。
+  // 安全库存为 0 表示"不对这类物品做预警"，与 qty 无关。
+  it.isLow = !it.isArchived && min > 0 && qty <= min
   it.statusLabel = roles.statusLabel(it.status)
   it.initial = it.name ? String(it.name).charAt(0) : '#'
   it.qtyText = String(qty) + (it.unit || '')

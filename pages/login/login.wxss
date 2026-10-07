@@ -108,8 +108,11 @@
 
 .in-eye {
   flex-shrink: 0;
-  padding-left: 20rpx;
-  font-size: 26rpx;
+  /* 热区：原先是纯文字 26rpx，手指不好点，这里撑到约 88rpx 高、宽度也留足 */
+  padding: 28rpx 12rpx 28rpx 28rpx;
+  margin-right: -12rpx;
+  font-size: 28rpx;
+  line-height: 32rpx;
   color: #2f6df6;
 }
 
