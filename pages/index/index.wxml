@@ -116,9 +116,9 @@
             <view class="act-ico act-violet">导</view>
             <view class="act-txt">批量导入</view>
           </view>
-          <view class="act" bindtap="goScan" hover-class="hover">
-            <view class="act-ico act-violet">扫</view>
-            <view class="act-txt">扫码出入库</view>
+          <view class="act" bindtap="goLowStock" hover-class="hover">
+            <view class="act-ico act-violet">警</view>
+            <view class="act-txt">库存预警</view>
           </view>
           <view class="act" bindtap="goRecords" hover-class="hover">
             <view class="act-ico act-violet">记</view>
@@ -169,8 +169,8 @@
     <view class="wrap">
       <view class="card">
         <view class="card-title">
-          <text>我提交的账号申请</text>
-          <text class="t-primary f-sm" catchtap="goStaff">全部申请 ›</text>
+          <text>我的员工</text>
+          <text class="t-primary f-sm" catchtap="goStaff">全部员工 ›</text>
         </view>
         <view class="grid3">
           <view class="g3-cell" bindtap="goStaff" data-status="pending" hover-class="hover">
@@ -186,7 +186,7 @@
             <view class="g3-lbl">已驳回</view>
           </view>
         </view>
-        <view class="apply-tip">员工账号由你添加后，还需要管理员审批通过才能登录。</view>
+        <view class="apply-tip">员工账号由你添加后，还需要管理员审批通过才能登录；通过后你可以直接管理他们。</view>
         <button class="btn btn-primary apply-btn" bindtap="goAddStaff">＋ 添加员工账号</button>
       </view>
 
@@ -245,8 +245,8 @@
             <view class="act-txt">批量导入</view>
           </view>
           <view class="act" bindtap="goStaff" hover-class="hover">
-            <view class="act-ico act-blue">申</view>
-            <view class="act-txt">我的申请</view>
+            <view class="act-ico act-blue">员</view>
+            <view class="act-txt">员工管理</view>
           </view>
           <view class="act" bindtap="goProfile" hover-class="hover">
             <view class="act-ico act-blue">我</view>
@@ -312,17 +312,20 @@
     </view>
 
     <view class="wrap">
-      <view class="scan-hero" bindtap="goScan" hover-class="hover">
-        <view class="scan-icon">
-          <view class="scan-c c1"></view>
-          <view class="scan-c c2"></view>
-          <view class="scan-c c3"></view>
-          <view class="scan-c c4"></view>
-          <view class="scan-beam"></view>
+      <!-- 入库 / 出库 两个方向，各自直达扫码 -->
+      <view class="dir-row">
+        <view class="dir-card dir-in" data-dir="in" bindtap="goScanDir" hover-class="hover-scale">
+          <view class="dir-ico">入</view>
+          <view class="dir-name">扫码入库</view>
+          <view class="dir-desc">采购到货 · 归还</view>
         </view>
-        <view class="scan-title">扫码出入库</view>
-        <view class="scan-desc">对准物品标签上的二维码，自动识别物品</view>
+        <view class="dir-card dir-out" data-dir="out" bindtap="goScanDir" hover-class="hover-scale">
+          <view class="dir-ico">出</view>
+          <view class="dir-name">扫码出库</view>
+          <view class="dir-desc">车间领用 · 发放</view>
+        </view>
       </view>
+      <view class="dir-tip">点一下直接开扫，方向已经替你选好</view>
 
       <view class="card">
         <view class="card-title">我的今日</view>
@@ -350,7 +353,7 @@
             <text class="flow-val">{{stat.total_qty || 0}}</text>
           </view>
           <view class="flow-item" bindtap="goRecords" hover-class="hover">
-            <text class="flow-lbl">全部记录</text>
+            <text class="flow-lbl">我的记录</text>
             <text class="flow-val">›</text>
           </view>
         </view>
@@ -359,9 +362,13 @@
       <view class="card">
         <view class="card-title">快捷操作</view>
         <view class="act-grid">
-          <view class="act" bindtap="goScan" hover-class="hover">
-            <view class="act-ico act-green">扫</view>
-            <view class="act-txt">扫码出入库</view>
+          <view class="act" data-dir="in" bindtap="goScanDir" hover-class="hover">
+            <view class="act-ico act-green">入</view>
+            <view class="act-txt">扫码入库</view>
+          </view>
+          <view class="act" data-dir="out" bindtap="goScanDir" hover-class="hover">
+            <view class="act-ico act-green">出</view>
+            <view class="act-txt">扫码出库</view>
           </view>
           <view class="act" bindtap="goManual" hover-class="hover">
             <view class="act-ico act-green">输</view>

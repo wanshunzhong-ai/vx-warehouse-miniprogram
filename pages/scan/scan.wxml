@@ -1,21 +1,39 @@
 <view class="page page-tab">
-  <view class="scan-hero">
-    <view class="scan-box" bindtap="onScan" hover-class="scan-box-hover">
-      <view class="frame">
-        <view class="corner c-tl"></view>
-        <view class="corner c-tr"></view>
-        <view class="corner c-bl"></view>
-        <view class="corner c-br"></view>
-        <view class="laser"></view>
+  <!-- 入库 / 出库 是两个独立方向，各自一个入口 -->
+  <view class="dir-hero">
+    <view class="dir-title">你要做什么？</view>
+    <view class="dir-row">
+      <view class="dir-card dir-in" data-type="in" bindtap="onScan" hover-class="dir-hover">
+        <view class="dir-ico">入</view>
+        <view class="dir-name">扫码入库</view>
+        <view class="dir-desc">采购到货 · 归还</view>
       </view>
-      <view class="scan-main">点击扫码</view>
-      <view class="scan-hint">对准物品上的二维码</view>
+      <view class="dir-card dir-out" data-type="out" bindtap="onScan" hover-class="dir-hover">
+        <view class="dir-ico">出</view>
+        <view class="dir-name">扫码出库</view>
+        <view class="dir-desc">车间领用 · 发放</view>
+      </view>
     </view>
+    <view class="dir-tip">选好方向再扫，数量页不用再选一次</view>
   </view>
 
   <view class="wrap">
     <view class="card">
       <view class="card-title">手动输入编号</view>
+      <view class="type-row">
+        <view
+          class="type-chip {{manualType === 'in' ? 'type-on-in' : ''}}"
+          data-type="in"
+          bindtap="pickManualType"
+          hover-class="hover"
+        >入库</view>
+        <view
+          class="type-chip {{manualType === 'out' ? 'type-on-out' : ''}}"
+          data-type="out"
+          bindtap="pickManualType"
+          hover-class="hover"
+        >出库</view>
+      </view>
       <view class="manual-row">
         <input
           class="manual-input"
@@ -63,7 +81,7 @@
       </view>
       <view class="step">
         <view class="step-no">3</view>
-        <view class="grow">扫码后选择入库或出库、填写数量即可，库存和流水自动更新</view>
+        <view class="grow">按业务选「扫码入库」或「扫码出库」，扫完填数量即可，库存和流水自动更新</view>
       </view>
     </view>
   </view>

@@ -1,105 +1,115 @@
-.scan-hero {
-  background: linear-gradient(160deg, #2f6df6 0%, #2456d8 100%);
-  padding: 48rpx 28rpx 96rpx;
+.dir-hero {
+  background: linear-gradient(160deg, #3d7bff 0%, #2456d8 100%);
+  padding: 40rpx 28rpx 84rpx;
   border-bottom-left-radius: 44rpx;
   border-bottom-right-radius: 44rpx;
 }
 
-.scan-box {
-  background: rgba(255, 255, 255, 0.98);
+.dir-title {
+  font-size: 30rpx;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 24rpx;
+  padding-left: 6rpx;
+}
+
+.dir-row {
+  display: flex;
+  gap: 22rpx;
+}
+
+/* ---------- 两个方向的大卡片 ---------- */
+
+.dir-card {
+  flex: 1;
+  background: #ffffff;
   border-radius: 28rpx;
-  padding: 60rpx 32rpx 52rpx;
+  padding: 40rpx 20rpx 34rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 18rpx 40rpx rgba(10, 30, 80, 0.2);
+  box-shadow: 0 14rpx 32rpx rgba(10, 30, 80, 0.18);
+  border-top: 8rpx solid transparent;
 }
 
-.scan-box-hover {
-  transform: scale(0.985);
+.dir-in { border-top-color: #22c55e; }
+.dir-out { border-top-color: #fb923c; }
+
+.dir-hover {
+  transform: scale(0.97);
   opacity: 0.94;
 }
 
-.frame {
-  position: relative;
-  width: 200rpx;
-  height: 200rpx;
-  margin-bottom: 36rpx;
-  overflow: hidden;
+.dir-ico {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 46rpx;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 22rpx;
 }
 
-.corner {
-  position: absolute;
-  width: 62rpx;
-  height: 62rpx;
-}
+.dir-in .dir-ico { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.dir-out .dir-ico { background: linear-gradient(135deg, #fb923c, #f97316); }
 
-.c-tl {
-  left: 0;
-  top: 0;
-  border-left: 10rpx solid #2f6df6;
-  border-top: 10rpx solid #2f6df6;
-  border-top-left-radius: 18rpx;
-}
-
-.c-tr {
-  right: 0;
-  top: 0;
-  border-right: 10rpx solid #2f6df6;
-  border-top: 10rpx solid #2f6df6;
-  border-top-right-radius: 18rpx;
-}
-
-.c-bl {
-  left: 0;
-  bottom: 0;
-  border-left: 10rpx solid #2f6df6;
-  border-bottom: 10rpx solid #2f6df6;
-  border-bottom-left-radius: 18rpx;
-}
-
-.c-br {
-  right: 0;
-  bottom: 0;
-  border-right: 10rpx solid #2f6df6;
-  border-bottom: 10rpx solid #2f6df6;
-  border-bottom-right-radius: 18rpx;
-}
-
-.laser {
-  position: absolute;
-  left: 12rpx;
-  right: 12rpx;
-  height: 6rpx;
-  border-radius: 3rpx;
-  background: linear-gradient(90deg, rgba(47, 109, 246, 0), #2f6df6, rgba(47, 109, 246, 0));
-  animation: scanmove 2.2s ease-in-out infinite;
-}
-
-@keyframes scanmove {
-  0% { top: 18rpx; }
-  50% { top: 176rpx; }
-  100% { top: 18rpx; }
-}
-
-.scan-main {
-  font-size: 38rpx;
+.dir-name {
+  font-size: 34rpx;
   font-weight: 600;
   color: #151922;
 }
 
-.scan-hint {
-  margin-top: 12rpx;
-  font-size: 24rpx;
+.dir-desc {
+  margin-top: 10rpx;
+  font-size: 22rpx;
   color: #8a9099;
+}
+
+.dir-tip {
+  margin-top: 26rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .wrap {
   padding: 0 28rpx 40rpx;
-  margin-top: -60rpx;
+  margin-top: -48rpx;
 }
 
-/* 手动输入 */
+/* ---------- 手动输入的方向切换 ---------- */
+
+.type-row {
+  display: flex;
+  gap: 18rpx;
+  margin-bottom: 22rpx;
+}
+
+.type-chip {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  border-radius: 14rpx;
+  background: #f4f6fa;
+  color: #6b7280;
+  font-size: 28rpx;
+  transition: all 0.16s;
+}
+
+.type-on-in {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.type-on-out {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  color: #ffffff;
+  font-weight: 600;
+}
 
 .manual-row {
   display: flex;
@@ -126,7 +136,7 @@
   flex-shrink: 0;
 }
 
-/* 最近扫描 */
+/* ---------- 最近扫描 ---------- */
 
 .recent-badge {
   width: 64rpx;
@@ -149,7 +159,7 @@
   line-height: 1;
 }
 
-/* 说明 */
+/* ---------- 说明 ---------- */
 
 .step {
   display: flex;

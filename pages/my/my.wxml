@@ -88,10 +88,10 @@
       </view>
 
       <view wx:if="{{role === 'manager'}}" class="menu-item" bindtap="goStaff" hover-class="hover">
-        <view class="mi-ico mi-blue">申</view>
+        <view class="mi-ico mi-blue">员</view>
         <view class="grow">
-          <view class="f-md">我提交的账号申请</view>
-          <view class="f-xs t-dim" style="margin-top:6rpx">查看审批进度，或再添加一个员工账号</view>
+          <view class="f-md">我的员工</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">添加员工、查看审批进度、改资料、重置密码、停用</view>
         </view>
         <text class="mi-arrow">›</text>
       </view>

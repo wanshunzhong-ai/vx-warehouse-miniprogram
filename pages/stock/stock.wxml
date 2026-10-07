@@ -84,7 +84,19 @@
 
         <!-- 操作表单 -->
         <block wx:else>
-          <view class="seg">
+          <!-- 方向已由入口确定：显示状态条 + 换向入口，避免再选一次 -->
+          <view
+            wx:if="{{typeLocked}}"
+            class="dir-bar {{type === 'in' ? 'db-in' : 'db-out'}}"
+          >
+            <view class="db-left">
+              <view class="db-ico">{{type === 'in' ? '入' : '出'}}</view>
+              <view class="db-txt">本次操作：{{type === 'in' ? '入库' : '出库'}}</view>
+            </view>
+            <view class="db-swap" catchtap="unlockType" hover-class="hover">换个方向</view>
+          </view>
+
+          <view wx:else class="seg">
             <view class="seg-item {{type === 'in' ? 'seg-in' : ''}}" data-type="in" bindtap="switchType" hover-class="hover">
               入库
             </view>

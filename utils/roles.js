@@ -16,7 +16,7 @@ const ROLE_INFO = {
     homeTitle: '管理中心',
     accent: '#7c4dff',
     accentSoft: 'rgba(124, 77, 255, 0.12)',
-    desc: '拥有全部权限：人员与审批、建档、删除、导出'
+    desc: '管理主管账号、审批员工、监控全仓动向（不参与出入库）'
   },
   manager: {
     key: 'manager',
@@ -26,7 +26,7 @@ const ROLE_INFO = {
     homeTitle: '主管台',
     accent: '#2f6df6',
     accentSoft: 'rgba(47, 109, 246, 0.12)',
-    desc: '可添加员工账号（需管理员审批）、建档、导入、导出'
+    desc: '管理自己提交的员工、建档、导入、出入库、导出'
   },
   staff: {
     key: 'staff',
@@ -36,11 +36,19 @@ const ROLE_INFO = {
     homeTitle: '工作台',
     accent: '#0ca678',
     accentSoft: 'rgba(12, 166, 120, 0.12)',
-    desc: '扫码进出库、查询物品与库存'
+    desc: '扫码入库、扫码出库、查询物品与库存'
   }
 }
 
-/** 能力清单：页面里统一用 can(role, 'xxx') 判断 */
+/**
+ * 能力清单：页面里统一用 can(role, 'xxx') 判断
+ *
+ * 注意几点「刻意为之」的差异：
+ *  - 管理员**没有** stock.change —— 管理员管的是人（主管）与全局监控，不参与扫码出入库。
+ *  - 主管有 stock.change（可以对物品出入库），也有 staff.manage
+ *    （但服务端限定为「只能管自己提交的员工」，且不能改角色）。
+ *  - 员工只有查看与出入库，没有建档/停用等档案类能力。
+ */
 const CAPS = {
   admin: [
     'item.view',
@@ -49,7 +57,6 @@ const CAPS = {
     'item.archive',
     'item.delete',
     'item.import',
-    'stock.change',
     'staff.add',
     'staff.review',
     'staff.manage',
@@ -64,6 +71,7 @@ const CAPS = {
     'item.import',
     'stock.change',
     'staff.add',
+    'staff.manage',
     'record.export',
     'account.self'
   ],

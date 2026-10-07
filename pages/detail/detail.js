@@ -132,6 +132,10 @@ Page({
   },
 
   goStock(type) {
+    if (!this.data.caps.stock_change) {
+      util.toast('管理员不参与出入库，请由主管或员工操作')
+      return
+    }
     wx.navigateTo({
       url: '/pages/stock/stock?type=' + type + '&code=' + encodeURIComponent(this.data.item.code)
     })

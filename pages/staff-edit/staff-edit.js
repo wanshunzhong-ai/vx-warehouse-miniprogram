@@ -26,6 +26,12 @@ Page({
       remark: ''
     },
     detail: null,
+    /* 详情页的分区显隐：管理员=全部；主管=只管自己提交的员工，且不能改身份/删除 */
+    canApprove: false,
+    canChangeRole: false,
+    canManage: false,
+    canDelete: false,
+    isMine: false,
     newRole: 'staff',
     reviewNote: '',
     resetPwd: '',
@@ -72,8 +78,26 @@ Page({
         return
       }
       const d = util.decorateStaff(found)
+      const mine = !!found.is_mine
       this._loadedOnce = true
-      this.setData({ detail: d, newRole: d.role, reviewNote: '' })
+      this.setData({
+        detail: d,
+        newRole: d.role,
+        reviewNote: '',
+        isMine: mine,
+        // 审批只归管理员
+        canApprove: this.data.isAdmin && d.status === 'pending',
+        // 改身份（提权）只归管理员
+        canChangeRole: this.data.isAdmin,
+        // 删除只归管理员；停用/重置密码/改资料主管可用。
+        canDelete: this.data.isAdmin,
+        // 删除只归管理员；停用/重置密码/改资料主管可用。
+        // 且主管只能在「正常 / 已停用」之间操作——待审批与已驳回必须走管理员，
+        // 否则主管给已驳回的账号点一下「恢复启用」就等于自己审批了。
+        canManage:
+          this.data.isAdmin ||
+          (mine && d.role === 'staff' && (d.status === 'active' || d.status === 'disabled'))
+      })
     } catch (e) {
       util.toast(util.friendlyError(e))
     }

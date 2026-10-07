@@ -23,10 +23,10 @@
     </view>
   </view>
 
-  <!-- 主管：我的提交概览 -->
+  <!-- 主管：我的员工 -->
   <view wx:else class="head head-manager">
-    <view class="head-title">我提交的账号申请</view>
-    <view class="head-desc">你添加的每个员工账号都需要管理员审批通过后才能登录</view>
+    <view class="head-title">我的员工</view>
+    <view class="head-desc">你添加的员工需管理员审批后才能登录；通过后你可以直接改资料、重置密码、启用或停用</view>
     <view class="ov-row">
       <view class="ov-cell">
         <view class="ov-num {{overview.my_pending > 0 ? 'c-warn' : ''}}">{{overview.my_pending || 0}}</view>
@@ -128,6 +128,9 @@
       </view>
       <view wx:elif="{{isAdmin}}" class="sc-actions">
         <view class="sc-hint">点击查看详情 · 可改角色 / 停用 / 重置密码</view>
+      </view>
+      <view wx:else class="sc-actions">
+        <view class="sc-hint">点击查看详情 · 可改资料 / 重置密码 / 停用</view>
       </view>
     </view>
 

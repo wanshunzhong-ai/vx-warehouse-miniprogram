@@ -180,7 +180,7 @@
         </view>
 
         <!-- 审批（管理员 + 待审批） -->
-        <block wx:if="{{isAdmin && detail.status === 'pending'}}">
+        <block wx:if="{{canApprove}}">
           <view class="card review-card">
             <view class="card-title">待你审批</view>
             <view class="rv-desc">通过后该账号立即可登录；驳回后对方会看到「申请已被驳回」。</view>
@@ -223,9 +223,9 @@
           </view>
         </view>
 
-        <!-- 管理操作（管理员） -->
-        <block wx:if="{{isAdmin && detail.status !== 'pending'}}">
-          <view class="card">
+        <!-- 管理操作（管理员全量；主管限自己提交的员工，且不含改身份与删除） -->
+        <block wx:if="{{canManage && detail.status !== 'pending'}}">
+          <view wx:if="{{canChangeRole}}" class="card">
             <view class="card-title">调整身份</view>
             <view class="role-chips">
               <view
@@ -257,13 +257,14 @@
             <view class="btn {{detail.status === 'disabled' ? 'btn-primary' : 'btn-danger'}} submit" bindtap="toggleStatus" hover-class="hover">
               {{detail.status === 'disabled' ? '恢复启用' : '停用该账号'}}
             </view>
-            <view class="btn btn-plain submit" style="margin-top:20rpx" bindtap="doDelete" hover-class="hover">删除账号</view>
+            <view wx:if="{{canDelete}}" class="btn btn-plain submit" style="margin-top:20rpx" bindtap="doDelete" hover-class="hover">删除账号</view>
           </view>
         </block>
 
         <!-- 主管视角提示 -->
         <view wx:if="{{!isAdmin}}" class="notice notice-blue">
-          {{detail.status === 'pending' ? '已提交给管理员审批，通过后对方即可登录。' : (detail.status === 'rejected' ? '这条申请被驳回了，可以修改信息后重新提交。' : '账号已生效，可以把账号密码转告本人。')}}
+          <block wx:if="{{canManage && detail.status !== 'pending'}}">这是你提交的员工，你可以改资料、重置密码或停用账号；身份调整与审批由管理员负责。</block>
+          <block wx:else>{{detail.status === 'pending' ? '已提交给管理员审批，通过后对方即可登录。' : (detail.status === 'rejected' ? '这条申请被管理员驳回了，需要联系管理员处理，你自己不能直接启用。' : '账号已生效，可以把账号密码转告本人。')}}</block>
         </view>
       </view>
     </block>

@@ -22,13 +22,16 @@
     </view>
 
     <view class="wrap body">
-      <!-- 出入库按钮：停用后不再提供，避免点了才报错 -->
-      <view wx:if="{{!item.isArchived}}" class="act-row">
+      <!-- 出入库按钮：停用后不再提供（避免点了才报错）；管理员不参与出入库，也不显示 -->
+      <view wx:if="{{!item.isArchived && caps.stock_change}}" class="act-row">
         <view class="act act-in" bindtap="goIn" hover-class="hover">入库</view>
         <view class="act act-out" bindtap="goOut" hover-class="hover">出库</view>
       </view>
-      <view wx:else class="notice notice-red archived-notice">
+      <view wx:elif="{{item.isArchived}}" class="notice notice-red archived-notice">
         该物品已停用，不再参与出入库。如需继续使用，请点下方「恢复使用」。
+      </view>
+      <view wx:else class="notice notice-blue archived-notice">
+        出入库由主管或员工在现场扫码完成，这里只做监控与档案维护。
       </view>
 
       <!-- 二维码 -->

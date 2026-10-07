@@ -21,6 +21,8 @@ Page({
     loading: true,
     item: null,
     type: 'in',
+    /** 方向由入口决定（扫码入库 / 扫码出库 / 详情页按钮），锁定后不再显示分段控件 */
+    typeLocked: false,
     qtyText: '1',
     note: '',
     operatorName: '',
@@ -33,11 +35,14 @@ Page({
   onLoad(options) {
     const opts = options || {}
     const code = normalize(decodeURIComponent(opts.code || ''))
+    const hasType = opts.type === 'in' || opts.type === 'out'
     const type = opts.type === 'out' ? 'out' : 'in'
     this.setData({
       code: code,
       codeInput: code,
       type: type,
+      // 入口已经表明方向（扫码入库/扫码出库/详情页按钮），锁定它，避免手滑点反
+      typeLocked: hasType,
       manual: !code,
       loading: !!code,
       operatorName: auth.getOperatorName(),
@@ -110,6 +115,11 @@ Page({
 
   switchType(e) {
     this.setData({ type: e.currentTarget.dataset.type })
+  },
+
+  /** 换个方向：解锁后出现「入库 / 出库」分段控件 */
+  unlockType() {
+    this.setData({ typeLocked: false })
   },
 
   onQtyInput(e) {

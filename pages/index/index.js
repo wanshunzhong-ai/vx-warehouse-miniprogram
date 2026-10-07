@@ -8,6 +8,9 @@ const page = require('../../utils/page')
 /** 与 pages/items/items.js 约定同一份缓存键，用于 switchTab 传筛选条件 */
 const ITEMS_FILTER_KEY = 'warehouse_items_filter'
 
+/** 与 pages/scan/scan.js 约定同一份缓存键：工作台点「扫码入库/出库」后直达扫码 */
+const SCAN_DIR_KEY = 'warehouse_scan_dir'
+
 Page({
   data: {
     ready: false,
@@ -136,6 +139,16 @@ Page({
   /* ---------------- 跳转 ---------------- */
 
   goScan() {
+    wx.switchTab({ url: '/pages/scan/scan' })
+  },
+
+  /**
+   * 工作台上的两个方向入口：把方向写进缓存再切页，
+   * 扫码页 onShow 读到后立刻拉起扫码（switchTab 不支持带参数）
+   */
+  goScanDir(e) {
+    const dir = (e && e.currentTarget && e.currentTarget.dataset.dir) === 'out' ? 'out' : 'in'
+    wx.setStorageSync(SCAN_DIR_KEY, dir)
     wx.switchTab({ url: '/pages/scan/scan' })
   },
 
