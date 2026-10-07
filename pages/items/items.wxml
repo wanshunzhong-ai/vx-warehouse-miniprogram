@@ -12,41 +12,64 @@
         bindinput="onKeywordInput"
         bindconfirm="reload"
       />
-      <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword">×</view>
+      <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword" hover-class="hover">×</view>
     </view>
+  </view>
+
+  <!-- 状态筛选：只有能停用/恢复物品的人（主管及以上）才需要看历史档案 -->
+  <view wx:if="{{caps.item_archive}}" class="segs">
+    <view
+      class="seg {{status === 'active' ? 'seg-on' : ''}}"
+      data-status="active"
+      bindtap="pickStatus"
+      hover-class="hover"
+    >在用</view>
+    <view
+      class="seg {{status === 'archived' ? 'seg-on' : ''}}"
+      data-status="archived"
+      bindtap="pickStatus"
+      hover-class="hover"
+    >已停用</view>
   </view>
 
   <!-- 分类筛选 -->
   <scroll-view wx:if="{{categories.length > 0}}" class="chips" scroll-x enable-flex>
-    <view class="chip {{category === '' ? 'chip-on' : ''}}" data-cat="" bindtap="pickCategory">全部</view>
+    <view class="chip {{category === '' ? 'chip-on' : ''}}" data-cat="" bindtap="pickCategory" hover-class="hover">全部</view>
     <view
       wx:for="{{categories}}"
       wx:key="*this"
       class="chip {{category === item ? 'chip-on' : ''}}"
       data-cat="{{item}}"
       bindtap="pickCategory"
+      hover-class="hover"
     >{{item}}</view>
   </scroll-view>
 
+  <!-- 低库存下钻的筛选提示 -->
+  <view wx:if="{{lowFilter}}" class="filter-pill">
+    <text class="fp-txt">只看库存预警（{{total}} 项）</text>
+    <view class="fp-x" catchtap="clearLowFilter" hover-class="hover">清除 ×</view>
+  </view>
+
   <!-- 汇总 -->
   <view class="summary">
-    <text class="f-sm t-sub">共 {{total}} 件物品{{category ? ' · ' + category : ''}}</text>
+    <text class="f-sm t-sub">共 {{total}} 件物品{{category ? ' · ' + category : ''}}{{status === 'archived' ? ' · 已停用' : ''}}</text>
   </view>
 
   <!-- 列表 -->
   <view class="wrap list-wrap">
     <view wx:if="{{!loading && list.length === 0}}" class="empty">
       <view class="empty-icon"><view class="ei-box"></view></view>
-      <view class="empty-title">{{keyword || category ? '没有找到匹配的物品' : '还没有物品档案'}}</view>
-      <view class="empty-desc">{{keyword || category ? '换个关键词或分类试试' : (caps.item_create ? '点击右下角 + 新建，或用电脑端工具批量导入' : '仓库还没有建档，请联系主管或管理员')}}</view>
+      <view class="empty-title">{{emptyTitle}}</view>
+      <view class="empty-desc">{{emptyDesc}}</view>
     </view>
-
     <view
       wx:for="{{list}}"
       wx:key="id"
-      class="item-card"
+      class="item-card {{item.isArchived ? 'item-card-off' : ''}}"
       data-id="{{item.id}}"
       bindtap="openItem"
+      hover-class="hover"
     >
       <view class="ic-head">
         <view class="grow">
@@ -58,10 +81,11 @@
           <text class="ic-qty-unit">{{item.unit || '个'}}</text>
         </view>
       </view>
-      <view class="ic-tags" wx:if="{{item.location || item.category || item.qty <= item.min_qty}}">
+      <view class="ic-tags" wx:if="{{item.location || item.category || item.isLow || item.isArchived}}">
+        <text wx:if="{{item.isArchived}}" class="tag tag-gray">已停用</text>
         <text wx:if="{{item.location}}" class="tag tag-gray">{{item.location}}</text>
         <text wx:if="{{item.category}}" class="tag tag-blue">{{item.category}}</text>
-        <text wx:if="{{item.qty <= item.min_qty}}" class="tag tag-orange">库存偏低</text>
+        <text wx:if="{{item.isLow}}" class="tag tag-orange">库存偏低</text>
       </view>
     </view>
 
@@ -69,6 +93,6 @@
     <view wx:elif="{{list.length > 0 && !hasMore}}" class="list-foot">没有更多了</view>
   </view>
 
-  <!-- 新增按钮：只有主管及以上能建档 -->
-  <view wx:if="{{caps.item_create}}" class="fab" bindtap="goCreate">+</view>
+  <!-- 新增按钮：只有主管及以上能建档；看历史停用档案时不需要 -->
+  <view wx:if="{{caps.item_create && status === 'active'}}" class="fab" bindtap="goCreate" hover-class="hover-scale">+</view>
 </view>

@@ -74,7 +74,7 @@
             class="role-opt {{form.role === item.key ? 'role-on' : ''}}"
             data-role="{{item.key}}"
             bindtap="pickRole"
-          >
+           hover-class="hover">
             <view class="ro-radio"></view>
             <view class="grow">
               <view class="ro-label">{{item.label}}</view>
@@ -193,7 +193,7 @@
                 class="chip chip-sm {{newRole === item.key ? 'chip-on' : ''}}"
                 data-role="{{item.key}}"
                 bindtap="pickNewRole"
-              >{{item.label}}</view>
+               hover-class="hover">{{item.label}}</view>
             </view>
 
             <view class="rv-label">审批意见（可选）</view>
@@ -206,7 +206,7 @@
             />
 
             <button class="btn btn-primary submit" bindtap="doApprove">通过并启用</button>
-            <view class="btn btn-danger submit" style="margin-top:20rpx" bindtap="doReject">驳回申请</view>
+            <view class="btn btn-danger submit" style="margin-top:20rpx" bindtap="doReject" hover-class="hover">驳回申请</view>
           </view>
         </block>
 
@@ -234,9 +234,9 @@
                 class="chip chip-sm {{newRole === item.key ? 'chip-on' : ''}}"
                 data-role="{{item.key}}"
                 bindtap="pickNewRole"
-              >{{item.label}}</view>
+               hover-class="hover">{{item.label}}</view>
             </view>
-            <view class="btn btn-ghost submit" bindtap="saveRole">保存身份</view>
+            <view class="btn btn-ghost submit" bindtap="saveRole" hover-class="hover">保存身份</view>
           </view>
 
           <view class="card">
@@ -249,15 +249,15 @@
               placeholder-class="field-placeholder"
               bindinput="onResetPwdInput"
             />
-            <view class="btn btn-ghost submit" bindtap="doResetPassword">重置并踢下线</view>
+            <view class="btn btn-ghost submit" bindtap="doResetPassword" hover-class="hover">重置并踢下线</view>
           </view>
 
           <view class="card">
             <view class="card-title">账号状态</view>
-            <view class="btn {{detail.status === 'disabled' ? 'btn-primary' : 'btn-danger'}} submit" bindtap="toggleStatus">
+            <view class="btn {{detail.status === 'disabled' ? 'btn-primary' : 'btn-danger'}} submit" bindtap="toggleStatus" hover-class="hover">
               {{detail.status === 'disabled' ? '恢复启用' : '停用该账号'}}
             </view>
-            <view class="btn btn-plain submit" style="margin-top:20rpx" bindtap="doDelete">删除账号</view>
+            <view class="btn btn-plain submit" style="margin-top:20rpx" bindtap="doDelete" hover-class="hover">删除账号</view>
           </view>
         </block>
 

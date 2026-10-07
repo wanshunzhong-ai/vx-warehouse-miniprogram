@@ -21,8 +21,8 @@
       />
 
       <view class="btn-row">
-        <view class="btn btn-plain grow" bindtap="pasteFromClipboard">读取剪贴板</view>
-        <view class="btn btn-ghost grow" bindtap="parse">解析预览</view>
+        <view class="btn btn-plain grow" bindtap="pasteFromClipboard" hover-class="hover">读取剪贴板</view>
+        <view class="btn btn-ghost grow" bindtap="parse" hover-class="hover">解析预览</view>
       </view>
     </view>
 

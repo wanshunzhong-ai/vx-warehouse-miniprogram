@@ -26,7 +26,7 @@
           bindinput="onInput"
           bindconfirm="onManualSearch"
         />
-        <view class="btn btn-primary btn-sm manual-btn" bindtap="onManualSearch">查询</view>
+        <view class="btn btn-primary btn-sm manual-btn" bindtap="onManualSearch" hover-class="hover">查询</view>
       </view>
     </view>
 
@@ -41,7 +41,7 @@
         class="list-item"
         data-code="{{item.code}}"
         bindtap="openRecent"
-      >
+       hover-class="hover">
         <view class="recent-badge">{{item.initial}}</view>
         <view class="grow">
           <view class="f-md ellipsis">{{item.name || item.code}}</view>

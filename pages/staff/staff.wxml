@@ -4,7 +4,7 @@
     <view class="head-title">人员与权限</view>
     <view class="head-desc">员工的账号由主管提交，必须经管理员审批后才能登录</view>
     <view class="ov-row">
-      <view class="ov-cell" data-key="pending" bindtap="pickFilter">
+      <view class="ov-cell" data-key="pending" bindtap="pickFilter" hover-class="hover">
         <view class="ov-num {{overview.pending > 0 ? 'c-warn' : ''}}">{{overview.pending || 0}}</view>
         <view class="ov-lbl">待审批</view>
       </view>
@@ -55,7 +55,7 @@
         confirm-type="search"
         bindinput="onKeywordInput"
       />
-      <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword">×</view>
+      <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword" hover-class="hover">×</view>
     </view>
   </view>
 
@@ -66,7 +66,7 @@
       class="chip {{activeKey === item.key ? 'chip-on' : ''}}"
       data-key="{{item.key}}"
       bindtap="pickFilter"
-    >{{item.label}}</view>
+     hover-class="hover">{{item.label}}</view>
   </scroll-view>
 
   <view class="wrap">
@@ -82,7 +82,7 @@
       class="card staff-card"
       data-id="{{item.id}}"
       bindtap="openStaff"
-    >
+     hover-class="hover">
       <view class="sc-head">
         <view class="sc-avatar">{{item.initial}}</view>
         <view class="grow">
@@ -124,7 +124,7 @@
           data-id="{{item.id}}"
           data-name="{{item.name}}"
           catchtap="quickReview"
-        >审批这条申请</view>
+         hover-class="hover">审批这条申请</view>
       </view>
       <view wx:elif="{{isAdmin}}" class="sc-actions">
         <view class="sc-hint">点击查看详情 · 可改角色 / 停用 / 重置密码</view>

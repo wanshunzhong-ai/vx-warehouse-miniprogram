@@ -47,7 +47,7 @@ Page({
       }
       this._id = item.id
       this.setData({
-        item: item,
+        item: util.decorateItem(item),
         createdText: util.formatDateTime(item.created_at),
         loading: false
       })
@@ -166,6 +166,36 @@ Page({
           setTimeout(function () {
             wx.navigateBack({ delta: 1 })
           }, 600)
+        } catch (e) {
+          util.hideLoading()
+          util.toast(util.friendlyError(e))
+        }
+      }
+    })
+  },
+
+  /** 停用 / 恢复：停用后不参与出入库，但档案与历史记录都在 */
+  onToggleArchive() {
+    if (!this.data.caps.item_archive) {
+      util.toast('停用物品需要主管及以上身份')
+      return
+    }
+    const item = this.data.item
+    const archiving = !item.isArchived
+    wx.showModal({
+      title: archiving ? '停用物品' : '恢复使用',
+      content: archiving
+        ? '停用后「' + item.name + '」不能再出入库，档案与历史记录都会保留，之后随时可以恢复。'
+        : '恢复后「' + item.name + '」重新可以出入库。',
+      confirmText: archiving ? '停用' : '恢复',
+      success: async (res) => {
+        if (!res.confirm) return
+        try {
+          util.loading(archiving ? '停用中' : '恢复中')
+          await api.archiveItem(item.id, archiving)
+          util.hideLoading()
+          util.toast(archiving ? '已停用' : '已恢复使用', 'success')
+          this.load()
         } catch (e) {
           util.hideLoading()
           util.toast(util.friendlyError(e))

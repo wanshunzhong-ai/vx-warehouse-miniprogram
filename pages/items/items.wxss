@@ -53,6 +53,59 @@
   flex-shrink: 0;
 }
 
+/* ---------- 状态切换（在用 / 已停用） ---------- */
+
+.segs {
+  display: flex;
+  margin: 18rpx 28rpx 0;
+  padding: 6rpx;
+  background: #e9edf5;
+  border-radius: 18rpx;
+}
+
+.seg {
+  flex: 1;
+  height: 68rpx;
+  line-height: 68rpx;
+  text-align: center;
+  border-radius: 14rpx;
+  font-size: 27rpx;
+  color: #6b7280;
+}
+
+.seg-on {
+  background: #ffffff;
+  color: #2f6df6;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(21, 25, 34, 0.08);
+}
+
+/* ---------- 低库存下钻提示 ---------- */
+
+.filter-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20rpx 28rpx 0;
+  padding: 18rpx 26rpx;
+  background: #fff3e6;
+  border: 1rpx solid #ffe0c2;
+  border-radius: 16rpx;
+}
+
+.fp-txt {
+  font-size: 26rpx;
+  color: #ea580c;
+  font-weight: 500;
+}
+
+.fp-x {
+  font-size: 26rpx;
+  color: #ea580c;
+  padding: 4rpx 10rpx;
+  flex-shrink: 0;
+}
+
 /* ---------- 分类 ---------- */
 
 .chips {
@@ -94,6 +147,20 @@
   padding: 28rpx 30rpx;
   margin-bottom: 20rpx;
   box-shadow: 0 4rpx 18rpx rgba(21, 25, 34, 0.05);
+}
+
+/* 已停用：整体压暗，和"在用"区分开 */
+.item-card-off {
+  background: #f7f8fa;
+  box-shadow: none;
+}
+
+.item-card-off .ic-name {
+  color: #6b7280;
+}
+
+.item-card-off .ic-qty-num {
+  color: #9aa1ad;
 }
 
 .ic-head {

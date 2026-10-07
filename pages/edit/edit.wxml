@@ -15,7 +15,7 @@
           bindinput="onInput"
           data-key="code"
         />
-        <view wx:if="{{!isEdit}}" class="field-action" bindtap="genCode">生成</view>
+        <view wx:if="{{!isEdit}}" class="field-action" bindtap="genCode" hover-class="hover">生成</view>
       </view>
 
       <view class="field">
@@ -61,7 +61,7 @@
           class="chip chip-sm {{form.category === item ? 'chip-on' : ''}}"
           data-cat="{{item}}"
           bindtap="pickCategory"
-        >{{item}}</view>
+         hover-class="hover">{{item}}</view>
       </view>
 
       <view class="field">
@@ -83,7 +83,7 @@
           class="chip chip-sm {{form.unit === item ? 'chip-on' : ''}}"
           data-unit="{{item}}"
           bindtap="pickUnit"
-        >{{item}}</view>
+         hover-class="hover">{{item}}</view>
       </view>
 
       <view class="field">

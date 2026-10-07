@@ -5,6 +5,9 @@ const auth = require('../../utils/auth')
 const roles = require('../../utils/roles')
 const page = require('../../utils/page')
 
+/** 与 pages/items/items.js 约定同一份缓存键，用于 switchTab 传筛选条件 */
+const ITEMS_FILTER_KEY = 'warehouse_items_filter'
+
 Page({
   data: {
     ready: false,
@@ -137,6 +140,7 @@ Page({
   },
 
   goItems() {
+    wx.removeStorageSync(ITEMS_FILTER_KEY)
     wx.switchTab({ url: '/pages/items/items' })
   },
 
@@ -186,6 +190,8 @@ Page({
   },
 
   goLowStock() {
+    // switchTab 不支持带 query，用缓存把「只看库存预警」传给物品页
+    wx.setStorageSync(ITEMS_FILTER_KEY, { low: true })
     wx.switchTab({ url: '/pages/items/items' })
   }
 })

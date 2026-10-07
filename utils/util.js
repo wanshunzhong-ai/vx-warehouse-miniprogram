@@ -160,12 +160,15 @@ function decorateRecords(list) {
   return (list || []).map(decorateRecord)
 }
 
-/** 物品：补齐首字、低库存标记 */
+/** 物品：补齐首字、低库存标记、停用标记 */
 function decorateItem(it) {
   if (!it) return it
   const min = Number(it.min_qty || 0)
   const qty = Number(it.qty || 0)
-  it.isLow = qty <= min
+  // 已停用的物品不该再报"库存偏低"——那是用于补货提醒的，停用了就不补了
+  it.isArchived = it.status === 'archived'
+  it.isLow = !it.isArchived && qty <= min
+  it.statusLabel = roles.statusLabel(it.status)
   it.initial = it.name ? String(it.name).charAt(0) : '#'
   it.qtyText = String(qty) + (it.unit || '')
   return it

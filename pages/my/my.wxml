@@ -1,6 +1,6 @@
 <view class="page page-tab">
   <!-- 账号卡 -->
-  <view class="me-card {{role === 'admin' ? 'me-admin' : (role === 'manager' ? 'me-manager' : 'me-staff')}}" bindtap="goProfile">
+  <view class="me-card {{role === 'admin' ? 'me-admin' : (role === 'manager' ? 'me-manager' : 'me-staff')}}" bindtap="goProfile" hover-class="hover">
     <view class="me-avatar">{{me.initial}}</view>
     <view class="grow">
       <view class="me-name-row">
@@ -19,7 +19,7 @@
       class="card todo"
       bindtap="goStaff"
       data-status="pending"
-    >
+     hover-class="hover">
       <view class="todo-num">{{overview.pending}}</view>
       <view class="grow">
         <view class="todo-title">有账号申请等待审批</view>
@@ -78,7 +78,7 @@
 
     <!-- 人员 -->
     <view class="card menu-card">
-      <view wx:if="{{isAdmin}}" class="menu-item" bindtap="goStaff">
+      <view wx:if="{{isAdmin}}" class="menu-item" bindtap="goStaff" hover-class="hover">
         <view class="mi-ico mi-violet">人</view>
         <view class="grow">
           <view class="f-md">人员管理</view>
@@ -87,7 +87,7 @@
         <text class="mi-arrow">›</text>
       </view>
 
-      <view wx:if="{{role === 'manager'}}" class="menu-item" bindtap="goStaff">
+      <view wx:if="{{role === 'manager'}}" class="menu-item" bindtap="goStaff" hover-class="hover">
         <view class="mi-ico mi-blue">申</view>
         <view class="grow">
           <view class="f-md">我提交的账号申请</view>
@@ -99,7 +99,7 @@
 
     <!-- 物品相关 -->
     <view class="card menu-card">
-      <view wx:if="{{caps.item_import}}" class="menu-item" bindtap="goImport">
+      <view wx:if="{{caps.item_import}}" class="menu-item" bindtap="goImport" hover-class="hover">
         <view class="mi-ico mi-blue">导</view>
         <view class="grow">
           <view class="f-md">批量导入物品</view>
@@ -108,7 +108,7 @@
         <text class="mi-arrow">›</text>
       </view>
 
-      <view wx:if="{{caps.record_export}}" class="menu-item" bindtap="exportItems">
+      <view wx:if="{{caps.record_export}}" class="menu-item" bindtap="exportItems" hover-class="hover">
         <view class="mi-ico mi-green">出</view>
         <view class="grow">
           <view class="f-md">导出物品清单</view>
@@ -117,7 +117,7 @@
         <text class="mi-arrow">›</text>
       </view>
 
-      <view class="menu-item" bindtap="showPcTip">
+      <view class="menu-item" bindtap="showPcTip" hover-class="hover">
         <view class="mi-ico mi-orange">标</view>
         <view class="grow">
           <view class="f-md">电脑端标签打印工具</view>
@@ -129,7 +129,7 @@
 
     <!-- 退出 -->
     <view class="card menu-card">
-      <view class="menu-item" bindtap="onSignOut">
+      <view class="menu-item" bindtap="onSignOut" hover-class="hover">
         <view class="mi-ico mi-red">退</view>
         <view class="grow">
           <view class="f-md t-out">退出登录</view>

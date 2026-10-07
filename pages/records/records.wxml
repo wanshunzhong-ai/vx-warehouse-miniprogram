@@ -7,9 +7,9 @@
         class="chip {{activeKey === item.key ? 'chip-on' : ''}}"
         data-key="{{item.key}}"
         bindtap="pickFilter"
-      >{{item.label}}</view>
+       hover-class="hover">{{item.label}}</view>
     </view>
-    <view wx:if="{{caps.record_export}}" class="export-btn" bindtap="onExport">导出</view>
+    <view wx:if="{{caps.record_export}}" class="export-btn" bindtap="onExport" hover-class="hover">导出</view>
   </view>
 
   <view class="summary">

@@ -66,12 +66,12 @@ async function suggestCode() {
   return rpc.callPublic('next_item_code')
 }
 
-/** 全部分类（用于筛选） */
-async function listCategories() {
+/** 全部分类（用于筛选），默认只看在用的 */
+async function listCategories(status) {
   const res = await getDB()
     .from('items')
     .select('category')
-    .eq('status', 'active')
+    .eq('status', status || 'active')
     .not('category', 'is', null)
     .limit(500)
   const rows = rpc.unwrap(res) || []

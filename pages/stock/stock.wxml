@@ -14,9 +14,9 @@
             bindinput="onCodeInput"
             bindconfirm="onCodeConfirm"
           />
-          <view class="btn btn-primary btn-sm manual-btn" bindtap="onCodeConfirm">查询</view>
+          <view class="btn btn-primary btn-sm manual-btn" bindtap="onCodeConfirm" hover-class="hover">查询</view>
         </view>
-        <view class="btn btn-plain" style="margin-top:24rpx" bindtap="scanCode">扫码代替输入</view>
+        <view class="btn btn-plain" style="margin-top:24rpx" bindtap="scanCode" hover-class="hover">扫码代替输入</view>
       </view>
     </view>
   </block>
@@ -37,8 +37,8 @@
           <view class="nf-code">{{code}}</view>
           <view class="nf-desc">{{caps.item_create ? '可以先建立物品档案，建档后立刻就能出入库。' : '请联系主管或管理员先为该物品建档。'}}</view>
           <button wx:if="{{caps.item_create}}" class="btn btn-primary" bindtap="goCreate">立即建档</button>
-          <view class="btn btn-plain" style="margin-top:20rpx" bindtap="scanCode">换一个编号</view>
-          <view class="btn btn-plain" style="margin-top:20rpx" bindtap="goBack">返回</view>
+          <view class="btn btn-plain" style="margin-top:20rpx" bindtap="scanCode" hover-class="hover">换一个编号</view>
+          <view class="btn btn-plain" style="margin-top:20rpx" bindtap="goBack" hover-class="hover">返回</view>
         </view>
       </view>
     </block>
@@ -53,7 +53,7 @@
             <view class="ih-qty">{{item.qty}}</view>
             <view class="ih-qty-lbl">当前库存（{{item.unit || '个'}}）</view>
           </view>
-          <view class="ih-link" bindtap="goDetail">查看详情 ›</view>
+          <view class="ih-link" bindtap="goDetail" hover-class="hover">查看详情 ›</view>
         </view>
       </view>
 
@@ -77,18 +77,18 @@
             </view>
             <view class="res-operator">操作人：{{result.operator}}</view>
             <button class="btn btn-primary" style="margin-top:36rpx" bindtap="resetForm">继续操作</button>
-            <view class="btn btn-plain" style="margin-top:20rpx" bindtap="scanCode">扫下一个</view>
-            <view class="btn btn-plain" style="margin-top:20rpx" bindtap="goBack">完成</view>
+            <view class="btn btn-plain" style="margin-top:20rpx" bindtap="scanCode" hover-class="hover">扫下一个</view>
+            <view class="btn btn-plain" style="margin-top:20rpx" bindtap="goBack" hover-class="hover">完成</view>
           </view>
         </block>
 
         <!-- 操作表单 -->
         <block wx:else>
           <view class="seg">
-            <view class="seg-item {{type === 'in' ? 'seg-in' : ''}}" data-type="in" bindtap="switchType">
+            <view class="seg-item {{type === 'in' ? 'seg-in' : ''}}" data-type="in" bindtap="switchType" hover-class="hover">
               入库
             </view>
-            <view class="seg-item {{type === 'out' ? 'seg-out' : ''}}" data-type="out" bindtap="switchType">
+            <view class="seg-item {{type === 'out' ? 'seg-out' : ''}}" data-type="out" bindtap="switchType" hover-class="hover">
               出库
             </view>
           </view>
@@ -96,7 +96,7 @@
           <view class="card">
             <view class="card-title">数量</view>
             <view class="qty-row">
-              <view class="qty-btn" bindtap="minusOne">−</view>
+              <view class="qty-btn" bindtap="minusOne" hover-class="hover">−</view>
               <input
                 class="qty-input"
                 type="number"
@@ -106,10 +106,10 @@
                 placeholder="0"
                 placeholder-class="field-placeholder"
               />
-              <view class="qty-btn" bindtap="plusOne">+</view>
+              <view class="qty-btn" bindtap="plusOne" hover-class="hover">+</view>
             </view>
             <view class="quick-qty">
-              <view class="qq" wx:for="{{[1,5,10,20]}}" wx:key="*this" data-v="{{item}}" bindtap="setQty">{{item}}</view>
+              <view class="qq" wx:for="{{[1,5,10,20]}}" wx:key="*this" data-v="{{item}}" bindtap="setQty" hover-class="hover">{{item}}</view>
             </view>
           </view>
 
@@ -137,7 +137,7 @@
             bindtap="submit"
           >{{submitting ? '提交中…' : (type === 'in' ? '确认入库' : '确认出库')}}</button>
 
-          <view class="scan-again" bindtap="scanCode">再扫一个</view>
+          <view class="scan-again" bindtap="scanCode" hover-class="hover">再扫一个</view>
         </block>
       </view>
     </block>

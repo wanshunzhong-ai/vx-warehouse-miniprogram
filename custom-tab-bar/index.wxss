@@ -207,6 +207,11 @@
   transform: translateX(-50%) scale(0.94);
 }
 
+/* 普通页签的按压反馈（凸起的圆形按钮用上面的 raise-btn-hover） */
+.tab-hover {
+  opacity: 0.6;
+}
+
 .tab.raised .ico {
   margin-bottom: 0;
   transform: scale(1.3);

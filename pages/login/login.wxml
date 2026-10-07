@@ -39,7 +39,7 @@
         confirm-type="done"
         bindconfirm="onLogin"
       />
-      <view class="in-eye" bindtap="togglePassword">{{showPassword ? '隐藏' : '显示'}}</view>
+      <view class="in-eye" bindtap="togglePassword" hover-class="hover">{{showPassword ? '隐藏' : '显示'}}</view>
     </view>
 
     <button

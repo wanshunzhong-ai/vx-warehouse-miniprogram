@@ -20,7 +20,7 @@
     </view>
 
     <view class="wrap">
-      <view class="card todo-card" bindtap="goStaff" data-status="pending">
+      <view class="card todo-card" bindtap="goStaff" data-status="pending" hover-class="hover">
         <view class="todo-left">
           <view class="todo-num">{{overview.pending || 0}}</view>
           <view class="todo-lbl">待审批申请</view>
@@ -68,15 +68,15 @@
           <text class="t-primary f-sm" catchtap="goRecords">全仓记录 ›</text>
         </view>
         <view class="grid3">
-          <view class="g3-cell" bindtap="goItems">
+          <view class="g3-cell" bindtap="goItems" hover-class="hover">
             <view class="g3-num">{{stat.item_count || 0}}</view>
             <view class="g3-lbl">物品种类</view>
           </view>
-          <view class="g3-cell" bindtap="goItems">
+          <view class="g3-cell" bindtap="goItems" hover-class="hover">
             <view class="g3-num">{{stat.total_qty || 0}}</view>
             <view class="g3-lbl">库存总量</view>
           </view>
-          <view class="g3-cell" bindtap="goLowStock">
+          <view class="g3-cell" bindtap="goLowStock" hover-class="hover">
             <view class="g3-num {{stat.low_count > 0 ? 'c-warn' : ''}}">{{stat.low_count || 0}}</view>
             <view class="g3-lbl">库存预警</view>
           </view>
@@ -100,27 +100,27 @@
       <view class="card">
         <view class="card-title">管理操作</view>
         <view class="act-grid">
-          <view class="act" bindtap="goStaff" data-status="pending">
+          <view class="act" bindtap="goStaff" data-status="pending" hover-class="hover">
             <view class="act-ico act-violet">审</view>
             <view class="act-txt">账号审批</view>
           </view>
-          <view class="act" bindtap="goStaff">
+          <view class="act" bindtap="goStaff" hover-class="hover">
             <view class="act-ico act-violet">人</view>
             <view class="act-txt">人员管理</view>
           </view>
-          <view class="act" bindtap="goEdit">
+          <view class="act" bindtap="goEdit" hover-class="hover">
             <view class="act-ico act-violet">建</view>
             <view class="act-txt">新建物品</view>
           </view>
-          <view class="act" bindtap="goImport">
+          <view class="act" bindtap="goImport" hover-class="hover">
             <view class="act-ico act-violet">导</view>
             <view class="act-txt">批量导入</view>
           </view>
-          <view class="act" bindtap="goScan">
+          <view class="act" bindtap="goScan" hover-class="hover">
             <view class="act-ico act-violet">扫</view>
             <view class="act-txt">扫码出入库</view>
           </view>
-          <view class="act" bindtap="goRecords">
+          <view class="act" bindtap="goRecords" hover-class="hover">
             <view class="act-ico act-violet">记</view>
             <view class="act-txt">全仓记录</view>
           </view>
@@ -133,7 +133,7 @@
           <text class="t-primary f-sm" catchtap="goRecords">更多 ›</text>
         </view>
         <block wx:if="{{recent.length}}">
-          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}">
+          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}" hover-class="hover">
             <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}"></view>
             <view class="grow">
               <view class="rec-title ellipsis">{{item.item_name}}</view>
@@ -173,15 +173,15 @@
           <text class="t-primary f-sm" catchtap="goStaff">全部申请 ›</text>
         </view>
         <view class="grid3">
-          <view class="g3-cell" bindtap="goStaff" data-status="pending">
+          <view class="g3-cell" bindtap="goStaff" data-status="pending" hover-class="hover">
             <view class="g3-num {{overview.my_pending > 0 ? 'c-warn' : ''}}">{{overview.my_pending || 0}}</view>
             <view class="g3-lbl">待审批</view>
           </view>
-          <view class="g3-cell" bindtap="goStaff" data-status="active">
+          <view class="g3-cell" bindtap="goStaff" data-status="active" hover-class="hover">
             <view class="g3-num c-manager">{{overview.my_active || 0}}</view>
             <view class="g3-lbl">已通过</view>
           </view>
-          <view class="g3-cell" bindtap="goStaff" data-status="rejected">
+          <view class="g3-cell" bindtap="goStaff" data-status="rejected" hover-class="hover">
             <view class="g3-num">{{overview.my_rejected || 0}}</view>
             <view class="g3-lbl">已驳回</view>
           </view>
@@ -196,15 +196,15 @@
           <text class="t-primary f-sm" catchtap="goRecords">出入库记录 ›</text>
         </view>
         <view class="grid3">
-          <view class="g3-cell" bindtap="goItems">
+          <view class="g3-cell" bindtap="goItems" hover-class="hover">
             <view class="g3-num">{{stat.item_count || 0}}</view>
             <view class="g3-lbl">物品种类</view>
           </view>
-          <view class="g3-cell" bindtap="goItems">
+          <view class="g3-cell" bindtap="goItems" hover-class="hover">
             <view class="g3-num">{{stat.total_qty || 0}}</view>
             <view class="g3-lbl">库存总量</view>
           </view>
-          <view class="g3-cell" bindtap="goLowStock">
+          <view class="g3-cell" bindtap="goLowStock" hover-class="hover">
             <view class="g3-num {{stat.low_count > 0 ? 'c-warn' : ''}}">{{stat.low_count || 0}}</view>
             <view class="g3-lbl">库存预警</view>
           </view>
@@ -228,27 +228,27 @@
       <view class="card">
         <view class="card-title">快捷操作</view>
         <view class="act-grid">
-          <view class="act" bindtap="goAddStaff">
+          <view class="act" bindtap="goAddStaff" hover-class="hover">
             <view class="act-ico act-blue">员</view>
             <view class="act-txt">添加员工</view>
           </view>
-          <view class="act" bindtap="goScan">
+          <view class="act" bindtap="goScan" hover-class="hover">
             <view class="act-ico act-blue">扫</view>
             <view class="act-txt">扫码出入库</view>
           </view>
-          <view class="act" bindtap="goEdit">
+          <view class="act" bindtap="goEdit" hover-class="hover">
             <view class="act-ico act-blue">建</view>
             <view class="act-txt">新建物品</view>
           </view>
-          <view class="act" bindtap="goImport">
+          <view class="act" bindtap="goImport" hover-class="hover">
             <view class="act-ico act-blue">导</view>
             <view class="act-txt">批量导入</view>
           </view>
-          <view class="act" bindtap="goStaff">
+          <view class="act" bindtap="goStaff" hover-class="hover">
             <view class="act-ico act-blue">申</view>
             <view class="act-txt">我的申请</view>
           </view>
-          <view class="act" bindtap="goProfile">
+          <view class="act" bindtap="goProfile" hover-class="hover">
             <view class="act-ico act-blue">我</view>
             <view class="act-txt">账号安全</view>
           </view>
@@ -260,7 +260,7 @@
           <text>库存预警</text>
           <text class="t-primary f-sm" catchtap="goLowStock">去补货 ›</text>
         </view>
-        <view wx:for="{{lowItems}}" wx:key="id" class="low" bindtap="openItem" data-id="{{item.id}}">
+        <view wx:for="{{lowItems}}" wx:key="id" class="low" bindtap="openItem" data-id="{{item.id}}" hover-class="hover">
           <view class="grow">
             <view class="low-name ellipsis">{{item.name}}</view>
             <view class="low-meta">{{item.code}} · {{item.location || '未设位置'}}</view>
@@ -278,7 +278,7 @@
           <text class="t-primary f-sm" catchtap="goRecords">更多 ›</text>
         </view>
         <block wx:if="{{recent.length}}">
-          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}">
+          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}" hover-class="hover">
             <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}"></view>
             <view class="grow">
               <view class="rec-title ellipsis">{{item.item_name}}</view>
@@ -312,7 +312,7 @@
     </view>
 
     <view class="wrap">
-      <view class="scan-hero" bindtap="goScan">
+      <view class="scan-hero" bindtap="goScan" hover-class="hover">
         <view class="scan-icon">
           <view class="scan-c c1"></view>
           <view class="scan-c c2"></view>
@@ -341,15 +341,15 @@
           </view>
         </view>
         <view class="flow-row">
-          <view class="flow-item" bindtap="goItems">
+          <view class="flow-item" bindtap="goItems" hover-class="hover">
             <text class="flow-lbl">物品种类</text>
             <text class="flow-val">{{stat.item_count || 0}}</text>
           </view>
-          <view class="flow-item" bindtap="goItems">
+          <view class="flow-item" bindtap="goItems" hover-class="hover">
             <text class="flow-lbl">库存总量</text>
             <text class="flow-val">{{stat.total_qty || 0}}</text>
           </view>
-          <view class="flow-item" bindtap="goRecords">
+          <view class="flow-item" bindtap="goRecords" hover-class="hover">
             <text class="flow-lbl">全部记录</text>
             <text class="flow-val">›</text>
           </view>
@@ -359,23 +359,23 @@
       <view class="card">
         <view class="card-title">快捷操作</view>
         <view class="act-grid">
-          <view class="act" bindtap="goScan">
+          <view class="act" bindtap="goScan" hover-class="hover">
             <view class="act-ico act-green">扫</view>
             <view class="act-txt">扫码出入库</view>
           </view>
-          <view class="act" bindtap="goManual">
+          <view class="act" bindtap="goManual" hover-class="hover">
             <view class="act-ico act-green">输</view>
             <view class="act-txt">手动输编号</view>
           </view>
-          <view class="act" bindtap="goItems">
+          <view class="act" bindtap="goItems" hover-class="hover">
             <view class="act-ico act-green">查</view>
             <view class="act-txt">查物品库存</view>
           </view>
-          <view class="act" bindtap="goRecords">
+          <view class="act" bindtap="goRecords" hover-class="hover">
             <view class="act-ico act-green">记</view>
             <view class="act-txt">出入库记录</view>
           </view>
-          <view class="act" bindtap="goProfile">
+          <view class="act" bindtap="goProfile" hover-class="hover">
             <view class="act-ico act-green">我</view>
             <view class="act-txt">我的账号</view>
           </view>
@@ -388,7 +388,7 @@
           <text class="t-primary f-sm" catchtap="goRecords">更多 ›</text>
         </view>
         <block wx:if="{{recent.length}}">
-          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}">
+          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}" hover-class="hover">
             <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}"></view>
             <view class="grow">
               <view class="rec-title ellipsis">{{item.item_name}}</view>

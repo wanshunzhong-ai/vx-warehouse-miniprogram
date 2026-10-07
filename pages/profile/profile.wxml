@@ -145,7 +145,7 @@
     </view>
 
     <view class="card">
-      <view class="btn btn-danger submit" style="margin-top:0" bindtap="onSignOut">退出登录</view>
+      <view class="btn btn-danger submit" style="margin-top:0" bindtap="onSignOut" hover-class="hover">退出登录</view>
     </view>
 
     <view class="tips">账号由管理员统一管理，忘记密码时请联系管理员重置。</view>

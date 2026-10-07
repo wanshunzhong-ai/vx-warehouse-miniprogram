@@ -6,23 +6,29 @@
 
   <block wx:elif="{{item}}">
     <!-- 头部 -->
-    <view class="item-head">
-      <view class="ih-name">{{item.name}}</view>
+    <view class="item-head {{item.isArchived ? 'head-archived' : ''}}">
+      <view class="ih-title-row">
+        <view class="ih-name">{{item.name}}</view>
+        <view wx:if="{{item.isArchived}}" class="ih-badge">已停用</view>
+      </view>
       <view class="ih-meta">{{item.code}}</view>
       <view class="ih-qty-row">
         <view>
           <view class="ih-qty">{{item.qty}}</view>
           <view class="ih-qty-lbl">当前库存（{{item.unit || '个'}}）</view>
         </view>
-        <view wx:if="{{item.qty <= item.min_qty}}" class="ih-warn">库存偏低</view>
+        <view wx:if="{{item.isLow}}" class="ih-warn">库存偏低</view>
       </view>
     </view>
 
     <view class="wrap body">
-      <!-- 出入库按钮 -->
-      <view class="act-row">
-        <view class="act act-in" bindtap="goIn">入库</view>
-        <view class="act act-out" bindtap="goOut">出库</view>
+      <!-- 出入库按钮：停用后不再提供，避免点了才报错 -->
+      <view wx:if="{{!item.isArchived}}" class="act-row">
+        <view class="act act-in" bindtap="goIn" hover-class="hover">入库</view>
+        <view class="act act-out" bindtap="goOut" hover-class="hover">出库</view>
+      </view>
+      <view wx:else class="notice notice-red archived-notice">
+        该物品已停用，不再参与出入库。如需继续使用，请点下方「恢复使用」。
       </view>
 
       <!-- 二维码 -->
@@ -36,8 +42,8 @@
         <view class="qr-code-text">{{item.code}}</view>
         <view class="qr-tip">打印出来贴在物品或货架上，扫码即可进出库</view>
         <view class="qr-actions">
-          <view class="btn btn-ghost" bindtap="saveQr">保存二维码</view>
-          <view class="btn btn-plain" bindtap="copyCode">复制编号</view>
+          <view class="btn btn-ghost" bindtap="saveQr" hover-class="hover">保存二维码</view>
+          <view class="btn btn-plain" bindtap="copyCode" hover-class="hover">复制编号</view>
         </view>
       </view>
 
@@ -94,9 +100,15 @@
 
       <!-- 底部操作 -->
       <view class="foot-actions">
-        <view wx:if="{{caps.item_edit}}" class="btn btn-ghost grow" bindtap="goEdit">编辑档案</view>
-        <view wx:if="{{caps.item_delete}}" class="btn btn-danger grow" bindtap="onDelete">删除物品</view>
-        <view wx:if="{{!caps.item_edit && !caps.item_delete}}" class="btn btn-plain grow" bindtap="goBack">返回</view>
+        <view wx:if="{{caps.item_edit}}" class="btn btn-ghost grow" bindtap="goEdit" hover-class="hover">编辑档案</view>
+        <view
+          wx:if="{{caps.item_archive}}"
+          class="btn grow {{item.isArchived ? 'btn-in' : 'btn-plain'}}"
+          bindtap="onToggleArchive"
+          hover-class="hover"
+        >{{item.isArchived ? '恢复使用' : '停用物品'}}</view>
+        <view wx:if="{{caps.item_delete}}" class="btn btn-danger grow" bindtap="onDelete" hover-class="hover">删除物品</view>
+        <view wx:if="{{!caps.item_edit && !caps.item_archive && !caps.item_delete}}" class="btn btn-plain grow" bindtap="goBack" hover-class="hover">返回</view>
       </view>
     </view>
   </block>
