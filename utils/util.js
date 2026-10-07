@@ -86,6 +86,8 @@ const ERROR_MAP = [
   [/ITEM_NOT_FOUND/, '仓库里没有这个编号的物品'],
   [/ITEM_ARCHIVED/, '该物品已停用，不能出入库'],
   [/ITEM_CODE_TAKEN/, '该物品编号已存在，换一个吧'],
+  [/CODE_REQUIRED/, '缺少物品编号，请重新扫码'],
+  [/CODE_TOO_LONG/, '物品编号太长了（上限 106 个字符）'],
   [/INSUFFICIENT_STOCK/, '库存不足，无法出库'],
   [/INVALID_QTY/, '请输入大于 0 的数量'],
   [/INVALID_TYPE/, '操作类型不正确'],

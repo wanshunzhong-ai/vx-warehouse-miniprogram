@@ -35,8 +35,33 @@
           <view class="nf-ico">?</view>
           <view class="nf-title">这个编号还没有建档</view>
           <view class="nf-code">{{code}}</view>
-          <view class="nf-desc">{{caps.item_create ? '可以先建立物品档案，建档后立刻就能出入库。' : '请联系主管或管理员先为该物品建档。'}}</view>
-          <button wx:if="{{caps.item_create}}" class="btn btn-primary" bindtap="goCreate">立即建档</button>
+
+          <!-- 同族已有档案：直接套用，不必把名称规格重复填一遍 -->
+          <block wx:if="{{family}}">
+            <view class="nf-desc">同型号已经建过 {{family.count}} 件，可以直接照它的信息建档：</view>
+            <view class="fam-card">
+              <view class="fam-name">{{family.name}}</view>
+              <view class="fam-meta">{{family.spec || '无规格'}} · {{family.category || '未分类'}} · {{family.location || '未指定位置'}}</view>
+            </view>
+            <button
+              class="btn btn-primary {{creating ? 'btn-disabled' : ''}}"
+              loading="{{creating}}"
+              disabled="{{creating}}"
+              bindtap="createAndIn"
+            >{{creating ? '建档中…' : '按这个信息建档并入库'}}</button>
+            <view class="btn btn-plain" style="margin-top:20rpx" bindtap="goCreate" hover-class="hover">改一下信息再建</view>
+          </block>
+
+          <!-- 全新的一类：现场填写 -->
+          <block wx:elif="{{caps.item_quickcreate}}">
+            <view class="nf-desc">填好名称等信息，建档后会立刻入库 1 件。</view>
+            <button class="btn btn-primary" bindtap="goCreate">填写信息并入库</button>
+          </block>
+
+          <block wx:else>
+            <view class="nf-desc">请联系主管或管理员先为该物品建档。</view>
+          </block>
+
           <view class="btn btn-plain" style="margin-top:20rpx" bindtap="scanCode" hover-class="hover">换一个编号</view>
           <view class="btn btn-plain" style="margin-top:20rpx" bindtap="goBack" hover-class="hover">返回</view>
         </view>

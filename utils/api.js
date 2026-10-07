@@ -158,6 +158,34 @@ async function importItems(rows, errors) {
 
 /* ---------------- 出入库 ---------------- */
 
+/**
+ * 扫码建档 + 入库（一步到位，员工也可用）
+ * 适合「先把码贴到货上、扫码时才建档」的作业方式：
+ * 服务端建档后立刻走一次入库，档案与流水一起落库，不会出现「建了档却没进账」。
+ */
+async function scanCreateIn(payload) {
+  const p = payload || {}
+  return rpc.call('staff_scan_create_in', {
+    p_code: p.code,
+    p_name: p.name,
+    p_spec: p.spec || null,
+    p_category: p.category || null,
+    p_unit: p.unit || null,
+    p_location: p.location || null,
+    p_min_qty: p.min_qty == null ? 0 : p.min_qty,
+    p_qty: p.qty == null ? 1 : p.qty,
+    p_note: p.note || null
+  })
+}
+
+/**
+ * 查同族物品：拿 A-0001-3 去找 A-0001-* 里已建档的记录。
+ * 未建档时用它当模板，逐件贴码就不必把名称规格重复填 N 遍。
+ */
+async function codeFamily(code) {
+  return rpc.call('staff_code_family', { p_code: code })
+}
+
 /** 原子出入库：服务端加行锁 + 写流水 + 记录操作人身份 */
 async function changeStock(code, type, qty, note) {
   const data = await rpc.call('stock_change', {
@@ -290,6 +318,8 @@ module.exports = {
   archiveItem: archiveItem,
   deleteItem: deleteItem,
   importItems: importItems,
+  scanCreateIn: scanCreateIn,
+  codeFamily: codeFamily,
   changeStock: changeStock,
   listRecords: listRecords,
   exportRecords: exportRecords,

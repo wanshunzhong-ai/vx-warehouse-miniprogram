@@ -170,7 +170,9 @@
         <p class="hint">
           每行一个物品，用 Tab 或逗号分隔。列顺序：<br>
           <b>编号、名称、规格、类别、单位、位置、库存、安全库存、备注</b><br>
-          编号可以留空，工具会按下面的规则自动生成。
+          编号可以留空，工具会按下面的规则自动生成。<br>
+          要让同一类物品<b>逐件贴码</b>追踪，先在「库存」里填总件数，解析完再点
+          <b>按数量逐件展开</b>。
         </p>
         <textarea id="raw" placeholder="从 Excel 里选中区域复制，然后粘贴到这里"></textarea>
         <div class="row mt">
@@ -186,6 +188,10 @@
         <div class="row mt">
           <button class="primary" id="btnParse">解析并生成编号</button>
           <span class="stats" id="parseStat"></span>
+        </div>
+        <div class="row mt">
+          <button id="btnExpand">按数量逐件展开</button>
+          <span class="stats" id="expandStat">同一类物品要逐件贴码追踪时用：把「库存 5」的一行拆成 5 个独立编号</span>
         </div>
       </div>
 
@@ -218,8 +224,10 @@
           <button id="btnCopy">复制为表格</button>
         </div>
         <p class="hint" style="margin-top:12px">
-          提示：先「打印标签」把二维码贴到货上；再把清单复制/导出，去小程序
-          「我的 → 批量导入」粘贴一次，手机端就能扫码了。
+          提示：先「打印标签」把码贴到货上，手机扫码即可入库。<br>
+          物品若还没建档，首次扫码会让你现场填一下名称，填完自动入库——
+          <b>逐件展开出来的码可以跳过「批量导入」这一步</b>。<br>
+          清单仍可复制/导出，用于把档案一次性批量建好。
         </p>
       </div>
     </div>
@@ -505,6 +513,65 @@
     renderAll();
     toast('已生成 ' + items.length + ' 个物品和二维码');
   }
+
+  /**
+   * 纯函数：按数量把清单展开成「一行一件」的逐件编号。
+   * 拆出来是为了能在浏览器之外单独跑用例验证（见 verify-expand.js）。
+   *
+   * 规则：库存 5 的一行 → A-0001-1 ~ A-0001-5，每行 1 件；
+   *      逐件管理的物品不设安全库存（每件都是唯一的一件，预警没意义）。
+   * 注意：序号是按「已成功分配」来计数的，不能拿循环变量充当计数器——
+   *      否则遇到一个编号冲突就会吃掉一件，5 件只印出 4 张码。
+   */
+  function expandRows(list) {
+    var used = {};
+    list.forEach(function (it) { if (it.code) used[it.code] = true; });
+
+    var out = [];
+    var made = 0;
+    list.forEach(function (it) {
+      var n = parseInt(it.qty, 10) || 0;
+      var base = String(it.code || '').trim();
+      if (n <= 1 || !base) { out.push(it); return; }
+
+      var added = 0;
+      var seq = 0;
+      while (added < n) {
+        seq++;
+        var code = base + '-' + seq;
+        if (used[code]) continue;
+        used[code] = true;
+        out.push({
+          code: code,
+          name: it.name,
+          spec: it.spec,
+          category: it.category,
+          unit: it.unit,
+          location: it.location,
+          qty: 1,
+          min_qty: 0,
+          note: it.note
+        });
+        added++;
+        made++;
+      }
+    });
+    return { rows: out, made: made };
+  }
+
+  function expandByQty() {
+    if (!items.length) { toast('先粘贴清单并点「解析并生成编号」'); return; }
+    var r = expandRows(items);
+    if (!r.made) { toast('没有可展开的行（库存都 ≤ 1）'); return; }
+    items = r.rows;
+    renderAll();
+    $('expandStat').textContent =
+      '已展开为 ' + items.length + ' 件，每件一张独立二维码（编号带 -1、-2 … 后缀）';
+    $('parseStat').textContent = '共 ' + items.length + ' 个物品';
+    toast('已展开 ' + r.made + ' 件，共 ' + items.length + ' 张码');
+  }
+
+  $('btnExpand').addEventListener('click', expandByQty);
 
   ['cols', 'lh', 'showSpec', 'showLoc'].forEach(function (id) {
     $(id).addEventListener('change', renderLabels);

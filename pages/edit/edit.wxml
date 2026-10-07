@@ -1,7 +1,10 @@
 <view class="page">
   <view class="wrap">
     <view class="card">
-      <view class="card-title">{{isEdit ? '编辑物品' : '新建物品'}}</view>
+      <view class="card-title">{{isEdit ? '编辑物品' : (quickIn ? '建档并入库' : '新建物品')}}</view>
+      <view wx:if="{{quickIn}}" class="hint" style="margin:-6rpx 0 20rpx">
+        这个编号还没建档。填好名称后保存，会自动入库 1 件。
+      </view>
 
       <view class="field">
         <view class="field-label"><text class="req">*</text>物品编号</view>
@@ -98,7 +101,7 @@
         />
       </view>
 
-      <block wx:if="{{!isEdit}}">
+      <block wx:if="{{!isEdit && !quickIn}}">
         <view class="field">
           <view class="field-label">初始库存</view>
           <input
@@ -112,14 +115,14 @@
           />
         </view>
       </block>
-      <block wx:else>
+      <block wx:elif="{{isEdit}}">
         <view class="field">
           <view class="field-label">当前库存</view>
           <view class="field-static">{{origin.qty}} {{origin.unit || '个'}}</view>
         </view>
       </block>
 
-      <view class="field">
+      <view wx:if="{{!quickIn}}" class="field">
         <view class="field-label">安全库存</view>
         <input
           class="field-input"
@@ -153,8 +156,8 @@
       loading="{{saving}}"
       disabled="{{saving}}"
       bindtap="onSave"
-    >{{saving ? '保存中…' : (isEdit ? '保存修改' : '创建物品')}}</button>
+    >{{saving ? '保存中…' : (isEdit ? '保存修改' : (quickIn ? '建档并入库' : '创建物品'))}}</button>
 
-    <view class="hint">库存数量请通过「扫码进出库」变更，这样每一笔都有流水可查。</view>
+    <view class="hint">{{quickIn ? '保存后这件物品会立刻入库 1 件，并留下一条可追溯的流水。' : '库存数量请通过「扫码进出库」变更，这样每一笔都有流水可查。'}}</view>
   </view>
 </view>

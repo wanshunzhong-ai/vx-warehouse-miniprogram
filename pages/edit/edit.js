@@ -8,6 +8,8 @@ const UNITS = ['个', '件', '箱', '包', '套', '台', '米', '公斤']
 Page({
   data: {
     isEdit: false,
+    /** 扫码建档模式：从扫码页进来，填完名称直接建档 + 入库（员工也能用） */
+    quickIn: false,
     form: {
       code: '',
       name: '',
@@ -27,15 +29,20 @@ Page({
   },
 
   onLoad(options) {
-    // 建档 / 改档都属于 item.create，员工进不来
-    if (!page.guard('item.create')) return
-
     const opts = options || {}
+    const quickIn = opts.quickin === '1' && !opts.id
+
+    // 扫码建档走 item.quickcreate（员工也有），普通建档 / 改档仍要 item.create
+    if (!page.guard(quickIn ? 'item.quickcreate' : 'item.create')) return
+
     if (opts.id) {
       this._id = Number(opts.id)
       this.setData({ isEdit: true })
       wx.setNavigationBarTitle({ title: '编辑物品' })
       this.load()
+    } else if (quickIn) {
+      this.setData({ quickIn: true, 'form.code': decodeURIComponent(opts.code || '') })
+      wx.setNavigationBarTitle({ title: '扫码建档' })
     } else {
       wx.setNavigationBarTitle({ title: '新建物品' })
       if (opts.code) {
@@ -123,13 +130,42 @@ Page({
     const f = this.data.form
     const code = String(f.code || '').trim()
     const name = String(f.name || '').trim()
+    // 逐件码带 -1 / -2 后缀，比普通编号长一些
+    const limit = this.data.quickIn ? 106 : 40
 
-    if (code.length > 40) {
-      this.setData({ errorText: '物品编号请控制在 40 个字符以内' })
+    if (code.length > limit) {
+      this.setData({ errorText: '物品编号请控制在 ' + limit + ' 个字符以内' })
       return
     }
     if (!name) {
       this.setData({ errorText: '请填写物品名称' })
+      return
+    }
+
+    this.setData({ saving: true, errorText: '' })
+
+    // 扫码建档：档案与入库流水一次落库（服务端原子完成），不必再来一遍出入库
+    if (this.data.quickIn) {
+      try {
+        await api.scanCreateIn({
+          code: code,
+          name: name,
+          spec: String(f.spec || '').trim() || null,
+          category: String(f.category || '').trim() || null,
+          unit: String(f.unit || '').trim() || '个',
+          location: String(f.location || '').trim() || null,
+          min_qty: 0,
+          qty: 1,
+          note: String(f.note || '').trim() || null
+        })
+        util.toast('已建档并入库', 'success')
+        this.setData({ saving: false })
+        setTimeout(function () {
+          wx.navigateBack({ delta: 1 })
+        }, 700)
+      } catch (e) {
+        this.setData({ saving: false, errorText: util.friendlyError(e) })
+      }
       return
     }
 

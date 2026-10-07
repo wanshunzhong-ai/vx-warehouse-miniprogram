@@ -48,6 +48,9 @@ const ROLE_INFO = {
  *  - 主管有 stock.change（可以对物品出入库），也有 staff.manage
  *    （但服务端限定为「只能管自己提交的员工」，且不能改角色）。
  *  - 员工只有查看与出入库，没有建档/停用等档案类能力。
+ *  - item.quickcreate 是「扫码建档」专用通道：扫到的码还没档案时，现场填个名称就
+ *    建档 + 入库。它是出入库链路的延伸，所以员工也有；管理员照旧不参与。
+ *    它**不等于** item.create —— 员工仍然进不了「新建物品」页，也删不了档。
  */
 const CAPS = {
   admin: [
@@ -69,13 +72,14 @@ const CAPS = {
     'item.edit',
     'item.archive',
     'item.import',
+    'item.quickcreate',
     'stock.change',
     'staff.add',
     'staff.manage',
     'record.export',
     'account.self'
   ],
-  staff: ['item.view', 'stock.change', 'account.self']
+  staff: ['item.view', 'stock.change', 'item.quickcreate', 'account.self']
 }
 
 /** tabBar 里可用的页签（key 必须与 app.json 的 tabBar 顺序无关，只作标识） */

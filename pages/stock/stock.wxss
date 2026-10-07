@@ -65,6 +65,31 @@
   margin-bottom: 40rpx;
 }
 
+/* 同族模板卡片：扫码时发现同型号已建档，套用它的信息省掉重复填写 */
+.fam-card {
+  margin: 0 0 28rpx;
+  padding: 24rpx 26rpx;
+  background: #f4f8ff;
+  border: 2rpx solid #dbe7ff;
+  border-radius: 16rpx;
+  text-align: left;
+}
+
+.fam-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #151922;
+  margin-bottom: 8rpx;
+  word-break: break-all;
+}
+
+.fam-meta {
+  font-size: 24rpx;
+  color: #7b8494;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
 /* ---------- 物品头部 ---------- */
 
 .item-head {

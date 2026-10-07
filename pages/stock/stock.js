@@ -20,6 +20,9 @@ Page({
     manual: false,
     loading: true,
     item: null,
+    /** 未建档时，同族（A-0001-*）里已建档的模板，可直接套用省掉重复填写 */
+    family: null,
+    creating: false,
     type: 'in',
     /** 方向由入口决定（扫码入库 / 扫码出库 / 详情页按钮），锁定后不再显示分段控件 */
     typeLocked: false,
@@ -68,10 +71,26 @@ Page({
     this.setData({ loading: true })
     try {
       const item = await api.getItemByCode(this.data.code)
-      this.setData({ item: item || null, loading: false })
+      if (item) {
+        this.setData({ item: item, family: null, loading: false })
+        return
+      }
+      // 未建档：看看同族（A-0001-1 / A-0001-2 …）里有没有能直接套用的档案
+      this.setData({ item: null, loading: false })
+      if (this.data.caps.item_quickcreate) this.loadFamily()
     } catch (e) {
       this.setData({ loading: false })
       util.toast(util.friendlyError(e))
+    }
+  },
+
+  /** 同族模板只用来「少填一次」，查不到也不打扰用户 */
+  async loadFamily() {
+    try {
+      const fam = await api.codeFamily(this.data.code)
+      this.setData({ family: fam || null })
+    } catch (e) {
+      this.setData({ family: null })
     }
   },
 
@@ -191,12 +210,48 @@ Page({
     this.setData({ result: null, qtyText: '1', note: '' })
   },
 
+  /** 未建档时的建档入口：扫码进来的走快捷通道（保存即入库） */
   goCreate() {
+    const code = encodeURIComponent(this.data.code || '')
+    if (this.data.caps.item_quickcreate) {
+      wx.navigateTo({ url: '/pages/edit/edit?quickin=1&code=' + code })
+      return
+    }
     if (!this.data.caps.item_create) {
       util.toast('建档需要主管及以上身份')
       return
     }
-    wx.navigateTo({ url: '/pages/edit/edit?code=' + encodeURIComponent(this.data.code) })
+    wx.navigateTo({ url: '/pages/edit/edit?code=' + code })
+  },
+
+  /** 有同族模板时：一键套用它的信息建档，并立刻入库 1 件 */
+  async createAndIn() {
+    if (this.data.creating) return
+    const fam = this.data.family
+    if (!fam || !fam.name) {
+      this.goCreate()
+      return
+    }
+    this.setData({ creating: true })
+    try {
+      await api.scanCreateIn({
+        code: this.data.code,
+        name: fam.name,
+        spec: fam.spec || null,
+        category: fam.category || null,
+        unit: fam.unit || '个',
+        location: fam.location || null,
+        min_qty: 0,
+        qty: 1
+      })
+      if (wx.vibrateShort) wx.vibrateShort({ type: 'light' })
+      this.setData({ creating: false, family: null })
+      util.toast('已建档并入库', 'success')
+      await this.load()
+    } catch (e) {
+      this.setData({ creating: false })
+      util.toast(util.friendlyError(e))
+    }
   },
 
   goDetail() {
