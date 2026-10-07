@@ -1,0 +1,217 @@
+.req {
+  color: #ef4444;
+  margin-right: 6rpx;
+}
+
+/* ---------- 身份选择 ---------- */
+
+.role-opt {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f1f3f7;
+}
+
+.role-opt:last-child {
+  border-bottom: none;
+}
+
+.ro-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 4rpx solid #d8dde6;
+  margin-right: 22rpx;
+  flex-shrink: 0;
+}
+
+.role-on .ro-radio {
+  border-color: #2f6df6;
+  background: radial-gradient(circle, #2f6df6 0 8rpx, #ffffff 8rpx 100%);
+}
+
+.ro-label {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #151922;
+}
+
+.role-on .ro-label {
+  color: #2f6df6;
+}
+
+.ro-desc {
+  margin-top: 6rpx;
+  font-size: 23rpx;
+  color: #9aa1ad;
+}
+
+.role-fixed {
+  padding: 8rpx 0;
+}
+
+.rf-label {
+  display: inline-block;
+  padding: 10rpx 28rpx;
+  border-radius: 30rpx;
+  background: #e9f9ef;
+  color: #16a34a;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.rf-desc {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #9aa1ad;
+  line-height: 1.6;
+}
+
+.hint-inline {
+  margin-top: 14rpx;
+  font-size: 23rpx;
+  color: #a3a9b3;
+}
+
+/* ---------- 通用 ---------- */
+
+.submit {
+  margin-top: 32rpx;
+  width: 100%;
+}
+
+.err-box {
+  margin-top: 28rpx;
+  padding: 20rpx 24rpx;
+  background: #fef2f2;
+  border-radius: 14rpx;
+  font-size: 26rpx;
+  color: #dc2626;
+  line-height: 1.5;
+}
+
+/* ---------- 详情头部 ---------- */
+
+.detail-head {
+  padding: 48rpx 32rpx 40rpx;
+  background: linear-gradient(140deg, #f3efff 0%, #f7f5ff 100%);
+  border-bottom: 1rpx solid #ece4ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dh-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 36rpx;
+  background: #ffffff;
+  color: #6d3df0;
+  font-size: 48rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 28rpx rgba(109, 61, 240, 0.16);
+}
+
+.dh-name {
+  margin-top: 22rpx;
+  font-size: 38rpx;
+  font-weight: 600;
+  color: #151922;
+}
+
+.dh-tags {
+  margin-top: 16rpx;
+}
+
+.dh-tags .tag {
+  margin: 0 8rpx;
+}
+
+/* ---------- 信息行 ---------- */
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-lbl {
+  width: 180rpx;
+  font-size: 26rpx;
+  color: #8a9099;
+  flex-shrink: 0;
+}
+
+.info-val {
+  flex: 1;
+  font-size: 28rpx;
+  color: #151922;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+/* ---------- 审批 ---------- */
+
+.review-card {
+  border: 1rpx solid #e6dcff;
+  background: linear-gradient(135deg, #ffffff 0%, #faf7ff 100%);
+}
+
+.rv-desc {
+  font-size: 25rpx;
+  color: #7a828e;
+  line-height: 1.6;
+  margin-bottom: 24rpx;
+}
+
+.rv-label {
+  margin: 20rpx 0 14rpx;
+  font-size: 25rpx;
+  color: #4b5563;
+}
+
+.rv-input {
+  width: 100%;
+  height: 84rpx;
+  padding: 0 24rpx;
+  background: #f7f8fb;
+  border-radius: 16rpx;
+  font-size: 28rpx;
+  color: #151922;
+}
+
+.role-chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-block;
+  padding: 12rpx 30rpx;
+  margin-right: 16rpx;
+  margin-bottom: 12rpx;
+  background: #ffffff;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #4b5563;
+  border: 1rpx solid #eef1f6;
+}
+
+.chip-sm {
+  font-size: 24rpx;
+}
+
+.chip-on {
+  background: #2f6df6;
+  color: #ffffff;
+  border-color: #2f6df6;
+  font-weight: 500;
+}

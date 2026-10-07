@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "库存物品",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 120,
+  "backgroundTextStyle": "dark"
+}

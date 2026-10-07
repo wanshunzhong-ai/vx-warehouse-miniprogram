@@ -1,0 +1,160 @@
+<view class="page">
+  <view class="wrap">
+    <view class="card">
+      <view class="card-title">{{isEdit ? '编辑物品' : '新建物品'}}</view>
+
+      <view class="field">
+        <view class="field-label"><text class="req">*</text>物品编号</view>
+        <input
+          class="field-input"
+          value="{{form.code}}"
+          disabled="{{isEdit}}"
+          maxlength="40"
+          placeholder="{{isEdit ? '' : '扫码填入或点右侧生成'}}"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="code"
+        />
+        <view wx:if="{{!isEdit}}" class="field-action" bindtap="genCode">生成</view>
+      </view>
+
+      <view class="field">
+        <view class="field-label"><text class="req">*</text>物品名称</view>
+        <input
+          class="field-input field-input-left"
+          value="{{form.name}}"
+          placeholder="例如 不锈钢螺丝 M6"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="name"
+        />
+      </view>
+
+      <view class="field">
+        <view class="field-label">规格型号</view>
+        <input
+          class="field-input field-input-left"
+          value="{{form.spec}}"
+          placeholder="选填"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="spec"
+        />
+      </view>
+
+      <view class="field">
+        <view class="field-label">类别</view>
+        <input
+          class="field-input field-input-left"
+          value="{{form.category}}"
+          placeholder="选填，如 五金配件"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="category"
+        />
+      </view>
+
+      <view wx:if="{{categories.length > 0}}" class="cat-chips">
+        <view
+          wx:for="{{categories}}"
+          wx:key="*this"
+          class="chip chip-sm {{form.category === item ? 'chip-on' : ''}}"
+          data-cat="{{item}}"
+          bindtap="pickCategory"
+        >{{item}}</view>
+      </view>
+
+      <view class="field">
+        <view class="field-label">单位</view>
+        <input
+          class="field-input field-input-left"
+          value="{{form.unit}}"
+          placeholder="个"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="unit"
+        />
+      </view>
+
+      <view class="unit-chips">
+        <view
+          wx:for="{{units}}"
+          wx:key="*this"
+          class="chip chip-sm {{form.unit === item ? 'chip-on' : ''}}"
+          data-unit="{{item}}"
+          bindtap="pickUnit"
+        >{{item}}</view>
+      </view>
+
+      <view class="field">
+        <view class="field-label">存放位置</view>
+        <input
+          class="field-input field-input-left"
+          value="{{form.location}}"
+          placeholder="选填，如 A区-3排-2层"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="location"
+        />
+      </view>
+
+      <block wx:if="{{!isEdit}}">
+        <view class="field">
+          <view class="field-label">初始库存</view>
+          <input
+            class="field-input"
+            type="number"
+            value="{{form.qty}}"
+            placeholder="0"
+            placeholder-class="field-placeholder"
+            bindinput="onInput"
+            data-key="qty"
+          />
+        </view>
+      </block>
+      <block wx:else>
+        <view class="field">
+          <view class="field-label">当前库存</view>
+          <view class="field-static">{{origin.qty}} {{origin.unit || '个'}}</view>
+        </view>
+      </block>
+
+      <view class="field">
+        <view class="field-label">安全库存</view>
+        <input
+          class="field-input"
+          type="number"
+          value="{{form.min_qty}}"
+          placeholder="0"
+          placeholder-class="field-placeholder"
+          bindinput="onInput"
+          data-key="min_qty"
+        />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">备注</view>
+      <textarea
+        class="textarea"
+        value="{{form.note}}"
+        placeholder="选填，供应商、采购批次等信息"
+        placeholder-class="field-placeholder"
+        maxlength="200"
+        bindinput="onInput"
+        data-key="note"
+      />
+    </view>
+
+    <view wx:if="{{errorText}}" class="err-box">{{errorText}}</view>
+
+    <button
+      class="btn btn-primary submit {{saving ? 'btn-disabled' : ''}}"
+      loading="{{saving}}"
+      disabled="{{saving}}"
+      bindtap="onSave"
+    >{{saving ? '保存中…' : (isEdit ? '保存修改' : '创建物品')}}</button>
+
+    <view class="hint">库存数量请通过「扫码进出库」变更，这样每一笔都有流水可查。</view>
+  </view>
+</view>

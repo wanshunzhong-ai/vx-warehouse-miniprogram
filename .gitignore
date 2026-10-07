@@ -1,0 +1,18 @@
+# 依赖（体积大，按 package.json 安装即可）
+node_modules/
+
+# 微信开发者工具的本地个人配置（含本机路径与调试开关）
+project.private.config.json
+
+# WorkBuddy 本地运行数据（会话、项目记忆等，与代码无关）
+.workbuddy/
+
+# WorkBuddy 应用元数据（本机发布信息，与代码无关）
+.wbapp_*
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

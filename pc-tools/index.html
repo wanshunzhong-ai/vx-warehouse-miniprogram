@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>仓库物品标签工具</title>
+<style>
+  :root {
+    --blue: #2f6df6;
+    --blue-d: #2456d8;
+    --ink: #151922;
+    --sub: #6b7280;
+    --dim: #9aa1ad;
+    --line: #e6eaf1;
+    --bg: #f4f6fa;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, var(--blue), var(--blue-d));
+    color: #fff;
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  header .logo {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700;
+  }
+  header h1 { font-size: 19px; margin: 0; font-weight: 600; }
+  header p { margin: 2px 0 0; font-size: 12.5px; opacity: .82; }
+
+  main { max-width: 1360px; margin: 0 auto; padding: 22px 32px 80px; }
+  .layout { display: grid; grid-template-columns: 460px 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 1080px) { .layout { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card); border-radius: 14px; padding: 20px 22px;
+    box-shadow: 0 2px 12px rgba(21,25,34,.055); margin-bottom: 18px;
+  }
+  .card h2 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
+  .card .hint { font-size: 12.5px; color: var(--sub); margin: 0 0 14px; line-height: 1.7; }
+
+  textarea {
+    width: 100%; min-height: 210px; resize: vertical;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; font-size: 13px; line-height: 1.7;
+    font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+    color: var(--ink); background: #fbfcfe;
+  }
+  textarea:focus, input:focus, select:focus { outline: 2px solid rgba(47,109,246,.35); outline-offset: -1px; }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .row.mt { margin-top: 12px; }
+
+  label.fld { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--sub); }
+  input[type=text], input[type=number], select {
+    border: 1px solid var(--line); border-radius: 9px; padding: 7px 10px;
+    font-size: 13px; color: var(--ink); background: #fff;
+  }
+  input[type=text], input[type=number] { width: 100px; }
+
+  button {
+    border: none; border-radius: 10px; padding: 9px 18px;
+    font-size: 13.5px; font-weight: 500; cursor: pointer;
+    background: #eef2fa; color: var(--blue); transition: .15s;
+  }
+  button:hover { filter: brightness(.96); }
+  button.primary { background: var(--blue); color: #fff; box-shadow: 0 4px 12px rgba(47,109,246,.28); }
+  button.dark { background: #1f2937; color: #fff; }
+  button.ghost { background: #f2f4f8; color: #4b5563; }
+
+  .stats { font-size: 12.5px; color: var(--sub); }
+
+  /* 物品表格 */
+  .tablewrap { max-height: 460px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { background: #f7f9fc; font-weight: 600; color: var(--sub); position: sticky; top: 0; z-index: 2; }
+  td input[type=text], td input[type=number] { width: 100%; min-width: 70px; padding: 4px 7px; font-size: 12.5px; border-color: transparent; background: transparent; }
+  td input:hover { border-color: var(--line); background: #fff; }
+  td.code input { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 600; color: var(--blue); }
+  tbody tr:hover { background: #fbfcfe; }
+  .del { color: #ef4444; cursor: pointer; font-size: 15px; user-select: none; }
+
+  /* 标签预览 */
+  .labels {
+    display: grid; gap: 0;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 6px; overflow: hidden;
+  }
+  .label {
+    border: 1px dashed #cfd8e6; padding: 5px 7px;
+    display: flex; gap: 8px; align-items: center; overflow: hidden;
+    page-break-inside: avoid; break-inside: avoid;
+  }
+  .label .qr { flex: 0 0 auto; line-height: 0; }
+  .label .qr svg { display: block; }
+  .label .txt { min-width: 0; flex: 1; }
+  .label .nm {
+    font-size: 12.5px; font-weight: 700; line-height: 1.25;
+    overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .label .cd {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 11.5px; font-weight: 700; color: #111; letter-spacing: .4px; margin-top: 2px;
+  }
+  .label .mt { font-size: 10.5px; color: #55606f; line-height: 1.35; margin-top: 2px; }
+
+  .empty-note { padding: 60px 20px; text-align: center; color: var(--dim); font-size: 13px; }
+
+  .banner {
+    display: none; margin-bottom: 16px; padding: 12px 16px; border-radius: 10px;
+    background: #fff7ed; color: #b45309; font-size: 13px; line-height: 1.6;
+  }
+  .banner.show { display: block; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px);
+    background: #1f2937; color: #fff; padding: 11px 22px; border-radius: 10px;
+    font-size: 13.5px; opacity: 0; pointer-events: none; transition: .22s; z-index: 99;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* 打印 */
+  @media print {
+    @page { size: A4; margin: 8mm; }
+    body { background: #fff; }
+    header, main > .banner, .noprint { display: none !important; }
+    main { max-width: none; padding: 0; margin: 0; }
+    .layout { display: block; }
+    .card { box-shadow: none; padding: 0; margin: 0; border-radius: 0; }
+    .labels {
+      border: none; padding: 0; border-radius: 0;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .label { border: 1px dashed #c8d2e0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">标</div>
+  <div>
+    <h1>仓库物品标签工具</h1>
+    <p>批量建档 · 生成二维码标签 · 打印粘贴 · 导出到小程序</p>
+  </div>
+</header>
+
+<main>
+  <div id="banner" class="banner"></div>
+
+  <div class="layout">
+    <!-- 左：录入 -->
+    <div class="noprint">
+      <div class="card">
+        <h2>1. 粘贴物品清单</h2>
+        <p class="hint">
+          每行一个物品，用 Tab 或逗号分隔。列顺序：<br>
+          <b>编号、名称、规格、类别、单位、位置、库存、安全库存、备注</b><br>
+          编号可以留空，工具会按下面的规则自动生成。
+        </p>
+        <textarea id="raw" placeholder="从 Excel 里选中区域复制，然后粘贴到这里"></textarea>
+        <div class="row mt">
+          <button class="ghost" id="btnSample">填入示例</button>
+          <button class="ghost" id="btnPaste">读取剪贴板</button>
+          <button class="ghost" id="btnClear">清空</button>
+        </div>
+        <div class="row mt">
+          <label class="fld">编号前缀 <input type="text" id="prefix" value="WP" maxlength="8"></label>
+          <label class="fld">起始序号 <input type="number" id="startNo" value="1" min="1" step="1"></label>
+          <label class="fld">位数 <input type="number" id="padLen" value="4" min="1" max="8"></label>
+        </div>
+        <div class="row mt">
+          <button class="primary" id="btnParse">解析并生成编号</button>
+          <span class="stats" id="parseStat"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>2. 标签排版</h2>
+        <p class="hint">每页 A4，一行放几个标签，以及标签上显示哪些信息。</p>
+        <div class="row">
+          <label class="fld">每行个数
+            <select id="cols">
+              <option value="2">2 个（大标签）</option>
+              <option value="3" selected>3 个（常用）</option>
+              <option value="4">4 个（小标签）</option>
+            </select>
+          </label>
+          <label class="fld">标签高度
+            <select id="lh">
+              <option value="46">46mm</option>
+              <option value="38" selected>38mm</option>
+              <option value="30">30mm</option>
+            </select>
+          </label>
+        </div>
+        <div class="row mt">
+          <label class="fld"><input type="checkbox" id="showSpec" checked> 显示规格</label>
+          <label class="fld"><input type="checkbox" id="showLoc" checked> 显示位置</label>
+        </div>
+        <div class="row mt">
+          <button class="dark" id="btnPrint">打印标签</button>
+          <button id="btnCsv">导出 CSV 文件</button>
+          <button id="btnCopy">复制为表格</button>
+        </div>
+        <p class="hint" style="margin-top:12px">
+          提示：先「打印标签」把二维码贴到货上；再把清单复制/导出，去小程序
+          「我的 → 批量导入」粘贴一次，手机端就能扫码了。
+        </p>
+      </div>
+    </div>
+
+    <!-- 右：预览 -->
+    <div>
+      <div class="card noprint">
+        <h2>物品清单预览</h2>
+        <p class="hint">可以直接在表格里修改编号、名称、数量等信息。</p>
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:110px">编号</th>
+                <th style="width:150px">名称</th>
+                <th style="width:110px">规格</th>
+                <th style="width:100px">类别</th>
+                <th style="width:60px">单位</th>
+                <th style="width:110px">位置</th>
+                <th style="width:70px">库存</th>
+                <th style="width:70px">安全</th>
+                <th style="width:34px"></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <div class="row mt"><span class="stats" id="tableStat">还没有数据</span></div>
+      </div>
+
+      <div class="card">
+        <h2>标签预览</h2>
+        <p class="hint">这就是打印出来的效果。二维码内容 = 物品编号。</p>
+        <div id="labels" class="labels"><div class="empty-note">还没有标签，先在左边粘贴数据并点「解析并生成编号」</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="../utils/qr.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var items = [];
+  var $ = function (id) { return document.getElementById(id); };
+
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.classList.remove('show'); }, 2000);
+  }
+
+  function banner(msg) {
+    var b = $('banner');
+    if (!msg) { b.classList.remove('show'); b.textContent = ''; return; }
+    b.textContent = msg;
+    b.classList.add('show');
+  }
+
+  if (typeof window.WBQR === 'undefined') {
+    banner('二维码组件没加载成功。请把 pc-tools 文件夹和 utils 文件夹保持在同一个目录下，' +
+           '用浏览器直接打开本文件（不要单独把 index.html 复制到别处）。');
+  }
+
+  /* ---------- 解析 ---------- */
+  var HEADER = /^(编号|物品编号|code|序号|no\.?|名称|name)$/i;
+
+  function parseRaw(text) {
+    var lines = String(text || '').split(/\r?\n/).map(function (l) { return l.trim(); })
+      .filter(function (l) { return l.length; });
+    var rows = [];
+    var bad = [];
+    for (var i = 0; i < lines.length; i++) {
+      var c = lines[i].split(/\t|,|，/).map(function (x) {
+        return x.trim().replace(/^"|"$/g, '');
+      });
+      if (i === 0 && (HEADER.test(c[0] || '') || HEADER.test(c[1] || ''))) continue;
+      var code = c[0] || '';
+      var name = c[1] || '';
+      if (!code && !name) continue;
+      if (!name) { bad.push(i + 1); continue; }
+      var q = parseInt(c[6], 10);
+      var m = parseInt(c[7], 10);
+      rows.push({
+        code: code,
+        name: name,
+        spec: c[2] || '',
+        category: c[3] || '',
+        unit: c[4] || '个',
+        location: c[5] || '',
+        qty: isNaN(q) || q < 0 ? 0 : q,
+        min_qty: isNaN(m) || m < 0 ? 0 : m,
+        note: c[8] || ''
+      });
+    }
+    return { rows: rows, bad: bad };
+  }
+
+  function autoCode(index) {
+    var prefix = ($('prefix').value || 'WP').trim();
+    var start = parseInt($('startNo').value, 10);
+    if (isNaN(start) || start < 1) start = 1;
+    var pad = parseInt($('padLen').value, 10);
+    if (isNaN(pad) || pad < 1) pad = 4;
+    var n = String(start + index);
+    while (n.length < pad) n = '0' + n;
+    return prefix + n;
+  }
+
+  function fillCodes() {
+    var used = {};
+    items.forEach(function (it) {
+      if (it.code) used[it.code] = true;
+    });
+    var seq = 0;
+    items.forEach(function (it) {
+      if (it.code) return;
+      var code = autoCode(seq);
+      while (used[code]) { seq++; code = autoCode(seq); }
+      it.code = code;
+      used[code] = true;
+      seq++;
+    });
+  }
+
+  /* ---------- 渲染表格 ---------- */
+  var COLS = ['code', 'name', 'spec', 'category', 'unit', 'location', 'qty', 'min_qty'];
+
+  function renderTable() {
+    var tb = $('tbody');
+    tb.innerHTML = '';
+    items.forEach(function (it, idx) {
+      var tr = document.createElement('tr');
+      COLS.forEach(function (key) {
+        var td = document.createElement('td');
+        if (key === 'code') td.className = 'code';
+        var inp = document.createElement('input');
+        inp.type = (key === 'qty' || key === 'min_qty') ? 'number' : 'text';
+        inp.value = it[key];
+        inp.addEventListener('input', function () {
+          it[key] = (key === 'qty' || key === 'min_qty')
+            ? (parseInt(inp.value, 10) || 0)
+            : inp.value;
+          if (key === 'code' || key === 'name' || key === 'spec' || key === 'location') renderLabels();
+        });
+        td.appendChild(inp);
+        tr.appendChild(td);
+      });
+      var tdDel = document.createElement('td');
+      var sp = document.createElement('span');
+      sp.className = 'del';
+      sp.textContent = '×';
+      sp.title = '删除这一行';
+      sp.addEventListener('click', function () {
+        items.splice(idx, 1);
+        renderAll();
+      });
+      tdDel.appendChild(sp);
+      tr.appendChild(tdDel);
+      tb.appendChild(tr);
+    });
+
+    $('tableStat').textContent = items.length
+      ? '共 ' + items.length + ' 个物品'
+      : '还没有数据';
+  }
+
+  /* ---------- 渲染标签 ---------- */
+  function qrSizeMm() {
+    var lh = parseInt($('lh').value, 10) || 38;
+    return Math.max(12, Math.min(28, lh - 12));
+  }
+
+  function renderLabels() {
+    var host = $('labels');
+    if (!items.length) {
+      host.innerHTML = '<div class="empty-note">还没有标签，先在左边粘贴数据并点「解析并生成编号」</div>';
+      return;
+    }
+    var cols = parseInt($('cols').value, 10) || 3;
+    var lh = parseInt($('lh').value, 10) || 38;
+    var qrMm = qrSizeMm();
+    var showSpec = $('showSpec').checked;
+    var showLoc = $('showLoc').checked;
+
+    host.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+    host.innerHTML = '';
+
+    var buffer = [];
+    var cache = {};
+    items.forEach(function (it) {
+      var code = String(it.code || '').trim();
+      var svg = '';
+      if (code) {
+        if (!cache[code]) {
+          try {
+            cache[code] = window.WBQR.toSvg(code, { quiet: 1, dark: '#000000', light: '#ffffff' });
+          } catch (e) {
+            cache[code] = '';
+          }
+        }
+        svg = cache[code];
+      }
+
+      var meta = [];
+      if (showSpec && it.spec) meta.push(it.spec);
+      if (showLoc && it.location) meta.push(it.location);
+
+      buffer.push(
+        '<div class="label" style="height:' + lh + 'mm">' +
+          '<div class="qr" style="width:' + qrMm + 'mm;height:' + qrMm + 'mm">' + svg + '</div>' +
+          '<div class="txt">' +
+            '<div class="nm">' + esc(it.name) + '</div>' +
+            '<div class="cd">' + esc(code || '未生成编号') + '</div>' +
+            (meta.length ? '<div class="mt">' + esc(meta.join(' · ')) + '</div>' : '') +
+          '</div>' +
+        '</div>'
+      );
+    });
+    host.innerHTML = buffer.join('');
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderAll() {
+    renderTable();
+    renderLabels();
+  }
+
+  /* ---------- 交互 ---------- */
+  $('btnSample').addEventListener('click', function () {
+    $('raw').value =
+      '编号\t名称\t规格\t类别\t单位\t位置\t库存\t安全库存\t备注\n' +
+      'A-001\t不锈钢螺丝\tM6x20\t五金\t个\tA区-1排\t200\t50\t常用件\n' +
+      'A-002\t橡胶垫片\tDN50\t密封件\t片\tA区-2排\t80\t30\t\n' +
+      '\t内六角扳手\t5mm\t工具\t把\t工具柜\t6\t2\t编号留空会自动生成';
+    doParse();
+  });
+
+  $('btnPaste').addEventListener('click', function () {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      toast('这个浏览器不支持直接读取剪贴板，请手动粘贴');
+      return;
+    }
+    navigator.clipboard.readText().then(function (txt) {
+      if (!txt || !txt.trim()) { toast('剪贴板是空的'); return; }
+      $('raw').value = txt;
+      doParse();
+    }).catch(function () {
+      toast('读取剪贴板被拒绝了，请手动粘贴');
+    });
+  });
+
+  $('btnClear').addEventListener('click', function () {
+    $('raw').value = '';
+    items = [];
+    $('parseStat').textContent = '';
+    renderAll();
+  });
+
+  $('btnParse').addEventListener('click', doParse);
+
+  function doParse() {
+    var res = parseRaw($('raw').value);
+    if (!res.rows.length) {
+      $('parseStat').textContent = '没有解析到有效数据';
+      toast('没有解析到有效数据，检查一下格式');
+      return;
+    }
+    items = res.rows;
+    fillCodes();
+    $('parseStat').textContent = '解析到 ' + items.length + ' 个物品' +
+      (res.bad.length ? '，另有 ' + res.bad.length + ' 行缺少名称已跳过' : '');
+    renderAll();
+    toast('已生成 ' + items.length + ' 个物品和二维码');
+  }
+
+  ['cols', 'lh', 'showSpec', 'showLoc'].forEach(function (id) {
+    $(id).addEventListener('change', renderLabels);
+  });
+
+  $('btnPrint').addEventListener('click', function () {
+    if (!items.length) { toast('还没有数据'); return; }
+    window.print();
+  });
+
+  function buildTsv() {
+    var head = ['编号', '名称', '规格', '类别', '单位', '位置', '库存', '安全库存', '备注'];
+    var lines = [head.join('\t')];
+    items.forEach(function (it) {
+      lines.push([
+        it.code, it.name, it.spec, it.category, it.unit, it.location,
+        it.qty, it.min_qty, String(it.note || '').replace(/\s+/g, ' ')
+      ].join('\t'));
+    });
+    return lines.join('\n');
+  }
+
+  $('btnCsv').addEventListener('click', function () {
+    if (!items.length) { toast('还没有数据'); return; }
+    var blob = new Blob(['\ufeff' + buildTsv()], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '物品清单.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    toast('已导出 物品清单.csv');
+  });
+
+  $('btnCopy').addEventListener('click', function () {
+    if (!items.length) { toast('还没有数据'); return; }
+    var text = buildTsv();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        toast('已复制，去小程序「批量导入」粘贴即可');
+      }).catch(function () {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  });
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      toast('已复制，去小程序「批量导入」粘贴即可');
+    } catch (e) {
+      toast('复制失败，请用「导出 CSV 文件」');
+    }
+    document.body.removeChild(ta);
+  }
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

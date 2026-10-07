@@ -1,0 +1,56 @@
+<view class="page page-tab">
+  <view class="filter-bar">
+    <view class="chips">
+      <view
+        wx:for="{{filters}}"
+        wx:key="key"
+        class="chip {{activeKey === item.key ? 'chip-on' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="pickFilter"
+      >{{item.label}}</view>
+    </view>
+    <view wx:if="{{caps.record_export}}" class="export-btn" bindtap="onExport">导出</view>
+  </view>
+
+  <view class="summary">
+    <text class="f-sm t-sub">共 {{total}} 条 · 入库 {{sumIn}} / 出库 {{sumOut}}</text>
+  </view>
+
+  <view class="wrap">
+    <view wx:if="{{!loading && groups.length === 0}}" class="empty">
+      <view class="empty-icon"><view class="ei-lines"></view></view>
+      <view class="empty-title">还没有出入库记录</view>
+      <view class="empty-desc">去「扫码」页扫一个物品试试</view>
+    </view>
+
+    <view wx:for="{{groups}}" wx:key="date" class="group">
+      <view class="group-head">
+        <text class="gh-date">{{item.date}}</text>
+        <text class="f-xs t-dim">共 {{item.count}} 笔</text>
+      </view>
+      <view class="card group-card">
+        <view wx:for="{{item.items}}" wx:for-item="rec" wx:key="id" class="list-item">
+          <view class="rec-dot {{rec.isIn ? 'dot-in' : 'dot-out'}}">
+            {{rec.isIn ? '入' : '出'}}
+          </view>
+          <view class="grow">
+            <view class="f-md ellipsis">{{rec.item_name}}</view>
+            <view class="f-xs t-dim" style="margin-top:6rpx">
+              {{rec.item_code}} · {{rec.operatorText}}{{rec.operatorRoleText ? '（' + rec.operatorRoleText + '）' : ''}}{{rec.note ? ' · ' + rec.note : ''}}
+            </view>
+            <view class="f-xs t-dim" style="margin-top:4rpx">{{rec.timeText}}</view>
+          </view>
+          <view class="col rec-right">
+            <text class="f-lg bold {{rec.isIn ? 't-in' : 't-out'}}">
+              {{rec.isIn ? '+' : '-'}}{{rec.qty}}
+            </text>
+            <text class="f-xs t-dim">{{rec.before_qty}} → {{rec.after_qty}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{loadingMore}}" class="list-foot">加载中…</view>
+    <view wx:elif="{{groups.length > 0 && !hasMore}}" class="list-foot">没有更多了</view>
+  </view>
+</view>

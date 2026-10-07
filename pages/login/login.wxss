@@ -1,0 +1,164 @@
+/* 登录页：自定义导航栏，所以顶部留出状态栏高度 */
+.login-page {
+  min-height: 100vh;
+  padding: 180rpx 56rpx 60rpx;
+  background: linear-gradient(170deg, #eaf0ff 0%, #f4f6fa 45%, #f4f6fa 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 64rpx;
+}
+
+.logo {
+  position: relative;
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(135deg, #3d7bff, #2f6df6);
+  box-shadow: 0 20rpx 40rpx rgba(47, 109, 246, 0.3);
+  margin-bottom: 32rpx;
+}
+
+.logo-box {
+  position: absolute;
+  left: 34rpx;
+  top: 34rpx;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.logo-line {
+  position: absolute;
+  left: 50rpx;
+  top: 52rpx;
+  width: 32rpx;
+  height: 10rpx;
+  border-radius: 5rpx;
+  background: #2f6df6;
+}
+
+.brand-name {
+  font-size: 44rpx;
+  font-weight: 600;
+  color: #151922;
+  letter-spacing: 2rpx;
+}
+
+.brand-desc {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: #7a828e;
+}
+
+.login-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 28rpx;
+  padding: 48rpx 40rpx 44rpx;
+  box-shadow: 0 12rpx 40rpx rgba(21, 25, 34, 0.08);
+}
+
+.login-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #151922;
+  margin-bottom: 12rpx;
+}
+
+.login-desc {
+  font-size: 26rpx;
+  color: #7a828e;
+  line-height: 1.6;
+  margin-bottom: 36rpx;
+}
+
+.in-row {
+  display: flex;
+  align-items: center;
+  min-height: 108rpx;
+  border-bottom: 1rpx solid #eef1f6;
+}
+
+.in-label {
+  width: 110rpx;
+  flex-shrink: 0;
+  font-size: 28rpx;
+  color: #4b5563;
+}
+
+.in-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: #151922;
+  height: 108rpx;
+}
+
+.in-placeholder {
+  color: #b9bfc9;
+  font-size: 28rpx;
+}
+
+.in-eye {
+  flex-shrink: 0;
+  padding-left: 20rpx;
+  font-size: 26rpx;
+  color: #2f6df6;
+}
+
+.login-btn {
+  width: 100%;
+  margin-top: 48rpx;
+}
+
+.login-error {
+  margin-top: 28rpx;
+  padding: 20rpx 24rpx;
+  background: #fef2f2;
+  border-radius: 14rpx;
+  font-size: 26rpx;
+  color: #dc2626;
+  line-height: 1.5;
+}
+
+.login-help {
+  width: 100%;
+  margin-top: 36rpx;
+  padding: 28rpx 32rpx;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 20rpx;
+}
+
+.help-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 12rpx;
+}
+
+.help-line {
+  font-size: 24rpx;
+  color: #7a828e;
+  line-height: 1.7;
+}
+
+.help-strong {
+  color: #2f6df6;
+  font-weight: 600;
+}
+
+.login-foot {
+  margin-top: auto;
+  padding-top: 60rpx;
+  font-size: 22rpx;
+  color: #a3a9b3;
+  text-align: center;
+  line-height: 1.6;
+}

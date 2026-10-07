@@ -1,0 +1,70 @@
+<view class="page page-tab">
+  <view class="scan-hero">
+    <view class="scan-box" bindtap="onScan" hover-class="scan-box-hover">
+      <view class="frame">
+        <view class="corner c-tl"></view>
+        <view class="corner c-tr"></view>
+        <view class="corner c-bl"></view>
+        <view class="corner c-br"></view>
+        <view class="laser"></view>
+      </view>
+      <view class="scan-main">点击扫码</view>
+      <view class="scan-hint">对准物品上的二维码</view>
+    </view>
+  </view>
+
+  <view class="wrap">
+    <view class="card">
+      <view class="card-title">手动输入编号</view>
+      <view class="manual-row">
+        <input
+          class="manual-input"
+          value="{{manualCode}}"
+          placeholder="例如 WP0001"
+          placeholder-class="field-placeholder"
+          confirm-type="search"
+          bindinput="onInput"
+          bindconfirm="onManualSearch"
+        />
+        <view class="btn btn-primary btn-sm manual-btn" bindtap="onManualSearch">查询</view>
+      </view>
+    </view>
+
+    <view class="card" wx:if="{{recent.length > 0}}">
+      <view class="card-title">
+        <text>最近扫描</text>
+        <text class="t-dim f-sm" bindtap="clearRecent">清空</text>
+      </view>
+      <view
+        wx:for="{{recent}}"
+        wx:key="code"
+        class="list-item"
+        data-code="{{item.code}}"
+        bindtap="openRecent"
+      >
+        <view class="recent-badge">{{item.initial}}</view>
+        <view class="grow">
+          <view class="f-md ellipsis">{{item.name || item.code}}</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">{{item.code}} · {{item.timeText}}</view>
+        </view>
+        <view class="scan-arrow">›</view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="card-title">使用说明</view>
+      <view class="step">
+        <view class="step-no">1</view>
+        <view class="grow">先在「物品」里建好档案，或用电脑端工具批量建档并打印二维码标签</view>
+      </view>
+      <view class="step">
+        <view class="step-no">2</view>
+        <view class="grow">把二维码贴到物品或货架上</view>
+      </view>
+      <view class="step">
+        <view class="step-no">3</view>
+        <view class="grow">扫码后选择入库或出库、填写数量即可，库存和流水自动更新</view>
+      </view>
+    </view>
+  </view>
+</view>

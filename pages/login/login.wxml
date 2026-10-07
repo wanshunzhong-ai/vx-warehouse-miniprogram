@@ -1,0 +1,61 @@
+<view class="login-page">
+  <view class="brand">
+    <view class="logo">
+      <view class="logo-box"></view>
+      <view class="logo-line"></view>
+    </view>
+    <view class="brand-name">仓库物品管理</view>
+    <view class="brand-desc">扫码进出库 · 分角色管理</view>
+  </view>
+
+  <view class="login-card">
+    <view class="login-title">账号登录</view>
+    <view class="login-desc">请使用管理员分配的内部账号登录</view>
+
+    <view class="in-row">
+      <view class="in-label">账号</view>
+      <input
+        class="in-input"
+        type="text"
+        value="{{username}}"
+        maxlength="24"
+        placeholder="请输入登录账号"
+        placeholder-class="in-placeholder"
+        bindinput="onUsernameInput"
+        confirm-type="next"
+      />
+    </view>
+
+    <view class="in-row">
+      <view class="in-label">密码</view>
+      <input
+        class="in-input"
+        password="{{!showPassword}}"
+        value="{{password}}"
+        maxlength="32"
+        placeholder="请输入密码"
+        placeholder-class="in-placeholder"
+        bindinput="onPasswordInput"
+        confirm-type="done"
+        bindconfirm="onLogin"
+      />
+      <view class="in-eye" bindtap="togglePassword">{{showPassword ? '隐藏' : '显示'}}</view>
+    </view>
+
+    <button
+      class="btn btn-primary login-btn {{canSubmit ? '' : 'btn-disabled'}}"
+      loading="{{loading}}"
+      disabled="{{loading}}"
+      bindtap="onLogin"
+    >{{loading ? '登录中…' : '登 录'}}</button>
+
+    <view wx:if="{{error}}" class="login-error">{{error}}</view>
+  </view>
+
+  <view class="login-help">
+    <view class="help-title">还没有账号？</view>
+    <view class="help-line">员工账号不能自行注册。请让<text class="help-strong">主管</text>在「人员管理」里为你添加，再由<text class="help-strong">管理员</text>审批通过后即可登录。</view>
+  </view>
+
+  <view class="login-foot">仅限内部员工使用 · 所有出入库操作都会记录到本人名下</view>
+</view>

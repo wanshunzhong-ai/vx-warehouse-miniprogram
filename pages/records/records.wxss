@@ -1,0 +1,102 @@
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 28rpx 4rpx;
+  background: #f4f6fa;
+}
+
+.chips {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.chip {
+  display: inline-block;
+  padding: 12rpx 28rpx;
+  margin-right: 14rpx;
+  background: #ffffff;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #4b5563;
+  border: 1rpx solid #eef1f6;
+}
+
+.chip-on {
+  background: #2f6df6;
+  color: #ffffff;
+  border-color: #2f6df6;
+  font-weight: 500;
+}
+
+.export-btn {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  padding: 12rpx 26rpx;
+  background: #eef3ff;
+  color: #2f6df6;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+}
+
+.summary {
+  padding: 18rpx 32rpx 8rpx;
+}
+
+.group {
+  margin-bottom: 28rpx;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6rpx 14rpx;
+}
+
+.gh-date {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.group-card {
+  padding: 8rpx 30rpx;
+}
+
+.rec-dot {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #ffffff;
+  margin-right: 22rpx;
+  flex-shrink: 0;
+}
+
+.dot-in { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.dot-out { background: linear-gradient(135deg, #fb923c, #f97316); }
+
+.rec-right {
+  align-items: flex-end;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.list-foot {
+  text-align: center;
+  padding: 32rpx 0;
+  font-size: 24rpx;
+  color: #a3a9b3;
+}
+
+.ei-lines {
+  width: 64rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
+  background: #b9c6dd;
+  box-shadow: 0 18rpx 0 #b9c6dd, 0 -18rpx 0 #b9c6dd;
+}

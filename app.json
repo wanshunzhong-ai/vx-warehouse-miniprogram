@@ -1,0 +1,40 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/items/items",
+    "pages/scan/scan",
+    "pages/records/records",
+    "pages/my/my",
+    "pages/login/login",
+    "pages/detail/detail",
+    "pages/edit/edit",
+    "pages/stock/stock",
+    "pages/import/import",
+    "pages/staff/staff",
+    "pages/staff-edit/staff-edit",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "仓库管理",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f6fa"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#8a9099",
+    "selectedColor": "#2f6df6",
+    "backgroundColor": "#ffffff",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "工作台" },
+      { "pagePath": "pages/items/items", "text": "物品" },
+      { "pagePath": "pages/scan/scan", "text": "扫码" },
+      { "pagePath": "pages/records/records", "text": "记录" },
+      { "pagePath": "pages/my/my", "text": "我的" }
+    ]
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json",
+  "style": "v2"
+}

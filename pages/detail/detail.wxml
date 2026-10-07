@@ -1,0 +1,111 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="loading-box">
+    <view class="spinner"></view>
+    <text class="t-sub f-sm">加载中…</text>
+  </view>
+
+  <block wx:elif="{{item}}">
+    <!-- 头部 -->
+    <view class="item-head">
+      <view class="ih-name">{{item.name}}</view>
+      <view class="ih-meta">{{item.code}}</view>
+      <view class="ih-qty-row">
+        <view>
+          <view class="ih-qty">{{item.qty}}</view>
+          <view class="ih-qty-lbl">当前库存（{{item.unit || '个'}}）</view>
+        </view>
+        <view wx:if="{{item.qty <= item.min_qty}}" class="ih-warn">库存偏低</view>
+      </view>
+    </view>
+
+    <view class="wrap body">
+      <!-- 出入库按钮 -->
+      <view class="act-row">
+        <view class="act act-in" bindtap="goIn">入库</view>
+        <view class="act act-out" bindtap="goOut">出库</view>
+      </view>
+
+      <!-- 二维码 -->
+      <view class="card">
+        <view class="card-title">
+          <text>物品二维码</text>
+        </view>
+        <view class="qr-box">
+          <canvas type="2d" id="qr-canvas" class="qr-canvas"></canvas>
+        </view>
+        <view class="qr-code-text">{{item.code}}</view>
+        <view class="qr-tip">打印出来贴在物品或货架上，扫码即可进出库</view>
+        <view class="qr-actions">
+          <view class="btn btn-ghost" bindtap="saveQr">保存二维码</view>
+          <view class="btn btn-plain" bindtap="copyCode">复制编号</view>
+        </view>
+      </view>
+
+      <!-- 档案 -->
+      <view class="card">
+        <view class="card-title">物品档案</view>
+        <view class="info-row">
+          <text class="info-lbl">类别</text>
+          <text class="info-val">{{item.category || '—'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-lbl">规格型号</text>
+          <text class="info-val">{{item.spec || '—'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-lbl">存放位置</text>
+          <text class="info-val">{{item.location || '—'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-lbl">安全库存</text>
+          <text class="info-val">{{item.min_qty}} {{item.unit || '个'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-lbl">备注</text>
+          <text class="info-val">{{item.note || '—'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-lbl">建档时间</text>
+          <text class="info-val">{{createdText}}</text>
+        </view>
+      </view>
+
+      <!-- 出入库记录 -->
+      <view class="card">
+        <view class="card-title">
+          <text>出入库记录</text>
+          <text class="t-dim f-sm">{{records.length}} 条</text>
+        </view>
+        <view wx:if="{{records.length === 0}}" class="t-sub f-sm" style="padding:16rpx 0">该物品还没有出入库记录</view>
+        <view wx:for="{{records}}" wx:key="id" class="list-item">
+          <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}">
+            {{item.isIn ? '入' : '出'}}
+          </view>
+          <view class="grow">
+            <view class="f-sm t-main">{{item.operatorText}}{{item.operatorRoleText ? '（' + item.operatorRoleText + '）' : ''}}{{item.note ? ' · ' + item.note : ''}}</view>
+            <view class="f-xs t-dim" style="margin-top:6rpx">{{item.timeText}}</view>
+          </view>
+          <view class="col" style="align-items:flex-end">
+            <text class="f-md bold {{item.isIn ? 't-in' : 't-out'}}">{{item.qtyText}}</text>
+            <text class="f-xs t-dim">{{item.before_qty}} → {{item.after_qty}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部操作 -->
+      <view class="foot-actions">
+        <view wx:if="{{caps.item_edit}}" class="btn btn-ghost grow" bindtap="goEdit">编辑档案</view>
+        <view wx:if="{{caps.item_delete}}" class="btn btn-danger grow" bindtap="onDelete">删除物品</view>
+        <view wx:if="{{!caps.item_edit && !caps.item_delete}}" class="btn btn-plain grow" bindtap="goBack">返回</view>
+      </view>
+    </view>
+  </block>
+
+  <view wx:else class="wrap">
+    <view class="card notfound" style="margin-top:120rpx">
+      <view class="nf-title">找不到这个物品</view>
+      <view class="nf-desc">它可能已经被删除。</view>
+      <button class="btn btn-plain" bindtap="goBack">返回</button>
+    </view>
+  </view>
+</view>

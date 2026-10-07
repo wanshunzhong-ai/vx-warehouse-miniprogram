@@ -1,0 +1,406 @@
+<view class="page page-tab">
+
+  <!-- ============================================================ -->
+  <!-- 管理员 · 管理中心                                             -->
+  <!-- ============================================================ -->
+  <block wx:if="{{role === 'admin'}}">
+    <view class="hero hero-admin">
+      <view class="hero-row">
+        <view class="hero-avatar">{{profile.initial}}</view>
+        <view class="grow">
+          <view class="hero-name">{{profile.name}}</view>
+          <view class="hero-sub">{{profile.dept}} · {{profile.username}}</view>
+        </view>
+        <view class="hero-badge">{{roleMeta.label}}</view>
+      </view>
+      <view class="hero-foot">
+        <text>{{greeting}}，这里是管理中心</text>
+        <text class="hero-date">{{todayText}}</text>
+      </view>
+    </view>
+
+    <view class="wrap">
+      <view class="card todo-card" bindtap="goStaff" data-status="pending">
+        <view class="todo-left">
+          <view class="todo-num">{{overview.pending || 0}}</view>
+          <view class="todo-lbl">待审批申请</view>
+        </view>
+        <view class="grow">
+          <block wx:if="{{pendingList.length}}">
+            <view wx:for="{{pendingList}}" wx:key="id" class="todo-item">
+              <text class="todo-name">{{item.name}}</text>
+              <text class="todo-meta">{{item.created_by_name || '—'}} 提交</text>
+            </view>
+          </block>
+          <view wx:else class="todo-empty">暂无待审批，一切正常</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+
+      <view class="card">
+        <view class="card-title">
+          <text>人员概览</text>
+          <text class="t-primary f-sm" catchtap="goStaff">全部人员 ›</text>
+        </view>
+        <view class="grid4">
+          <view class="g4-cell">
+            <view class="g4-num c-admin">{{overview.admin || 0}}</view>
+            <view class="g4-lbl">管理员</view>
+          </view>
+          <view class="g4-cell">
+            <view class="g4-num c-manager">{{overview.manager || 0}}</view>
+            <view class="g4-lbl">主管</view>
+          </view>
+          <view class="g4-cell">
+            <view class="g4-num c-staff">{{overview.staff || 0}}</view>
+            <view class="g4-lbl">员工</view>
+          </view>
+          <view class="g4-cell">
+            <view class="g4-num {{overview.disabled > 0 ? 'c-warn' : ''}}">{{overview.disabled || 0}}</view>
+            <view class="g4-lbl">已停用</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">
+          <text>仓库概览</text>
+          <text class="t-primary f-sm" catchtap="goRecords">全仓记录 ›</text>
+        </view>
+        <view class="grid3">
+          <view class="g3-cell" bindtap="goItems">
+            <view class="g3-num">{{stat.item_count || 0}}</view>
+            <view class="g3-lbl">物品种类</view>
+          </view>
+          <view class="g3-cell" bindtap="goItems">
+            <view class="g3-num">{{stat.total_qty || 0}}</view>
+            <view class="g3-lbl">库存总量</view>
+          </view>
+          <view class="g3-cell" bindtap="goLowStock">
+            <view class="g3-num {{stat.low_count > 0 ? 'c-warn' : ''}}">{{stat.low_count || 0}}</view>
+            <view class="g3-lbl">库存预警</view>
+          </view>
+        </view>
+        <view class="flow-row">
+          <view class="flow-item">
+            <text class="flow-lbl">今日入库</text>
+            <text class="flow-val t-in">+{{stat.today_in || 0}}</text>
+          </view>
+          <view class="flow-item">
+            <text class="flow-lbl">今日出库</text>
+            <text class="flow-val t-out">-{{stat.today_out || 0}}</text>
+          </view>
+          <view class="flow-item">
+            <text class="flow-lbl">今日单数</text>
+            <text class="flow-val">{{stat.today_count || 0}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">管理操作</view>
+        <view class="act-grid">
+          <view class="act" bindtap="goStaff" data-status="pending">
+            <view class="act-ico act-violet">审</view>
+            <view class="act-txt">账号审批</view>
+          </view>
+          <view class="act" bindtap="goStaff">
+            <view class="act-ico act-violet">人</view>
+            <view class="act-txt">人员管理</view>
+          </view>
+          <view class="act" bindtap="goEdit">
+            <view class="act-ico act-violet">建</view>
+            <view class="act-txt">新建物品</view>
+          </view>
+          <view class="act" bindtap="goImport">
+            <view class="act-ico act-violet">导</view>
+            <view class="act-txt">批量导入</view>
+          </view>
+          <view class="act" bindtap="goScan">
+            <view class="act-ico act-violet">扫</view>
+            <view class="act-txt">扫码出入库</view>
+          </view>
+          <view class="act" bindtap="goRecords">
+            <view class="act-ico act-violet">记</view>
+            <view class="act-txt">全仓记录</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">
+          <text>最近操作</text>
+          <text class="t-primary f-sm" catchtap="goRecords">更多 ›</text>
+        </view>
+        <block wx:if="{{recent.length}}">
+          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}">
+            <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}"></view>
+            <view class="grow">
+              <view class="rec-title ellipsis">{{item.item_name}}</view>
+              <view class="rec-meta">{{item.operatorText}} · {{item.timeText}}</view>
+            </view>
+            <text class="rec-qty {{item.isIn ? 't-in' : 't-out'}}">{{item.qtyText}}</text>
+          </view>
+        </block>
+        <view wx:else class="empty-inline">还没有出入库记录</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============================================================ -->
+  <!-- 主管 · 主管台                                                 -->
+  <!-- ============================================================ -->
+  <block wx:elif="{{role === 'manager'}}">
+    <view class="hero hero-manager">
+      <view class="hero-row">
+        <view class="hero-avatar">{{profile.initial}}</view>
+        <view class="grow">
+          <view class="hero-name">{{profile.name}}</view>
+          <view class="hero-sub">{{profile.dept}} · {{profile.username}}</view>
+        </view>
+        <view class="hero-badge">{{roleMeta.label}}</view>
+      </view>
+      <view class="hero-foot">
+        <text>{{greeting}}，今日共 {{stat.today_count || 0}} 笔出入库</text>
+        <text class="hero-date">{{todayText}}</text>
+      </view>
+    </view>
+
+    <view class="wrap">
+      <view class="card">
+        <view class="card-title">
+          <text>我提交的账号申请</text>
+          <text class="t-primary f-sm" catchtap="goStaff">全部申请 ›</text>
+        </view>
+        <view class="grid3">
+          <view class="g3-cell" bindtap="goStaff" data-status="pending">
+            <view class="g3-num {{overview.my_pending > 0 ? 'c-warn' : ''}}">{{overview.my_pending || 0}}</view>
+            <view class="g3-lbl">待审批</view>
+          </view>
+          <view class="g3-cell" bindtap="goStaff" data-status="active">
+            <view class="g3-num c-manager">{{overview.my_active || 0}}</view>
+            <view class="g3-lbl">已通过</view>
+          </view>
+          <view class="g3-cell" bindtap="goStaff" data-status="rejected">
+            <view class="g3-num">{{overview.my_rejected || 0}}</view>
+            <view class="g3-lbl">已驳回</view>
+          </view>
+        </view>
+        <view class="apply-tip">员工账号由你添加后，还需要管理员审批通过才能登录。</view>
+        <button class="btn btn-primary apply-btn" bindtap="goAddStaff">＋ 添加员工账号</button>
+      </view>
+
+      <view class="card">
+        <view class="card-title">
+          <text>仓库概览</text>
+          <text class="t-primary f-sm" catchtap="goRecords">出入库记录 ›</text>
+        </view>
+        <view class="grid3">
+          <view class="g3-cell" bindtap="goItems">
+            <view class="g3-num">{{stat.item_count || 0}}</view>
+            <view class="g3-lbl">物品种类</view>
+          </view>
+          <view class="g3-cell" bindtap="goItems">
+            <view class="g3-num">{{stat.total_qty || 0}}</view>
+            <view class="g3-lbl">库存总量</view>
+          </view>
+          <view class="g3-cell" bindtap="goLowStock">
+            <view class="g3-num {{stat.low_count > 0 ? 'c-warn' : ''}}">{{stat.low_count || 0}}</view>
+            <view class="g3-lbl">库存预警</view>
+          </view>
+        </view>
+        <view class="flow-row">
+          <view class="flow-item">
+            <text class="flow-lbl">今日入库</text>
+            <text class="flow-val t-in">+{{stat.today_in || 0}}</text>
+          </view>
+          <view class="flow-item">
+            <text class="flow-lbl">今日出库</text>
+            <text class="flow-val t-out">-{{stat.today_out || 0}}</text>
+          </view>
+          <view class="flow-item">
+            <text class="flow-lbl">今日单数</text>
+            <text class="flow-val">{{stat.today_count || 0}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">快捷操作</view>
+        <view class="act-grid">
+          <view class="act" bindtap="goAddStaff">
+            <view class="act-ico act-blue">员</view>
+            <view class="act-txt">添加员工</view>
+          </view>
+          <view class="act" bindtap="goScan">
+            <view class="act-ico act-blue">扫</view>
+            <view class="act-txt">扫码出入库</view>
+          </view>
+          <view class="act" bindtap="goEdit">
+            <view class="act-ico act-blue">建</view>
+            <view class="act-txt">新建物品</view>
+          </view>
+          <view class="act" bindtap="goImport">
+            <view class="act-ico act-blue">导</view>
+            <view class="act-txt">批量导入</view>
+          </view>
+          <view class="act" bindtap="goStaff">
+            <view class="act-ico act-blue">申</view>
+            <view class="act-txt">我的申请</view>
+          </view>
+          <view class="act" bindtap="goProfile">
+            <view class="act-ico act-blue">我</view>
+            <view class="act-txt">账号安全</view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{lowItems.length}}" class="card">
+        <view class="card-title">
+          <text>库存预警</text>
+          <text class="t-primary f-sm" catchtap="goLowStock">去补货 ›</text>
+        </view>
+        <view wx:for="{{lowItems}}" wx:key="id" class="low" bindtap="openItem" data-id="{{item.id}}">
+          <view class="grow">
+            <view class="low-name ellipsis">{{item.name}}</view>
+            <view class="low-meta">{{item.code}} · {{item.location || '未设位置'}}</view>
+          </view>
+          <view class="low-qty">
+            <text class="t-out bold">{{item.qty}}</text>
+            <text class="t-dim f-xs"> / {{item.min_qty}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">
+          <text>最近操作</text>
+          <text class="t-primary f-sm" catchtap="goRecords">更多 ›</text>
+        </view>
+        <block wx:if="{{recent.length}}">
+          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}">
+            <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}"></view>
+            <view class="grow">
+              <view class="rec-title ellipsis">{{item.item_name}}</view>
+              <view class="rec-meta">{{item.operatorText}} · {{item.timeText}}</view>
+            </view>
+            <text class="rec-qty {{item.isIn ? 't-in' : 't-out'}}">{{item.qtyText}}</text>
+          </view>
+        </block>
+        <view wx:else class="empty-inline">还没有出入库记录</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============================================================ -->
+  <!-- 员工 · 我的工作台                                             -->
+  <!-- ============================================================ -->
+  <block wx:else>
+    <view class="hero hero-staff">
+      <view class="hero-row">
+        <view class="hero-avatar">{{profile.initial}}</view>
+        <view class="grow">
+          <view class="hero-name">{{profile.name}}</view>
+          <view class="hero-sub">{{profile.dept}} · {{profile.username}}</view>
+        </view>
+        <view class="hero-badge">{{roleMeta.label}}</view>
+      </view>
+      <view class="hero-foot">
+        <text>{{greeting}}，今天你已经操作 {{myStat.my_today_count || 0}} 笔</text>
+        <text class="hero-date">{{todayText}}</text>
+      </view>
+    </view>
+
+    <view class="wrap">
+      <view class="scan-hero" bindtap="goScan">
+        <view class="scan-icon">
+          <view class="scan-c c1"></view>
+          <view class="scan-c c2"></view>
+          <view class="scan-c c3"></view>
+          <view class="scan-c c4"></view>
+          <view class="scan-beam"></view>
+        </view>
+        <view class="scan-title">扫码出入库</view>
+        <view class="scan-desc">对准物品标签上的二维码，自动识别物品</view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">我的今日</view>
+        <view class="grid3">
+          <view class="g3-cell">
+            <view class="g3-num t-in">+{{myStat.my_today_in || 0}}</view>
+            <view class="g3-lbl">今日入库</view>
+          </view>
+          <view class="g3-cell">
+            <view class="g3-num t-out">-{{myStat.my_today_out || 0}}</view>
+            <view class="g3-lbl">今日出库</view>
+          </view>
+          <view class="g3-cell">
+            <view class="g3-num">{{myStat.my_total_count || 0}}</view>
+            <view class="g3-lbl">累计操作</view>
+          </view>
+        </view>
+        <view class="flow-row">
+          <view class="flow-item" bindtap="goItems">
+            <text class="flow-lbl">物品种类</text>
+            <text class="flow-val">{{stat.item_count || 0}}</text>
+          </view>
+          <view class="flow-item" bindtap="goItems">
+            <text class="flow-lbl">库存总量</text>
+            <text class="flow-val">{{stat.total_qty || 0}}</text>
+          </view>
+          <view class="flow-item" bindtap="goRecords">
+            <text class="flow-lbl">全部记录</text>
+            <text class="flow-val">›</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">快捷操作</view>
+        <view class="act-grid">
+          <view class="act" bindtap="goScan">
+            <view class="act-ico act-green">扫</view>
+            <view class="act-txt">扫码出入库</view>
+          </view>
+          <view class="act" bindtap="goManual">
+            <view class="act-ico act-green">输</view>
+            <view class="act-txt">手动输编号</view>
+          </view>
+          <view class="act" bindtap="goItems">
+            <view class="act-ico act-green">查</view>
+            <view class="act-txt">查物品库存</view>
+          </view>
+          <view class="act" bindtap="goRecords">
+            <view class="act-ico act-green">记</view>
+            <view class="act-txt">出入库记录</view>
+          </view>
+          <view class="act" bindtap="goProfile">
+            <view class="act-ico act-green">我</view>
+            <view class="act-txt">我的账号</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="card">
+        <view class="card-title">
+          <text>我最近的操作</text>
+          <text class="t-primary f-sm" catchtap="goRecords">更多 ›</text>
+        </view>
+        <block wx:if="{{recent.length}}">
+          <view wx:for="{{recent}}" wx:key="id" class="rec" bindtap="openRecord" data-code="{{item.item_code}}">
+            <view class="rec-dot {{item.isIn ? 'dot-in' : 'dot-out'}}"></view>
+            <view class="grow">
+              <view class="rec-title ellipsis">{{item.item_name}}</view>
+              <view class="rec-meta">{{item.item_code}} · {{item.timeText}}</view>
+            </view>
+            <text class="rec-qty {{item.isIn ? 't-in' : 't-out'}}">{{item.qtyText}}</text>
+          </view>
+        </block>
+        <view wx:else class="empty-inline">今天还没有操作记录，扫码试试吧</view>
+      </view>
+
+      <view class="tips">出入库会以你的名义记录在案，请如实操作</view>
+    </view>
+  </block>
+</view>

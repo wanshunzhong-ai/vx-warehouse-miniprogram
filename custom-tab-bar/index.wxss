@@ -1,0 +1,235 @@
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: #ffffff;
+  border-top: 1rpx solid #eef1f6;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -6rpx 24rpx rgba(21, 25, 34, 0.05);
+  z-index: 999;
+}
+
+.tab {
+  flex: 1;
+  height: 108rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ico {
+  position: relative;
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 6rpx;
+}
+
+.ico > view {
+  display: none;
+  position: absolute;
+}
+
+.lbl {
+  font-size: 20rpx;
+  color: #8a9099;
+  line-height: 1.2;
+}
+
+/* ---------- 未选中：灰底图形 ---------- */
+
+.ic-grid > view,
+.ic-box > view:nth-child(1),
+.ic-list > view,
+.ic-user > view {
+  background: #8a9099;
+}
+
+.ic-scan > view {
+  border-color: #8a9099;
+}
+
+/* ---------- 图形定义 ---------- */
+
+/* 首页：2x2 方格 */
+.ic-grid > view {
+  display: block;
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 5rpx;
+}
+.ic-grid > view:nth-child(1) { left: 0; top: 0; }
+.ic-grid > view:nth-child(2) { right: 0; top: 0; }
+.ic-grid > view:nth-child(3) { left: 0; bottom: 0; }
+.ic-grid > view:nth-child(4) { right: 0; bottom: 0; }
+
+/* 物品：方盒 */
+.ic-box > view:nth-child(1) {
+  display: block;
+  left: 0;
+  top: 2rpx;
+  right: 0;
+  bottom: 2rpx;
+  border-radius: 9rpx;
+}
+.ic-box > view:nth-child(2) {
+  display: block;
+  left: 8rpx;
+  right: 8rpx;
+  top: 13rpx;
+  height: 5rpx;
+  border-radius: 3rpx;
+  background: #ffffff;
+}
+
+/* 扫码：取景四角 */
+.ic-scan > view {
+  display: block;
+  width: 14rpx;
+  height: 14rpx;
+}
+.ic-scan > view:nth-child(1) {
+  left: 0; top: 0;
+  border-left: 5rpx solid;
+  border-top: 5rpx solid;
+  border-top-left-radius: 7rpx;
+}
+.ic-scan > view:nth-child(2) {
+  right: 0; top: 0;
+  border-right: 5rpx solid;
+  border-top: 5rpx solid;
+  border-top-right-radius: 7rpx;
+}
+.ic-scan > view:nth-child(3) {
+  left: 0; bottom: 0;
+  border-left: 5rpx solid;
+  border-bottom: 5rpx solid;
+  border-bottom-left-radius: 7rpx;
+}
+.ic-scan > view:nth-child(4) {
+  right: 0; bottom: 0;
+  border-right: 5rpx solid;
+  border-bottom: 5rpx solid;
+  border-bottom-right-radius: 7rpx;
+}
+
+/* 记录：三条横线 */
+.ic-list > view {
+  display: block;
+  left: 0;
+  height: 6rpx;
+  border-radius: 3rpx;
+}
+.ic-list > view:nth-child(1) { top: 6rpx; right: 0; }
+.ic-list > view:nth-child(2) { top: 17rpx; right: 7rpx; }
+.ic-list > view:nth-child(3) { top: 28rpx; right: 0; }
+
+/* 我的：头 + 肩 */
+.ic-user > view:nth-child(1) {
+  display: block;
+  left: 12rpx;
+  top: 0;
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+.ic-user > view:nth-child(2) {
+  display: block;
+  left: 2rpx;
+  bottom: 1rpx;
+  width: 36rpx;
+  height: 18rpx;
+  border-radius: 18rpx 18rpx 6rpx 6rpx;
+}
+
+/* ---------- 选中态主色（按角色区分） ---------- */
+
+.theme-staff .tab.on .lbl { color: #0ca678; }
+.theme-staff .tab.on .ic-grid > view,
+.theme-staff .tab.on .ic-box > view:nth-child(1),
+.theme-staff .tab.on .ic-list > view,
+.theme-staff .tab.on .ic-user > view { background: #0ca678; }
+.theme-staff .tab.on .ic-scan > view { border-color: #0ca678; }
+
+.theme-manager .tab.on .lbl { color: #2f6df6; }
+.theme-manager .tab.on .ic-grid > view,
+.theme-manager .tab.on .ic-box > view:nth-child(1),
+.theme-manager .tab.on .ic-list > view,
+.theme-manager .tab.on .ic-user > view { background: #2f6df6; }
+.theme-manager .tab.on .ic-scan > view { border-color: #2f6df6; }
+
+.theme-admin .tab.on .lbl { color: #7c4dff; }
+.theme-admin .tab.on .ic-grid > view,
+.theme-admin .tab.on .ic-box > view:nth-child(1),
+.theme-admin .tab.on .ic-list > view,
+.theme-admin .tab.on .ic-user > view { background: #7c4dff; }
+.theme-admin .tab.on .ic-scan > view { border-color: #7c4dff; }
+
+/* ============================================================
+   凸起大按钮 —— 员工的「扫码出入库」专属入口
+   ------------------------------------------------------------
+   它是独立于普通页签的存在：不在导航底板里排排坐，而是从板子中间
+   凸出来一个圆形按钮，一眼就能找到。样式由 roles.js 的 RAISED_TAB 驱动。
+   ============================================================ */
+
+/* 按钮会凸到底板外面，底板不能裁切 */
+.tabbar {
+  overflow: visible;
+}
+
+.tab.raised {
+  position: relative;
+  /* 圆形按钮是绝对定位的，这里只把文字压到底部，好跟旁边普通页签的文字对齐 */
+  justify-content: flex-end;
+  padding-bottom: 14rpx;
+}
+
+.raise-btn {
+  position: absolute;
+  top: -48rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #19d29a, #0ca678);
+  /* 白边让按钮看起来像是从底板里「长」出来的 */
+  border: 6rpx solid #ffffff;
+  box-shadow: 0 12rpx 26rpx rgba(12, 166, 120, 0.36);
+}
+
+.raise-btn-hover {
+  transform: translateX(-50%) scale(0.94);
+}
+
+.tab.raised .ico {
+  margin-bottom: 0;
+  transform: scale(1.3);
+}
+
+/* 圆底上的取景框改用白色 */
+.tab.raised .ic-scan > view { border-color: #ffffff; }
+
+.tab.raised .lbl {
+  color: #0ca678;
+  font-weight: 600;
+}
+
+/* 当前正停在这一页：外圈加一层光晕 */
+.tab.raised.on .raise-btn {
+  box-shadow: 0 0 0 10rpx rgba(12, 166, 120, 0.14), 0 12rpx 26rpx rgba(12, 166, 120, 0.4);
+}
+
+/* 凸起按钮的主色也跟着角色走 */
+.theme-manager .raise-btn { background: linear-gradient(135deg, #4e8bff, #2f6df6); box-shadow: 0 12rpx 26rpx rgba(47, 109, 246, 0.36); }
+.theme-manager .tab.raised .lbl { color: #2f6df6; }
+.theme-manager .tab.raised.on .raise-btn { box-shadow: 0 0 0 10rpx rgba(47, 109, 246, 0.14), 0 12rpx 26rpx rgba(47, 109, 246, 0.4); }
+
+.theme-admin .raise-btn { background: linear-gradient(135deg, #9a6dff, #7c4dff); box-shadow: 0 12rpx 26rpx rgba(124, 77, 255, 0.36); }
+.theme-admin .tab.raised .lbl { color: #7c4dff; }
+.theme-admin .tab.raised.on .raise-btn { box-shadow: 0 0 0 10rpx rgba(124, 77, 255, 0.14), 0 12rpx 26rpx rgba(124, 77, 255, 0.4); }

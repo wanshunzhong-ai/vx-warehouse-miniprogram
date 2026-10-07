@@ -1,0 +1,77 @@
+.col-hint {
+  font-size: 24rpx;
+  color: #8a9099;
+  line-height: 1.7;
+  margin-bottom: 18rpx;
+}
+
+.import-textarea {
+  min-height: 320rpx;
+  margin-top: 0;
+}
+
+.btn-row {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 28rpx;
+}
+
+.err-card {
+  background: #fffafa;
+}
+
+.err-line {
+  font-size: 26rpx;
+  color: #dc2626;
+  line-height: 1.7;
+  padding: 4rpx 0;
+}
+
+.pv-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.pv-item:last-child {
+  border-bottom: none;
+}
+
+.pv-idx {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 14rpx;
+  background: #f2f5fb;
+  color: #6b7280;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.pv-qty {
+  font-size: 26rpx;
+  color: #4b5563;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.progress-card {
+  background: #f3f7ff;
+  text-align: center;
+}
+
+.submit {
+  margin-top: 40rpx;
+  width: 100%;
+}
+
+.hint {
+  margin-top: 28rpx;
+  font-size: 22rpx;
+  color: #a3a9b3;
+  line-height: 1.7;
+}

@@ -1,0 +1,178 @@
+.search-bar {
+  padding: 20rpx 28rpx 8rpx;
+  background: #f4f6fa;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  height: 84rpx;
+  padding: 0 24rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 18rpx rgba(21, 25, 34, 0.05);
+}
+
+.search-ico {
+  position: relative;
+  width: 30rpx;
+  height: 30rpx;
+  border: 4rpx solid #b9bfc9;
+  border-radius: 50%;
+  margin-right: 18rpx;
+  flex-shrink: 0;
+}
+
+.search-ico::after {
+  content: '';
+  position: absolute;
+  right: -12rpx;
+  bottom: -8rpx;
+  width: 16rpx;
+  height: 4rpx;
+  background: #b9bfc9;
+  border-radius: 2rpx;
+  transform: rotate(45deg);
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #151922;
+}
+
+.search-clear {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #eef1f6;
+  color: #9aa1ad;
+  font-size: 30rpx;
+  text-align: center;
+  line-height: 42rpx;
+  flex-shrink: 0;
+}
+
+/* ---------- 分类 ---------- */
+
+.chips {
+  white-space: nowrap;
+  padding: 20rpx 28rpx 4rpx;
+}
+
+.chip {
+  display: inline-block;
+  padding: 12rpx 30rpx;
+  margin-right: 16rpx;
+  background: #ffffff;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #4b5563;
+  border: 1rpx solid #eef1f6;
+}
+
+.chip-on {
+  background: #2f6df6;
+  color: #ffffff;
+  border-color: #2f6df6;
+  font-weight: 500;
+}
+
+.summary {
+  padding: 18rpx 32rpx 8rpx;
+}
+
+/* ---------- 列表 ---------- */
+
+.list-wrap {
+  padding: 0 28rpx 40rpx;
+}
+
+.item-card {
+  background: #ffffff;
+  border-radius: 22rpx;
+  padding: 28rpx 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 18rpx rgba(21, 25, 34, 0.05);
+}
+
+.ic-head {
+  display: flex;
+  align-items: flex-start;
+}
+
+.ic-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #151922;
+  line-height: 1.35;
+}
+
+.ic-code {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #9aa1ad;
+}
+
+.ic-qty {
+  display: flex;
+  align-items: baseline;
+  margin-left: 20rpx;
+  flex-shrink: 0;
+}
+
+.ic-qty-num {
+  font-size: 44rpx;
+  font-weight: 600;
+  color: #151922;
+  line-height: 1;
+}
+
+.ic-qty-unit {
+  font-size: 22rpx;
+  color: #9aa1ad;
+  margin-left: 6rpx;
+}
+
+.ic-tags {
+  margin-top: 18rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.list-foot {
+  text-align: center;
+  padding: 32rpx 0;
+  font-size: 24rpx;
+  color: #a3a9b3;
+}
+
+/* ---------- 空态图标 ---------- */
+
+.ei-box {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  border: 6rpx solid #b9c6dd;
+}
+
+/* ---------- 悬浮新增 ---------- */
+
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: calc(150rpx + env(safe-area-inset-bottom));
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3d7bff, #2f6df6);
+  color: #ffffff;
+  font-size: 56rpx;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 30rpx rgba(47, 109, 246, 0.36);
+  z-index: 20;
+}

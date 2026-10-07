@@ -1,0 +1,142 @@
+<view class="page">
+  <!-- 管理员：人员概览 + 待审批入口 -->
+  <view wx:if="{{isAdmin}}" class="head">
+    <view class="head-title">人员与权限</view>
+    <view class="head-desc">员工的账号由主管提交，必须经管理员审批后才能登录</view>
+    <view class="ov-row">
+      <view class="ov-cell" data-key="pending" bindtap="pickFilter">
+        <view class="ov-num {{overview.pending > 0 ? 'c-warn' : ''}}">{{overview.pending || 0}}</view>
+        <view class="ov-lbl">待审批</view>
+      </view>
+      <view class="ov-cell">
+        <view class="ov-num c-admin">{{overview.admin || 0}}</view>
+        <view class="ov-lbl">管理员</view>
+      </view>
+      <view class="ov-cell">
+        <view class="ov-num c-manager">{{overview.manager || 0}}</view>
+        <view class="ov-lbl">主管</view>
+      </view>
+      <view class="ov-cell">
+        <view class="ov-num c-staff">{{overview.staff || 0}}</view>
+        <view class="ov-lbl">员工</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 主管：我的提交概览 -->
+  <view wx:else class="head head-manager">
+    <view class="head-title">我提交的账号申请</view>
+    <view class="head-desc">你添加的每个员工账号都需要管理员审批通过后才能登录</view>
+    <view class="ov-row">
+      <view class="ov-cell">
+        <view class="ov-num {{overview.my_pending > 0 ? 'c-warn' : ''}}">{{overview.my_pending || 0}}</view>
+        <view class="ov-lbl">待审批</view>
+      </view>
+      <view class="ov-cell">
+        <view class="ov-num c-manager">{{overview.my_active || 0}}</view>
+        <view class="ov-lbl">已通过</view>
+      </view>
+      <view class="ov-cell">
+        <view class="ov-num">{{overview.my_rejected || 0}}</view>
+        <view class="ov-lbl">已驳回</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索 + 筛选 -->
+  <view class="search-bar">
+    <view class="search-wrap">
+      <view class="search-ico"></view>
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="搜索姓名 / 账号 / 手机号"
+        placeholder-class="field-placeholder"
+        confirm-type="search"
+        bindinput="onKeywordInput"
+      />
+      <view wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword">×</view>
+    </view>
+  </view>
+
+  <scroll-view class="chips" scroll-x enable-flex>
+    <view
+      wx:for="{{filters}}"
+      wx:key="key"
+      class="chip {{activeKey === item.key ? 'chip-on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="pickFilter"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view class="wrap">
+    <view wx:if="{{!loading && list.length === 0}}" class="empty">
+      <view class="empty-icon"><view class="ei-user"></view></view>
+      <view class="empty-title">没有符合条件的账号</view>
+      <view class="empty-desc">{{isAdmin ? '点击下方按钮可以直接创建账号' : '点下方按钮添加员工账号'}}</view>
+    </view>
+
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="card staff-card"
+      data-id="{{item.id}}"
+      bindtap="openStaff"
+    >
+      <view class="sc-head">
+        <view class="sc-avatar">{{item.initial}}</view>
+        <view class="grow">
+          <view class="sc-name-row">
+            <text class="sc-name">{{item.name}}</text>
+            <text class="tag {{item.role === 'admin' ? 'tag-purple' : (item.role === 'manager' ? 'tag-blue' : 'tag-green')}}">{{item.roleLabel}}</text>
+            <text class="tag {{item.statusClass}}">{{item.statusLabel}}</text>
+          </view>
+          <view class="sc-meta">账号 {{item.username}}{{item.dept ? ' · ' + item.dept : ''}}</view>
+        </view>
+      </view>
+
+      <view class="sc-body">
+        <view class="sc-line">
+          <text class="sc-k">手机号</text>
+          <text class="sc-v">{{item.phone || '未填写'}}</text>
+        </view>
+        <view class="sc-line">
+          <text class="sc-k">上次登录</text>
+          <text class="sc-v">{{item.lastLoginText}}</text>
+        </view>
+        <view class="sc-line">
+          <text class="sc-k">提交人</text>
+          <text class="sc-v">{{item.created_by_name || '系统创建'}} · {{item.createdText}}</text>
+        </view>
+        <view wx:if="{{item.remark}}" class="sc-line">
+          <text class="sc-k">申请说明</text>
+          <text class="sc-v">{{item.remark}}</text>
+        </view>
+        <view wx:if="{{item.review_note}}" class="sc-line">
+          <text class="sc-k">审批意见</text>
+          <text class="sc-v">{{item.review_note}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{isAdmin && item.status === 'pending'}}" class="sc-actions">
+        <view
+          class="btn btn-primary btn-sm grow"
+          data-id="{{item.id}}"
+          data-name="{{item.name}}"
+          catchtap="quickReview"
+        >审批这条申请</view>
+      </view>
+      <view wx:elif="{{isAdmin}}" class="sc-actions">
+        <view class="sc-hint">点击查看详情 · 可改角色 / 停用 / 重置密码</view>
+      </view>
+    </view>
+
+    <button class="btn btn-primary add-btn" bindtap="goAdd">
+      {{isAdmin ? '＋ 直接创建账号' : '＋ 添加员工账号'}}
+    </button>
+
+    <view class="tips">
+      员工账号不能自行注册。主管添加后进入待审批，管理员通过后对方才能用该账号登录。
+    </view>
+  </view>
+</view>

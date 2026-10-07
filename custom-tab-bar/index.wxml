@@ -1,0 +1,39 @@
+<view class="tabbar {{theme}} {{hasRaised ? 'has-raised' : ''}}">
+  <block wx:for="{{list}}" wx:key="key">
+
+    <!-- 凸起大按钮：员工的扫码入口，独立于普通页签 -->
+    <view
+      wx:if="{{item.raised}}"
+      class="tab raised {{selected === index ? 'on' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTap"
+    >
+      <view class="raise-btn" hover-class="raise-btn-hover" hover-stay-time="80">
+        <view class="ico ic-{{item.icon}}">
+          <view></view>
+          <view></view>
+          <view></view>
+          <view></view>
+        </view>
+      </view>
+      <text class="lbl">{{item.text}}</text>
+    </view>
+
+    <!-- 普通页签 -->
+    <view
+      wx:else
+      class="tab {{selected === index ? 'on' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTap"
+    >
+      <view class="ico ic-{{item.icon}}">
+        <view></view>
+        <view></view>
+        <view></view>
+        <view></view>
+      </view>
+      <text class="lbl">{{item.text}}</text>
+    </view>
+
+  </block>
+</view>

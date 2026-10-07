@@ -1,0 +1,98 @@
+.pf-head {
+  padding: 52rpx 32rpx 44rpx;
+  background: linear-gradient(140deg, #eef2fb 0%, #f4f6fa 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pf-avatar {
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 40rpx;
+  background: #ffffff;
+  color: #2f6df6;
+  font-size: 52rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 28rpx rgba(47, 109, 246, 0.16);
+}
+
+.pf-name {
+  margin-top: 24rpx;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #151922;
+}
+
+.pf-tags {
+  margin-top: 16rpx;
+}
+
+.pf-tags .tag {
+  margin: 0 8rpx;
+}
+
+.pf-desc {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #8b8f99;
+}
+
+.submit {
+  margin-top: 32rpx;
+  width: 100%;
+}
+
+.err-box {
+  margin-top: 24rpx;
+  padding: 20rpx 24rpx;
+  background: #fef2f2;
+  border-radius: 14rpx;
+  font-size: 26rpx;
+  color: #dc2626;
+  line-height: 1.5;
+}
+
+.hint-inline {
+  margin-top: 16rpx;
+  font-size: 23rpx;
+  color: #a3a9b3;
+  text-align: center;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-lbl {
+  width: 180rpx;
+  font-size: 26rpx;
+  color: #8a9099;
+  flex-shrink: 0;
+}
+
+.info-val {
+  flex: 1;
+  font-size: 28rpx;
+  color: #151922;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.tips {
+  margin-top: 32rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #a3a9b3;
+  line-height: 1.7;
+}

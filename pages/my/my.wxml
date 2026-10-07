@@ -1,0 +1,144 @@
+<view class="page page-tab">
+  <!-- 账号卡 -->
+  <view class="me-card {{role === 'admin' ? 'me-admin' : (role === 'manager' ? 'me-manager' : 'me-staff')}}" bindtap="goProfile">
+    <view class="me-avatar">{{me.initial}}</view>
+    <view class="grow">
+      <view class="me-name-row">
+        <text class="me-name">{{me.name}}</text>
+        <text class="me-badge">{{roleMeta.label}}</text>
+      </view>
+      <view class="me-sub">账号 {{me.username}}{{me.dept ? ' · ' + me.dept : ''}}</view>
+    </view>
+    <text class="me-arrow">›</text>
+  </view>
+
+  <view class="wrap body">
+    <!-- 待审批（管理员） -->
+    <view
+      wx:if="{{isAdmin && overview.pending > 0}}"
+      class="card todo"
+      bindtap="goStaff"
+      data-status="pending"
+    >
+      <view class="todo-num">{{overview.pending}}</view>
+      <view class="grow">
+        <view class="todo-title">有账号申请等待审批</view>
+        <view class="todo-desc">员工账号必须经你通过才能登录</view>
+      </view>
+      <text class="mi-arrow">›</text>
+    </view>
+
+    <!-- 数据概览 -->
+    <view class="card">
+      <view class="card-title">{{role === 'staff' ? '我的数据' : '仓库概览'}}</view>
+      <view class="mini-grid">
+        <view class="mini-cell">
+          <view class="mini-num">{{stat.item_count || 0}}</view>
+          <view class="mini-lbl">物品种类</view>
+        </view>
+        <view class="mini-cell">
+          <view class="mini-num">{{stat.total_qty || 0}}</view>
+          <view class="mini-lbl">库存总量</view>
+        </view>
+        <view class="mini-cell">
+          <view class="mini-num {{stat.low_count > 0 ? 't-out' : ''}}">{{stat.low_count || 0}}</view>
+          <view class="mini-lbl">库存预警</view>
+        </view>
+      </view>
+      <view class="mini-grid" style="margin-top:24rpx">
+        <view class="mini-cell">
+          <view class="mini-num t-in">+{{role === 'staff' ? (stat.my_today_in || 0) : (stat.today_in || 0)}}</view>
+          <view class="mini-lbl">{{role === 'staff' ? '我今日入库' : '今日入库'}}</view>
+        </view>
+        <view class="mini-cell">
+          <view class="mini-num t-out">-{{role === 'staff' ? (stat.my_today_out || 0) : (stat.today_out || 0)}}</view>
+          <view class="mini-lbl">{{role === 'staff' ? '我今日出库' : '今日出库'}}</view>
+        </view>
+        <view class="mini-cell">
+          <view class="mini-num">{{role === 'staff' ? (stat.my_total_count || 0) : (stat.today_count || 0)}}</view>
+          <view class="mini-lbl">{{role === 'staff' ? '累计操作' : '今日单数'}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 我的权限 -->
+    <view class="card">
+      <view class="card-title">
+        <text>{{roleMeta.label}}能做什么</text>
+        <text class="t-primary f-sm" bindtap="goProfile">账号与安全 ›</text>
+      </view>
+      <view class="ability">
+        <view wx:for="{{ability}}" wx:key="*this" class="ab-item">
+          <view class="ab-dot"></view>
+          <text class="ab-txt">{{item}}</text>
+        </view>
+      </view>
+      <view class="ab-foot">{{roleMeta.desc}}</view>
+    </view>
+
+    <!-- 人员 -->
+    <view class="card menu-card">
+      <view wx:if="{{isAdmin}}" class="menu-item" bindtap="goStaff">
+        <view class="mi-ico mi-violet">人</view>
+        <view class="grow">
+          <view class="f-md">人员管理</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">账号审批、调整身份、停用、重置密码</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+
+      <view wx:if="{{role === 'manager'}}" class="menu-item" bindtap="goStaff">
+        <view class="mi-ico mi-blue">申</view>
+        <view class="grow">
+          <view class="f-md">我提交的账号申请</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">查看审批进度，或再添加一个员工账号</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 物品相关 -->
+    <view class="card menu-card">
+      <view wx:if="{{caps.item_import}}" class="menu-item" bindtap="goImport">
+        <view class="mi-ico mi-blue">导</view>
+        <view class="grow">
+          <view class="f-md">批量导入物品</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">从 Excel 复制后整批粘贴建档</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+
+      <view wx:if="{{caps.record_export}}" class="menu-item" bindtap="exportItems">
+        <view class="mi-ico mi-green">出</view>
+        <view class="grow">
+          <view class="f-md">导出物品清单</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">复制为表格，可粘贴到 Excel</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+
+      <view class="menu-item" bindtap="showPcTip">
+        <view class="mi-ico mi-orange">标</view>
+        <view class="grow">
+          <view class="f-md">电脑端标签打印工具</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">批量建档并打印二维码标签</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 退出 -->
+    <view class="card menu-card">
+      <view class="menu-item" bindtap="onSignOut">
+        <view class="mi-ico mi-red">退</view>
+        <view class="grow">
+          <view class="f-md t-out">退出登录</view>
+          <view class="f-xs t-dim" style="margin-top:6rpx">退出后需重新输入账号密码</view>
+        </view>
+        <text class="mi-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="tips">数据保存在云端，所有同事看到的是同一份库存；每笔出入库都会记在操作人名下。</view>
+  </view>
+</view>
