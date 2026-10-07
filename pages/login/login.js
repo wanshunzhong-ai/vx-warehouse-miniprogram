@@ -1,6 +1,7 @@
 const auth = require('../../utils/auth')
 const util = require('../../utils/util')
 const roles = require('../../utils/roles')
+const session = require('../../utils/session')
 
 Page({
   data: {
@@ -9,11 +10,13 @@ Page({
     showPassword: false,
     canSubmit: false,
     loading: false,
-    checking: true,
     error: ''
   },
 
   onLoad() {
+    // 本项目的策略是「每次打开都要登录」，登录页不做任何自动进入；
+    // 顺手清掉旧版本可能残留在 Storage 里的登录态，避免残留误导。
+    session.purgeLegacy()
     // 上次用过的账号，方便连续登录
     try {
       const last = wx.getStorageSync('warehouse_last_username')
@@ -21,21 +24,6 @@ Page({
     } catch (e) {
       // 忽略
     }
-    this.autoEnter()
-  },
-
-  /** 已经登录过就直接进对应的后台，不用再输一次 */
-  async autoEnter() {
-    try {
-      const me = await auth.restore()
-      if (me) {
-        this.enter(me)
-        return
-      }
-    } catch (e) {
-      // 交给用户手动登录
-    }
-    this.setData({ checking: false })
   },
 
   enter(staff) {

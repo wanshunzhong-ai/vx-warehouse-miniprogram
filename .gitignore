@@ -10,6 +10,12 @@ project.private.config.json
 # WorkBuddy 应用元数据（本机发布信息，与代码无关）
 .wbapp_*
 
+# 含明文演示密码的内部账号表（仓库为公开仓库，禁止入库）
+*账号表*
+*-accounts.html
+# 上述表的工作目录（含 build 脚本里的明文密码）
+*.ref/
+
 # 编辑器 / 系统
 .DS_Store
 Thumbs.db
