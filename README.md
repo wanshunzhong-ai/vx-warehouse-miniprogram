@@ -109,12 +109,22 @@
 │   └── page.js  tabbar.js  util.js
 ├── miniprogram_npm/                云 SDK 构建产物（见下方「构建 npm」）
 ├── pc-tools/index.html             电脑端离线标签工具
+├── sql/                            后端建库脚本（01→02→03→04 顺序执行）
+├── docs/部署指南.html               零基础部署手册（含排错表）
 └── project.config.json
 ```
 
-## 本地运行
+## 部署
 
-1. 用微信开发者工具打开本目录（小程序根目录就是仓库根目录）。
+**第一次装？直接看 [`docs/部署指南.html`](docs/部署指南.html)。**
+那份手册是写给完全不懂编程的人的：准备清单 → 装微信开发者工具 → 下载代码 → 导入项目 →
+构建 npm → 编译 → 连后端（三种方案）→ 建管理员 → 电脑端打码 → 真机预览与发布，
+每一步都写了「点哪里」和「做完应该看到什么」，末尾还有一张报错排查表。
+
+简版（有基础的话）：
+
+1. 微信开发者工具导入本目录（小程序根目录就是仓库根目录），把 `project.config.json` 的
+   `appid` 换成自己的。
 2. 安装依赖并构建 npm：
    ```bash
    npm install
@@ -124,6 +134,8 @@
 3. 编译预览。首次登录会提示修改初始密码（仅针对审批通过的新账号）。
 
 云环境配置集中在 `utils/cloud.js` 的 `publicConfig`（endpoint + publishableKey），换环境只改这里。
+新建自己的云环境时，按 `sql/01-schema.sql` → `02-functions.sql` → `03-bootstrap-admin.sql`
+（先改里面的初始密码，否则脚本会拒绝执行）→ 可选 `04-demo-data.sql` 的顺序建库。
 
 ## 后端
 

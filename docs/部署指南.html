@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>内部仓库物品管理小程序 · 从零部署指南</title>
+<style>
+  :root{
+    --brand:#2f6df6;
+    --brand-dark:#1f4fc4;
+    --brand-soft:#eef3ff;
+    --ink:#1f2430;
+    --ink-2:#4a5262;
+    --ink-3:#7b8494;
+    --line:#e3e7ef;
+    --bg:#f6f8fc;
+    --card:#ffffff;
+    --ok:#0f9d58;
+    --ok-soft:#eaf7ef;
+    --warn:#c77700;
+    --warn-soft:#fff6e5;
+    --danger:#d93025;
+    --danger-soft:#fdeceb;
+    --code-bg:#f2f4f8;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:15px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px 80px}
+
+  /* ---------- 封面 ---------- */
+  .hero{
+    background:linear-gradient(135deg,#2f6df6 0%,#1a3f9e 100%);
+    color:#fff;
+    margin:0 0 32px;
+    padding:56px 20px 48px;
+  }
+  .hero-inner{max-width:900px;margin:0 auto}
+  .hero .kicker{
+    display:inline-block;font-size:12px;letter-spacing:.16em;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+    padding:4px 12px;border-radius:999px;margin-bottom:18px;
+  }
+  .hero h1{margin:0 0 12px;font-size:30px;line-height:1.35;font-weight:700;letter-spacing:.5px}
+  .hero p{margin:0;opacity:.9;font-size:15px;max-width:640px}
+  .hero .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+  .hero .meta span{
+    font-size:12.5px;background:rgba(255,255,255,.14);border-radius:6px;
+    padding:5px 11px;border:1px solid rgba(255,255,255,.18);
+  }
+
+  /* ---------- 目录 ---------- */
+  .toc{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:20px 24px;margin-bottom:36px;
+  }
+  .toc h2{margin:0 0 12px;font-size:15px;color:var(--ink-2);letter-spacing:.05em}
+  .toc ol{margin:0;padding-left:22px}
+  .toc li{margin:5px 0}
+  .toc a{color:var(--brand);text-decoration:none;border-bottom:1px solid transparent}
+  .toc a:hover{border-bottom-color:var(--brand)}
+
+  /* ---------- 章节 ---------- */
+  section{margin-bottom:52px;scroll-margin-top:16px}
+  h2.ch{
+    font-size:21px;margin:0 0 6px;padding-bottom:12px;border-bottom:2px solid var(--brand);
+    display:flex;align-items:baseline;gap:10px;
+  }
+  h2.ch .num{
+    flex:none;background:var(--brand);color:#fff;font-size:13px;font-weight:600;
+    width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;
+    transform:translateY(-2px);
+  }
+  .ch-sub{color:var(--ink-3);font-size:13.5px;margin:0 0 22px}
+  h3{font-size:16.5px;margin:30px 0 10px;color:var(--ink)}
+  h3:first-of-type{margin-top:20px}
+  p{margin:10px 0}
+  ul,ol{padding-left:22px;margin:10px 0}
+  li{margin:5px 0}
+  strong{font-weight:600}
+  a{color:var(--brand)}
+
+  /* ---------- 步骤卡片 ---------- */
+  .step{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:18px 22px;margin:14px 0;
+  }
+  .step-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:8px}
+  .step-no{
+    flex:none;width:26px;height:26px;border-radius:50%;background:var(--brand-soft);
+    color:var(--brand-dark);font-weight:700;font-size:13px;
+    display:inline-flex;align-items:center;justify-content:center;margin-top:2px;
+  }
+  .step-title{font-weight:600;font-size:15.5px;line-height:1.6}
+  .step-body{padding-left:38px}
+  .step-body > :first-child{margin-top:0}
+  .step-body > :last-child{margin-bottom:0}
+
+  /* ---------- 提示框 ---------- */
+  .box{border-radius:10px;padding:14px 18px;margin:16px 0;border-left:4px solid;font-size:14.5px}
+  .box .bt{font-weight:700;display:block;margin-bottom:4px;font-size:14px}
+  .box p:last-child{margin-bottom:0}
+  .box p:first-of-type{margin-top:0}
+  .box.tip{background:var(--brand-soft);border-color:var(--brand);color:#1b3a80}
+  .box.ok{background:var(--ok-soft);border-color:var(--ok);color:#0b6b3d}
+  .box.warn{background:var(--warn-soft);border-color:var(--warn);color:#8a5300}
+  .box.danger{background:var(--danger-soft);border-color:var(--danger);color:#8f2119}
+
+  code{
+    background:var(--code-bg);border:1px solid var(--line);border-radius:5px;
+    padding:1px 6px;font-size:.9em;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    word-break:break-word;
+  }
+  pre{
+    background:#1e2430;color:#e6ebf5;border-radius:10px;padding:15px 18px;overflow-x:auto;
+    font-size:13.5px;line-height:1.7;margin:14px 0;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  pre code{background:none;border:none;padding:0;color:inherit;font-size:1em}
+  .cmt{color:#8b97ad}
+
+  /* ---------- 表格 ---------- */
+  .tbl-wrap{overflow-x:auto;margin:16px 0}
+  table{border-collapse:collapse;width:100%;font-size:14px;background:var(--card)}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;vertical-align:top}
+  th{background:#f0f3f9;font-weight:600;color:var(--ink-2);white-space:nowrap}
+  tbody tr:nth-child(even){background:#fafbfe}
+  td code{font-size:.88em}
+  .pill{
+    display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600;
+    white-space:nowrap;
+  }
+  .pill.ok{background:var(--ok-soft);color:var(--ok)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.danger{background:var(--danger-soft);color:var(--danger)}
+  .pill.info{background:var(--brand-soft);color:var(--brand-dark)}
+
+  /* ---------- 图：三件套 ---------- */
+  .arch{
+    display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;
+  }
+  .arch .node{
+    flex:1 1 210px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:16px 18px;
+  }
+  .arch .node .ic{
+    width:34px;height:34px;border-radius:9px;background:var(--brand-soft);color:var(--brand-dark);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;margin-bottom:10px;
+  }
+  .arch .node h4{margin:0 0 6px;font-size:14.5px}
+  .arch .node p{margin:0;font-size:13.5px;color:var(--ink-2)}
+
+  .flow{
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0;
+    font-size:13.5px;
+  }
+  .flow .f{
+    background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 13px;
+    font-weight:500;color:var(--ink-2);
+  }
+  .flow .arw{color:var(--ink-3)}
+
+  hr{border:none;border-top:1px dashed var(--line);margin:34px 0}
+
+  .checklist{list-style:none;padding-left:0}
+  .checklist li{padding-left:28px;position:relative}
+  .checklist li::before{
+    content:"✓";position:absolute;left:4px;top:0;color:var(--ok);font-weight:700;
+  }
+
+  .foot{color:var(--ink-3);font-size:13px;text-align:center;margin-top:50px;padding-top:22px;border-top:1px solid var(--line)}
+
+  @media print{
+    body{background:#fff;font-size:12px}
+    .hero{background:#2f6df6 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:28px 0}
+    .wrap{max-width:none;padding:0}
+    .toc{display:none}
+    section{page-break-inside:auto;margin-bottom:26px}
+    .step,.box,table,pre{page-break-inside:avoid}
+    h2.ch{page-break-after:avoid}
+    pre{background:#f5f6f8;color:#1f2430;border:1px solid #ddd}
+    .cmt{color:#7b8494}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="kicker">部署指南 · 零基础版</span>
+    <h1>内部仓库物品管理小程序<br>从零部署指南</h1>
+    <p>照着做就行。你不需要懂编程 —— 每一个要点的按钮、要敲的命令、以及「做完应该看到什么」，都写清楚了。</p>
+    <div class="meta">
+      <span>适用系统：Windows 10/11、macOS</span>
+      <span>预计耗时：30–60 分钟</span>
+      <span>需要账号：微信小程序 + WorkBuddy</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ============ 目录 ============ -->
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#c0">先看懂全局：这套东西由哪三部分组成</a></li>
+    <li><a href="#c1">准备工作：四样东西先备齐</a></li>
+    <li><a href="#c2">把代码拿到自己电脑上</a></li>
+    <li><a href="#c3">导入微信开发者工具并跑起来</a></li>
+    <li><a href="#c4">连接后端数据库（三种方案，挑一个）</a></li>
+    <li><a href="#c5">创建第一个管理员并登录</a></li>
+    <li><a href="#c6">电脑端打码工具（打印二维码标签）</a></li>
+    <li><a href="#c7">手机真机预览与正式发布</a></li>
+    <li><a href="#c8">报错排查手册</a></li>
+    <li><a href="#cA">附录 A：目录结构速查</a></li>
+    <li><a href="#cB">附录 B：安全与维护须知</a></li>
+  </ol>
+</nav>
+
+<!-- ============ 第 0 章 ============ -->
+<section id="c0">
+  <h2 class="ch"><span class="num">0</span>先看懂全局：这套东西由哪三部分组成</h2>
+  <p class="ch-sub">花 3 分钟看完这一节，后面每一步你都会知道自己在干什么。</p>
+
+  <div class="arch">
+    <div class="node">
+      <div class="ic">①</div>
+      <h4>手机端小程序</h4>
+      <p>仓库管理员、主管、员工用的。扫码出入库、查库存、看流水、管人员。跑在微信里。</p>
+    </div>
+    <div class="node">
+      <div class="ic">②</div>
+      <h4>后端数据库（云服务）</h4>
+      <p>所有物品、库存、流水、账号都存这里。手机端只是「显示屏」，真正的账本在云端。</p>
+    </div>
+    <div class="node">
+      <div class="ic">③</div>
+      <h4>电脑端打码工具</h4>
+      <p>一个网页文件，不联网也能用。粘贴物品清单 → 批量生成二维码标签 → 打印出来贴到物品上。</p>
+    </div>
+  </div>
+
+  <p>你日常的作业动线是这样的：</p>
+  <div class="flow">
+    <span class="f">采购到货</span><span class="arw">→</span>
+    <span class="f">电脑端打码并打印</span><span class="arw">→</span>
+    <span class="f">贴到每件物品上</span><span class="arw">→</span>
+    <span class="f">手机扫码入库</span><span class="arw">→</span>
+    <span class="f">以后扫码出入库</span><span class="arw">→</span>
+    <span class="f">流水自动留痕</span>
+  </div>
+
+  <div class="box tip">
+    <span class="bt">如果你只想「先看看长什么样」</span>
+    <p>直接跳到 <a href="#c3">第 3 章</a>。跳过后端配置也能编译出完整界面，登录页、三个后台、扫码页全都看得见 —— 只是登录时会提示连不上数据库。看爽了再回来做第 4、5 章。</p>
+  </div>
+</section>
+
+<!-- ============ 第 1 章 ============ -->
+<section id="c1">
+  <h2 class="ch"><span class="num">1</span>准备工作：四样东西先备齐</h2>
+  <p class="ch-sub">按表格从上往下准备，缺哪个补哪个。</p>
+
+  <div class="tbl-wrap">
+  <table>
+    <thead>
+      <tr><th style="width:56px">#</th><th style="width:150px">要准备的东西</th><th>怎么弄</th><th style="width:90px">必装？</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>微信小程序账号</strong><br><span style="color:var(--ink-3);font-size:13px">拿到一个 AppID</span></td>
+        <td>打开 <a href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">mp.weixin.qq.com</a> → 右上角「立即注册」→ 选「小程序」→ 按提示填邮箱、手机号。<br>注册完成后：登录后台 → 左侧「开发管理」→「开发设置」→ 复制 <strong>AppID</strong>（形如 <code>wx</code> 开头的一串）。</td>
+        <td><span class="pill danger">必需</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>微信开发者工具</strong></td>
+        <td>下载地址：<a href="https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html" target="_blank" rel="noopener">developers.weixin.qq.com/miniprogram/dev/devtools/download.html</a><br>选「<strong>稳定版 Stable Build</strong>」，Windows 选 64 位版，Mac 按芯片选 Intel 或 Apple Silicon。<br>一路「下一步」装完，用微信扫码登录。</td>
+        <td><span class="pill danger">必需</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>WorkBuddy 客户端</strong></td>
+        <td>本项目用它的「云服务」当后端（数据库 + 文件存储），也用它来帮你跑 SQL、答疑。<br>已装好、能对话即可。</td>
+        <td><span class="pill danger">必需</span></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Node.js</strong><br><span style="color:var(--ink-3);font-size:13px">18 以上即可</span></td>
+        <td>下载：<a href="https://nodejs.org/zh-cn" target="_blank" rel="noopener">nodejs.org/zh-cn</a> → 选 <strong>LTS</strong> 版 → 一路默认安装。<br>装完能省掉一个手工步骤（第 3 章会用到）。<br><span style="color:var(--ink-3);font-size:13px">仓库里已经带了一份构建好的依赖，所以这个其实是「可装可不装」。</span></td>
+        <td><span class="pill warn">建议</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box warn">
+    <span class="bt">关于 AppID：这是你自己的，不能借用别人的</span>
+    <p>代码里默认写的是一个示例 AppID（<code>wx5d9f3fcfada93f13</code>）。你必须换成自己在第 1 步申请到的那个 —— 否则开发者工具会提示你这个项目不属于你，无法预览和上传。<a href="#c3">第 3 章第 1 步</a>有具体改法。</p>
+  </div>
+
+  <div class="box tip">
+    <span class="bt">个人主体的小程序够用吗？</span>
+    <p>够。这套系统只用到扫码、网络请求这些基础能力，个人主体的小程序完全可以开发和发布，不涉及需要企业资质的类目。</p>
+  </div>
+</section>
+
+<!-- ============ 第 2 章 ============ -->
+<section id="c2">
+  <h2 class="ch"><span class="num">2</span>把代码拿到自己电脑上</h2>
+  <p class="ch-sub">选一种就行，推荐「方式一」。</p>
+
+  <h3>方式一：下载 ZIP（小白首选）</h3>
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">打开代码仓库页面</span></div>
+    <div class="step-body">
+      <p>浏览器访问：</p>
+      <pre><code>https://github.com/wanshunzhong-ai/vx-warehouse-miniprogram</code></pre>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">下载并解压</span></div>
+    <div class="step-body">
+      <p>点右侧绿色的 <strong>Code</strong> 按钮 → <strong>Download ZIP</strong>。</p>
+      <p>下载完得到一个 <code>vx-warehouse-miniprogram-main.zip</code>，右键「<strong>全部解压缩</strong>」。</p>
+      <div class="box warn">
+        <span class="bt">解压路径不要有中文和空格</span>
+        <p>放到 <code>D:\vx-warehouse</code> 这类路径最好。放到「桌面\我的文档\新建文件夹」这种带中文的路径，开发者工具有概率报找不到文件的错。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>方式二：用 Git 克隆（会 Git 的话更快）</h3>
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">打开终端执行一行命令</span></div>
+    <div class="step-body">
+      <p>Windows 在文件夹地址栏输入 <code>cmd</code> 回车即可打开命令行；macOS 打开「终端」。</p>
+      <pre><code>git clone https://github.com/wanshunzhong-ai/vx-warehouse-miniprogram.git</code></pre>
+      <p>国内网络如果卡住不动，加一个代理参数（把 7890 换成你自己的代理端口）：</p>
+      <pre><code>git -c http.proxy=http://127.0.0.1:7890 clone https://github.com/wanshunzhong-ai/vx-warehouse-miniprogram.git</code></pre>
+    </div>
+  </div>
+
+  <h3>确认下载完整</h3>
+  <p>打开解压出来的文件夹，应该能看到这些内容。特别是 <code>miniprogram_npm</code> 这个文件夹，<strong>一定要在</strong>：</p>
+  <pre><code>app.js                app.json              app.wxss
+custom-tab-bar/       pages/                utils/
+miniprogram_npm/   <span class="cmt">← 云 SDK 构建产物，缺了会连不上后端</span>
+pc-tools/             sql/                  package.json
+project.config.json   README.md</code></pre>
+  <div class="box tip">
+    <span class="bt">没有看到 <code>miniprogram_npm</code>？</span>
+    <p>那是「隐藏文件夹」被折叠了，不碍事。真的缺了也不要紧 —— <a href="#c3">第 3 章第 3 步</a>的「构建 npm」会把它重新生成出来。</p>
+  </div>
+</section>
+
+<!-- ============ 第 3 章 ============ -->
+<section id="c3">
+  <h2 class="ch"><span class="num">3</span>导入微信开发者工具并跑起来</h2>
+  <p class="ch-sub">做完这一章，你就能在电脑上看到完整的小程序界面了。</p>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">新建项目</span></div>
+    <div class="step-body">
+      <p>打开微信开发者工具 → 扫码登录 → 左侧选「<strong>小程序</strong>」→ 点「<strong>+</strong>」新建。</p>
+      <p>在新建面板里填四项：</p>
+      <ul>
+        <li><strong>目录</strong>：点右边文件夹图标，选中你解压出来的那个文件夹（<strong>注意选文件夹本身，不是它的上一级</strong>）。</li>
+        <li><strong>AppID</strong>：填你在<a href="#c1">第 1 章</a>拿到的 AppID。下面「测试号」不建议选，测试号无法发布。</li>
+        <li><strong>项目名称</strong>：随便填，比如 <code>仓库物品管理</code>。</li>
+        <li><strong>后端服务</strong>：选「<strong>不使用云服务</strong>」（我们用的是自己的工作台云服务，不是微信云开发）。</li>
+      </ul>
+      <p>点「确定」。</p>
+      <div class="box tip">
+        <span class="bt">它提示「当前目录不是小程序项目目录」？</span>
+        <p>说明你选错层级了，往上或往下退一层。正确的那一层里直接就能看到 <code>app.json</code> 文件。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">改 AppID（如果第 1 步懒得起用了默认值）</span></div>
+    <div class="step-body">
+      <p>如果导入后发现提示项目不属于你，就改这里：左侧文件树打开 <code>project.config.json</code>，把 <code>"appid"</code> 那一行的值换成你自己的 AppID，保存（Ctrl/Cmd + S），然后在工具里点「编译」。</p>
+      <pre><code>{
+  <span class="cmt">// 换成你自己的小程序 AppID</span>
+  "appid": "wx你的AppID",
+  "projectname": "vx-warehouse",
+  ...
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">3</span><span class="step-title">构建 npm（关键一步，别跳过）</span></div>
+    <div class="step-body">
+      <p>顶部菜单栏：<strong>工具 → 构建 npm</strong>。</p>
+      <p>等右下角弹出「<strong>构建成功</strong>」的小提示。</p>
+      <div class="box ok">
+        <span class="bt">这一步在干什么？</span>
+        <p>把 <code>node_modules</code> 里的云服务 SDK 编译成小程序能用的形式，输出到 <code>miniprogram_npm</code>。仓库里已经预置了一份构建产物，所以<strong>正常情况下不构建也能跑</strong>；但如果你之后升级了 SDK（改了 <code>package.json</code>），就必须重新构建。</p>
+      </div>
+      <div class="box warn">
+        <span class="bt">报「找不到 node_modules」？</span>
+        <p>说明你还没装 Node.js。回到<a href="#c1">第 1 章第 4 项</a>装好 Node.js，然后在项目文件夹里执行 <code>npm install</code>（在地址栏输 <code>cmd</code> 打开命令行后运行），再回来点「构建 npm」。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">4</span><span class="step-title">编译</span></div>
+    <div class="step-body">
+      <p>点工具栏上的「<strong>编译</strong>」按钮（或按 <code>Ctrl/Cmd + B</code>）。</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">5</span><span class="step-title">验收：你应该看到什么</span></div>
+    <div class="step-body">
+      <p>左侧模拟器里会显示<strong>登录页</strong>：一个「仓库物品管理」的标题，加上账号、密码两个输入框和登录按钮。</p>
+      <div class="box ok">
+        <span class="bt">看到登录页 = 第 3 章成功</span>
+        <p>不管有没有配后端，界面都能正常显示 —— 界面是本地代码画的，不依赖数据库。<br>
+        <strong>注意</strong>：小程序每次打开都会回到这个登录页，这是刻意设计的（多人共用设备不串号），不是 bug。</p>
+      </div>
+      <div class="box warn">
+        <span class="bt">没看到登录页，而是白屏或报错？</span>
+        <p>先去<a href="#c8">第 8 章「报错排查手册」</a>按症状对号入座。最常见的两种情况：漏了「构建 npm」，或者用的是别人的 AppID。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 4 章 ============ -->
+<section id="c4">
+  <h2 class="ch"><span class="num">4</span>连接后端数据库（三种方案，挑一个）</h2>
+  <p class="ch-sub">只有配好了后端，才能真正登录、看到库存数据。</p>
+
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th style="width:100px">方案</th><th>适合谁</th><th style="width:110px">难度</th><th style="width:130px">数据归属</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>A</strong> 直接用现成的</td>
+        <td>只想赶紧跑起来看看效果、试用一下</td>
+        <td><span class="pill ok">最简单</span></td>
+        <td>跟原项目共用一份</td>
+      </tr>
+      <tr>
+        <td><strong>B</strong> 自己开一套</td>
+        <td>要正式用、数据要自己掌控 <strong>（推荐）</strong></td>
+        <td><span class="pill warn">中等</span></td>
+        <td>完全独立</td>
+      </tr>
+      <tr>
+        <td><strong>C</strong> 自建 PostgreSQL</td>
+        <td>只做技术评估、或要把后端搬到自己服务器</td>
+        <td><span class="pill danger">进阶</span></td>
+        <td>自己的服务器</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>方案 A：直接用现成的云服务（最快）</h3>
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">什么都不用做</span></div>
+    <div class="step-body">
+      <p>代码里已经内置了这套云服务的连接信息，在 <code>utils/cloud.js</code>：</p>
+      <pre><code>const publicConfig = {
+  endpoint: 'https://mp-api.app.workbuddy.host',
+  publishableKey: 'wbpk_V5TDHdOmlEdRT5Esp5xvPo_...'
+}</code></pre>
+      <p>直接跳到<a href="#c5">第 5 章</a>，用管理员账号登录即可。</p>
+      <div class="box warn">
+        <span class="bt">别拿它正式用</span>
+        <p>这是别人的环境，里面是演示数据，你改动它会影响到别人；而且你随时可能失去访问权。<strong>正式使用请走方案 B。</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <h3>方案 B：自己开一套云服务（推荐）</h3>
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">让 WorkBuddy 开通云服务</span></div>
+    <div class="step-body">
+      <p>在 WorkBuddy 对话里直接说：</p>
+      <pre><code>给这个微信小程序项目开通云服务（云数据库 + 文件存储），
+然后把 endpoint 和 publishableKey 给我。</code></pre>
+      <p>WorkBuddy 会创建一套属于你的云环境，并返回两个值：</p>
+      <ul>
+        <li><code>endpoint</code>：形如 <code>https://mp-api.app.workbuddy.host</code>（这是平台的统一网关，一般不变）</li>
+        <li><code>publishableKey</code>：形如 <code>wbpk_XXXXXXXX_YYYYYYYY</code>（<strong>你这个应用专属</strong>）</li>
+      </ul>
+      <p>同时它会给你一个 <code>applicationId</code>（形如 <code>wbapp_XXXXXXXX</code>）。</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">把连接信息填进代码</span></div>
+    <div class="step-body">
+      <p>打开 <code>utils/cloud.js</code>，把 <code>publicConfig</code> 里的两个值换成你自己那套，保存：</p>
+      <pre><code>const publicConfig = {
+  endpoint: '<span class="cmt">你的 endpoint</span>',
+  publishableKey: '<span class="cmt">你的 publishableKey</span>',
+}</code></pre>
+      <div class="box tip">
+        <span class="bt">全项目只有这一处需要改</span>
+        <p>所有页面都通过 <code>utils/cloud.js</code> 的 <code>getCloud()</code> 访问后端，换环境只改这一个文件，别去页面里改。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">3</span><span class="step-title">把数据库结构建起来</span></div>
+    <div class="step-body">
+      <p>仓库的 <code>sql/</code> 文件夹里有四个脚本，<strong>必须严格按编号顺序执行</strong>：</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:200px">脚本</th><th>作用</th><th style="width:90px">能不能跳过</th></tr></thead>
+        <tbody>
+          <tr><td><code>01-schema.sql</code></td><td>建 4 张表（物品 / 账号 / 会话 / 流水）、索引、行级安全策略与表权限</td><td><span class="pill danger">不能</span></td></tr>
+          <tr><td><code>02-functions.sql</code></td><td>建约 30 个服务端函数 —— 全部业务逻辑和权限判断都在这里</td><td><span class="pill danger">不能</span></td></tr>
+          <tr><td><code>03-bootstrap-admin.sql</code></td><td>种下第一个管理员账号（员工不能自己注册，所以第一个管理员只能手工建）</td><td><span class="pill danger">不能</span></td></tr>
+          <tr><td><code>04-demo-data.sql</code></td><td>灌少量演示数据，让界面一打开就有东西看</td><td><span class="pill ok">可跳过</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p><strong>怎么执行？</strong>把这句话发给 WorkBuddy 就行：</p>
+      <pre><code>请把项目里的 sql/01-schema.sql、sql/02-functions.sql、
+sql/03-bootstrap-admin.sql、sql/04-demo-data.sql 依次执行到
+我刚开通的云服务数据库里。执行 03 时把初始密码设成 &lt;你自己的密码&gt;。</code></pre>
+      <div class="box danger">
+        <span class="bt">执行 03 之前必须先改密码！</span>
+        <p>脚本里 <code>c_password</code> 默认是占位值 <code>ChangeMe@2026</code>。脚本有守卫，<strong>不改就直接执行会报错退出</strong> —— 这是故意的，防止你把一个全网都知道的密码用成正式密码。<br>
+        自己手动执行的话：打开 <code>sql/03-bootstrap-admin.sql</code>，把第 20 行改成你的密码，再整段跑。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">4</span><span class="step-title">验收：确认建好了</span></div>
+    <div class="step-body">
+      <p>让 WorkBuddy 跑这条查询，或自己在数据库控制台执行：</p>
+      <pre><code>SELECT id, username, name, role, status, must_change_password
+FROM public.staff ORDER BY id;</code></pre>
+      <p>应该看到<strong>恰好一行</strong> <code>admin / admin / 系统管理员 / active</code>。<br>
+      （如果你也执行了 <code>04-demo-data.sql</code>，这里就只有这 1 个账号 —— 演示账号表是另外一份文档，不在 SQL 里。）</p>
+      <p>再看一眼表有没有建全：</p>
+      <pre><code>SELECT table_name FROM information_schema.tables
+WHERE table_schema='public' ORDER BY table_name;</code></pre>
+      <p>应包含 <code>items</code>、<code>staff</code>、<code>staff_sessions</code>、<code>stock_records</code>。</p>
+    </div>
+  </div>
+
+  <h3>方案 C：自建 PostgreSQL（进阶）</h3>
+  <div class="box warn">
+    <span class="bt">先说清楚：这条路不是「改个地址」就完事</span>
+    <p>手机端用的是云服务 SDK（<code>miniprogram_npm/@tencent-ai/workbuddy-cloud-sdk</code>）来访问数据库的，它的寻址方式是「<code>endpoint</code> + <code>publishableKey</code>」，没法直接指向一台任意的 PostgreSQL。</p>
+    <p>所以自建库有两种走法：</p>
+    <ul>
+      <li><strong>只做评估 / 迁移数据</strong>：<code>sql/01</code> 和 <code>sql/02</code> 是<strong>标准 PostgreSQL 14+ 脚本</strong>，可以直接在任何 PG 实例（Supabase、阿里云 RDS、本机 Docker）上跑通。用它来验证数据模型、迁移历史数据都行。</li>
+      <li><strong>真的要换后端</strong>：需要另写一层数据访问，把 <code>utils/api.js</code> 里对 <code>getDB()</code> 的调用替换成你自己的 HTTP 接口（比如 Supabase 的 REST 或自建 API）。工作量不小，建议先完成方案 B 跑通业务，再考虑迁移。</li>
+    </ul>
+  </div>
+  <p>如果只是想在本机验证 SQL：</p>
+  <pre><code><span class="cmt"># 用 Docker 起一个临时 PostgreSQL（需要本机有 Docker）</span>
+docker run --name vx-pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16
+
+<span class="cmt"># 按顺序灌脚本</span>
+psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/01-schema.sql
+psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/02-functions.sql
+psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/03-bootstrap-admin.sql
+psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-data.sql</code></pre>
+  <div class="box tip">
+    <span class="bt">脚本里那三个 <code>auth.*</code> 函数是什么？</span>
+    <p>01 脚本开头会尝试创建 <code>auth.uid()</code> 等三个辅助函数，云平台通常已经内置了；如果你的库已存在，脚本会跳过，这不影响使用。</p>
+  </div>
+</section>
+
+<!-- ============ 第 5 章 ============ -->
+<section id="c5">
+  <h2 class="ch"><span class="num">5</span>创建第一个管理员并登录</h2>
+  <p class="ch-sub">到这里，你已经能把整套系统转起来了。</p>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">用管理员登录</span></div>
+    <div class="step-body">
+      <p>在开发者工具里点「编译」，在模拟器的登录页输入：</p>
+      <ul>
+        <li>账号：<code>admin</code></li>
+        <li>密码：你在 <code>sql/03-bootstrap-admin.sql</code> 里设的那个</li>
+      </ul>
+      <p>登录后进入「<strong>管理中心</strong>」，底部是 4 个页签（工作台 / 物品 / 记录 / 我的），<strong>没有扫码入口</strong> —— 这是设计如此，管理员专职管人和看全局，不参与出入库。</p>
+      <p>首次登录会强制你改一次密码，改完即可正常使用。</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">把人员建起来</span></div>
+    <div class="step-body">
+      <p>接下来的顺序建议这样（都在小程序里点几下就行）：</p>
+      <ol>
+        <li><strong>加主管</strong>：「我的」→ 人员管理 → 添加账号 → 身份选「主管」。管理员添加的账号<strong>立即生效</strong>，可以直接登录。</li>
+        <li><strong>加员工</strong>：由主管去加。主管添加的账号状态是<strong>待审批</strong>，此时员工登录会被拦下。</li>
+        <li><strong>审批</strong>：管理员到「人员管理」里点通过（可以顺手「通过并设为主管」），账号才变成可用状态。</li>
+      </ol>
+      <div class="box tip">
+        <span class="bt">为什么员工不能自己注册？</span>
+        <p>内部仓库系统，不该让任何人凭手机号就能进来。所以刻意设计成「主管提交 → 管理员批准」，第一条防线在流程上。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">3</span><span class="step-title">三种身份的分工（记不住没关系，界面会自己变）</span></div>
+    <div class="step-body">
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th></th><th>管理员</th><th>主管</th><th>员工</th></tr></thead>
+        <tbody>
+          <tr><td>后台名称</td><td>管理中心</td><td>主管台</td><td>工作台</td></tr>
+          <tr><td>底部页签</td><td>4 项（无扫码）</td><td>5 项</td><td>5 项，<strong>扫码是中间凸起的大按钮</strong></td></tr>
+          <tr><td>扫码出入库</td><td>❌</td><td>✅</td><td>✅</td></tr>
+          <tr><td>建档 / 改档 / 停用 / 批量导入</td><td>✅</td><td>✅</td><td>❌</td></tr>
+          <tr><td>扫到新码现场建档入库</td><td>❌</td><td>✅</td><td>✅</td></tr>
+          <tr><td>添加账号</td><td>✅ 直接生效</td><td>✅ 待审批</td><td>❌</td></tr>
+          <tr><td>审批账号</td><td>✅</td><td>❌</td><td>❌</td></tr>
+          <tr><td>管理员工</td><td>全部人</td><td>仅自己提交的</td><td>❌</td></tr>
+          <tr><td>改身份 / 删账号</td><td>✅</td><td>❌</td><td>❌</td></tr>
+          <tr><td>导出记录</td><td>✅</td><td>✅</td><td>❌</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>页面上看到的按钮、能进的页面，全部由 <code>utils/roles.js</code> 一份配置驱动 —— 想调权限只改这一个文件，不用去每个页面改。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 6 章 ============ -->
+<section id="c6">
+  <h2 class="ch"><span class="num">6</span>电脑端打码工具（打印二维码标签）</h2>
+  <p class="ch-sub">纯网页，双击就能用，不需要安装、不需要联网。</p>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">打开工具</span></div>
+    <div class="step-body">
+      <p>在解压出来的文件夹里，双击 <code>pc-tools/index.html</code>，会用默认浏览器打开。</p>
+      <div class="box danger">
+        <span class="bt">不要单独把这个文件拷到别处！</span>
+        <p>它依赖上一级目录的 <code>utils/qr.js</code>（二维码编码器）。拷走单独打开会变成一张空白页。要发给别人，把整个文件夹打包发。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">粘贴清单</span></div>
+    <div class="step-body">
+      <p>从 Excel 里选中你的物品清单（包含 分类、名称、规格、单位、库位、数量 等列），<code>Ctrl + C</code> 复制，然后粘贴到网页左上角的输入框里。</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">3</span><span class="step-title">选择「是否逐件展开」</span></div>
+    <div class="step-body">
+      <p>这一步决定了你的管理模式，两种都常用：</p>
+      <div class="tbl-wrap">
+      <table>
+        <thead><tr><th style="width:170px">做法</th><th>效果</th><th>适合什么</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>点「按数量逐件展开」</strong></td>
+            <td>数量 5 的一行，会拆成 5 个独立编号（<code>A-0001-1</code> ~ <code>A-0001-5</code>），每件一张码、各自 1 件库存</td>
+            <td>扳手、电动工具、设备 —— 要追踪到具体某一件的</td>
+          </tr>
+          <tr>
+            <td><strong>不展开</strong></td>
+            <td>一行一个编号，按数量记库存（<code>B-0001</code> 共 40 卷）</td>
+            <td>螺丝、垫片、胶带 —— 散装、按量领用的</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">4</span><span class="step-title">打印</span></div>
+    <div class="step-body">
+      <p>页面会实时生成带二维码的标签。点「打印」，在打印对话框里选标签打印机，调节缩放让二维码大小合适。</p>
+      <p>没有标签打印机也行：普通 A4 打印后裁剪，一样能用。</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-no">5</span><span class="step-title">贴码 → 手机扫码入库</span></div>
+    <div class="step-body">
+      <p>二维码贴在物品上之后，用手机小程序去扫：</p>
+      <ul>
+        <li><strong>已建档</strong>的编号 → 直接进入入库流程，填数量即可。</li>
+        <li><strong>没建档</strong>的编号 → 手机会提示「这是新物品」，让你现场填名称、规格、库位，保存后<strong>建档和入库一步完成</strong>。</li>
+        <li>逐件赋码时更省事：同型号的第 2 件起会自动带出第 1 件填过的信息，点一下就能过。</li>
+      </ul>
+      <p>所以有两条路可选，选哪条都行：<strong>① 打码贴上去直接扫（省掉建档步骤）</strong>；<strong>② 先把清单导入小程序建档，再扫码</strong>（「我的 → 批量导入」粘贴一次）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 7 章 ============ -->
+<section id="c7">
+  <h2 class="ch"><span class="num">7</span>手机真机预览与正式发布</h2>
+  <p class="ch-sub">模拟器只能看，扫码必须用真机。</p>
+
+  <h3>7.1 真机预览（开发阶段）</h3>
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">点「预览」</span></div>
+    <div class="step-body">
+      <p>开发者工具工具栏点「<strong>预览</strong>」，会生成一个二维码。用手机微信扫这个码，就能在手机上打开你的小程序。</p>
+      <p>预览版无需审核、随时可看，改了代码重新编译再扫一次即可。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">测试扫码</span></div>
+    <div class="step-body">
+      <p>在真机上：
+      <br>· 员工账号登录后，底部导航中间的<strong>凸起圆形大按钮</strong>就是扫码入口；
+      <br>· 顶部的「扫码入库 / 扫码出库」两张方向大卡，点哪个进去就是哪个方向，进去后方向会被锁定（页面上会显示彩色方向条）。</p>
+      <div class="box warn">
+        <span class="bt">第一次扫码没反应？</span>
+        <p>手机可能拒绝了相机权限。到微信「我 → 设置 → 隐私 → 授权管理」里把相机权限打开，重新扫码。</p>
+      </div>
+      <div class="box tip">
+        <span class="bt">真机上要把「不校验合法域名」关掉吗？</span>
+        <p>不用。项目 <code>project.config.json</code> 里已经关掉了域名校验，预览阶段能正常访问云服务。上正式版前如果遇到网络问题，再去「开发管理 → 服务器域名」里核对。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>7.2 正式发布（给全公司用）</h3>
+  <div class="step">
+    <div class="step-head"><span class="step-no">1</span><span class="step-title">上传代码</span></div>
+    <div class="step-body">
+      <p>开发者工具点「<strong>上传</strong>」，填一个版本号（如 <code>1.0.0</code>）和备注，确定。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-head"><span class="step-no">2</span><span class="step-title">在微信后台提交审核</span></div>
+    <div class="step-body">
+      <p>登录 <a href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">mp.weixin.qq.com</a> → 左侧「版本管理」→ 找到刚上传的版本 → 「提交审核」。</p>
+      <p>审核一般 1–3 个工作日。审核时注意：微信会要求你提供一个<strong>可登录的测试账号</strong>（他们会被登录页挡住），所以提前在「审核备注」里把测试账号密码写清楚 —— 别忘了先建好一个演示用的员工账号。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-head"><span class="step-no">3</span><span class="step-title">发布</span></div>
+    <div class="step-body">
+      <p>审核通过后点「<strong>发布</strong>」。之后全公司的人都能通过微信搜索到它，或者你把小程序码发到群里让大家扫码进入。</p>
+    </div>
+  </div>
+  <div class="box tip">
+    <span class="bt">发布前必做的三件事</span>
+    <p>
+      ① <strong>改掉演示密码</strong>：管理员账号必须换成强密码，人员管理里把不需要的账号停用或删除。<br>
+      ② <strong>清掉演示数据</strong>：物品、流水如果不需要，在界面上删除或停用。<br>
+      ③ <strong>确认后端不是你借来的</strong>：<code>utils/cloud.js</code> 里必须是<strong>你自己</strong>的 <code>publishableKey</code>（方案 B），别把别人的环境发布给全公司用。
+    </p>
+  </div>
+</section>
+
+<!-- ============ 第 8 章 ============ -->
+<section id="c8">
+  <h2 class="ch"><span class="num">8</span>报错排查手册</h2>
+  <p class="ch-sub">按「你看到的现象」查表。90% 的问题都在这张表里。</p>
+
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th style="width:220px">现象 / 报错</th><th style="width:280px">原因</th><th>怎么解决</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>模拟器一片空白，控制台红字提示找不到模块</td>
+        <td>没执行「构建 npm」，<code>miniprogram_npm</code> 缺失</td>
+        <td>顶部菜单 <strong>工具 → 构建 npm</strong>。如果报「找不到 node_modules」，先装 Node.js 并在项目目录执行 <code>npm install</code>。</td>
+      </tr>
+      <tr>
+        <td>提示「该项目不属于你 / 请使用自己的 AppID」</td>
+        <td>用的是仓库里示例的 AppID</td>
+        <td>改 <code>project.config.json</code> 里的 <code>"appid"</code> 为你自己的，保存后重新编译。</td>
+      </tr>
+      <tr>
+        <td>登录时提示网络错误 / 连接失败</td>
+        <td>后端没配、或 <code>publishableKey</code> 填错</td>
+        <td>检查 <code>utils/cloud.js</code> 里的 <code>endpoint</code> 和 <code>publishableKey</code>；确认<a href="#c4">第 4 章</a>的 SQL 已经执行过。</td>
+      </tr>
+      <tr>
+        <td>登录提示「账号或密码错误」</td>
+        <td>账号不存在，或密码不是你在 03 脚本里设的那个</td>
+        <td>执行 <code>SELECT username,role,status FROM public.staff;</code> 看账号在不在、状态是不是 <code>active</code>。</td>
+      </tr>
+      <tr>
+        <td>登录提示账号待审批 / 已驳回 / 已停用</td>
+        <td>账号状态不对，这是正常拦截</td>
+        <td>管理员在「人员管理」里审批通过或重新启用。<strong>注意</strong>：主管不能审批，只有管理员可以。</td>
+      </tr>
+      <tr>
+        <td>主管想启用一个「已驳回」的账号，提示无权操作</td>
+        <td>设计如此：主管只能在「正常 / 已停用」之间切换</td>
+        <td>让管理员处理。否则主管把「已驳回」改回启用，等于绕过了审批。</td>
+      </tr>
+      <tr>
+        <td>管理员在详情页看不到出入库按钮</td>
+        <td>设计如此：管理员不参与出入库</td>
+        <td>用主管或员工账号操作。若确实要管理员扫码，去 <code>utils/roles.js</code> 给 admin 加上 <code>stock.change</code> 能力。</td>
+      </tr>
+      <tr>
+        <td>员工登录后底部没有「扫码」这项</td>
+        <td>员工的扫码被做成了中间<strong>凸起的圆形大按钮</strong></td>
+        <td>它就在页签正中间，圆形的那个。不是普通页签样式，别找错了。</td>
+      </tr>
+      <tr>
+        <td>点「扫码」没反应 / 提示无法使用相机</td>
+        <td>手机没给相机权限</td>
+        <td>微信「我 → 设置 → 隐私 → 授权管理」里打开相机权限，重启小程序。</td>
+      </tr>
+      <tr>
+        <td>扫码后提示「物品已停用」</td>
+        <td>该物品被停用了，<code>stock_change</code> 会拒绝对停用物品出入库</td>
+        <td>到物品页顶部切到「已停用」筛选，找到它后恢复使用（需要主管及以上）。</td>
+      </tr>
+      <tr>
+        <td>扫码提示「编号已被占用」</td>
+        <td>这个编号已经有档案了</td>
+        <td>本意是防止重复建档。到物品页搜一下这个编号，直接走正常出入库即可。</td>
+      </tr>
+      <tr>
+        <td>逐件赋码后，5 件只打印出 4 张码</td>
+        <td>（已在代码中修复）编号冲突时会吃掉一件</td>
+        <td>确认用的是仓库最新代码，重新打开 <code>pc-tools/index.html</code>（浏览器可能有缓存，用 <code>Ctrl + F5</code> 强制刷新）。</td>
+      </tr>
+      <tr>
+        <td>散装物品被领走后，列表里冒出一堆「库存预警」</td>
+        <td>（已在代码中修复）安全库存为 0 的物品不该参与预警</td>
+        <td>确认代码是最新的。判定口径是 <code>状态正常 且 安全库存 &gt; 0 且 库存 ≤ 安全库存</code>，安全库存填 0 表示「不预警」。</td>
+      </tr>
+      <tr>
+        <td>提示「请填写姓名」但我在填的是物品名称</td>
+        <td>（已在代码中修复）两个错误码文案串了</td>
+        <td>更新到最新代码。<code>utils/util.js</code> 的错误映射里 <code>ITEM_NAME_REQUIRED</code> 必须排在 <code>NAME_REQUIRED</code> 前面。</td>
+      </tr>
+      <tr>
+        <td>点了登录按钮，看起来是灰的却能点进去</td>
+        <td>（已在代码中修复）</td>
+        <td>更新代码。最新版是按钮真的 <code>disabled</code>，不是只改透明度。</td>
+      </tr>
+      <tr>
+        <td>每次重新编译都要重新登录</td>
+        <td><strong>这就是设计</strong>，不是 bug</td>
+        <td>登录态只存在内存里、不落盘，所以冷启动必回登录页。多人共用设备不串号；只是切后台再切回（进程没被回收）仍保持登录。</td>
+      </tr>
+      <tr>
+        <td>上传代码时提示包体积过大</td>
+        <td>把不该打包的目录打进去了</td>
+        <td>检查 <code>project.config.json</code> 的 <code>packOptions.ignore</code> 里是否还有 <code>node_modules</code>、<code>sql</code>、<code>pc-tools</code>、<code>.md</code>、<code>.html</code> —— 这几项必须保留。</td>
+      </tr>
+      <tr>
+        <td>双击 <code>pc-tools/index.html</code> 是空白页</td>
+        <td>文件被单独拷走了，找不到 <code>../utils/qr.js</code></td>
+        <td>放回项目里的原位置打开，或把整个文件夹一起拷贝。</td>
+      </tr>
+      <tr>
+        <td>SQL 执行 02 时提示函数已存在</td>
+        <td>重复执行了，脚本用的是 <code>CREATE OR REPLACE</code></td>
+        <td>正常现象，可以忽略。但如果提示「Could not choose the best candidate function」，说明库里存在同名的旧重载，需要先删掉旧函数再执行。</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box tip">
+    <span class="bt">还是搞不定？</span>
+    <p>把这三样东西发给 WorkBuddy，基本都能定位：<br>
+    ① 开发者工具底部「调试器 → Console」里的完整红字；<br>
+    ② 你刚才在点哪个按钮；<br>
+    ③ 你在做哪一章节的第几步。</p>
+  </div>
+</section>
+
+<!-- ============ 附录 A ============ -->
+<section id="cA">
+  <h2 class="ch"><span class="num">A</span>附录：目录结构速查</h2>
+  <p class="ch-sub">想改什么，先知道它在哪。</p>
+
+  <pre><code>├── app.js / app.json / app.wxss      小程序入口、页面清单、全局样式
+├── custom-tab-bar/                   自定义底部导航（纯 CSS 画的图标，无图片资源）
+├── pages/
+│   ├── login/                        登录页（启动页，每次打开都从这里开始）
+│   ├── index/                        首页 —— 按身份渲染三套完全不同的后台
+│   ├── items/  detail/  edit/        物品列表 / 详情 / 建档改档
+│   ├── scan/  stock/                 扫码 / 出入库数量操作
+│   ├── records/                      出入库流水
+│   ├── import/                       批量导入（粘贴表格一次建好档案）
+│   ├── staff/  staff-edit/           人员管理 / 账号详情与审批
+│   └── my/  profile/                 我的 / 账号安全
+├── utils/
+│   ├── roles.js                      ★ 角色与权限的唯一真源，改权限只改这里
+│   ├── auth.js  session.js  rpc.js   登录态、内存令牌、接口封装
+│   ├── api.js                        数据访问层（页面只调它，不直接碰 SDK）
+│   ├── cloud.js                      ★ 云服务连接配置，换环境只改这里
+│   ├── qr.js                         自己实现的二维码编码器（零依赖）
+│   └── page.js  tabbar.js  util.js   页面公共逻辑、导航、工具函数
+├── miniprogram_npm/                  云 SDK 构建产物（「构建 npm」的输出）
+├── pc-tools/index.html               ★ 电脑端离线打码工具
+├── sql/                              ★ 后端脚本，按 01→02→03→04 顺序执行
+├── docs/                             文档（本指南）
+└── project.config.json               项目配置（AppID、打包忽略规则）</code></pre>
+
+  <p>带 ★ 的四个位置，是日常最可能碰到的：</p>
+  <ul>
+    <li><code>utils/roles.js</code> —— 想改「谁能做什么」</li>
+    <li><code>utils/cloud.js</code> —— 想换数据库环境</li>
+    <li><code>pc-tools/index.html</code> —— 要打印二维码标签</li>
+    <li><code>sql/</code> —— 要重建或迁移后端</li>
+  </ul>
+</section>
+
+<!-- ============ 附录 B ============ -->
+<section id="cB">
+  <h2 class="ch"><span class="num">B</span>附录：安全与维护须知</h2>
+
+  <h3>上线前必做</h3>
+  <ul class="checklist">
+    <li>管理员密码改成强密码（12 位以上，含大小写数字符号）</li>
+    <li>人员管理里清掉不需要的演示账号，或全部停用</li>
+    <li><code>utils/cloud.js</code> 里是自己的 <code>publishableKey</code>，不是借来的环境</li>
+    <li>确认演示数据（物品、流水）已清理干净</li>
+    <li>给仓库主管做一次 15 分钟的培训：怎么扫码、怎么审批、怎么找回停用物品</li>
+  </ul>
+
+  <h3>数据安全：三层防线</h3>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th style="width:120px">防线</th><th>位置</th><th>防什么</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>第一层：登录</strong></td>
+        <td>账号密码 + 30 天令牌，密码用 bcrypt 存储</td>
+        <td>没账号的人进不来</td>
+      </tr>
+      <tr>
+        <td><strong>第二层：角色</strong></td>
+        <td><code>utils/roles.js</code> 控制界面上显示什么</td>
+        <td>普通用户看不到不该看的按钮</td>
+      </tr>
+      <tr>
+        <td><strong>第三层：服务端</strong></td>
+        <td>数据库函数每次都校验令牌和角色（<code>SECURITY DEFINER</code>）</td>
+        <td><strong>反编译客户端直接调接口，也拿不到越权数据</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="box ok">
+    <span class="bt">为什么第三层最重要？</span>
+    <p>小程序能被反编译，接口能被直接调用。所以这套系统把「谁有权做什么」全部写在数据库函数里，客户端只负责显示。哪怕有人把代码全扒开，也改不了自己不是管理员的这个事实。<br>
+    <strong>因此：不要为了「方便」给 <code>staff</code> / <code>stock_records</code> 表补表级权限，那等于把这道门拆掉。</strong></p>
+  </div>
+
+  <h3>日常维护</h3>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th style="width:170px">什么时候</th><th>做什么</th></tr></thead>
+    <tbody>
+      <tr><td>人员变动</td><td>人员管理里停用（不要直接删，保留历史流水的操作人记录）；新员工走「主管提交 → 管理员审批」</td></tr>
+      <tr><td>物品停用</td><td>用「停用」而不是删除。停用后仍可在物品页切到「已停用」找回；删除会丢历史关联</td></tr>
+      <tr><td>库存对不上</td><td>在「记录」里按物品筛流水，每条都有前库存 → 后库存，能一路倒推到底哪一步错了</td></tr>
+      <tr><td>要出报表</td><td>管理员或主管在「记录」页用「导出」，拿到表格做二次加工</td></tr>
+      <tr><td>升级了云 SDK</td><td>重跑 <code>npm install</code> → 开发者工具「构建 npm」→ 重新编译</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box warn">
+    <span class="bt">保管好你的 AppID 和账号密码</span>
+    <p>本指南所配套的代码仓库是<strong>公开仓库</strong>，所以里面不含任何真实密码。你自己的密码请单独保管，也不要把带真实密码的账号表提交进仓库。</p>
+  </div>
+</section>
+
+<div class="foot">
+  内部仓库物品管理小程序 · 部署指南<br>
+  照着做完，你应该已经能在手机上扫码入库了。
+</div>
+
+</div>
+</body>
+</html>

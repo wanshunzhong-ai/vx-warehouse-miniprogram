@@ -50,6 +50,14 @@
         "type": "suffix"
       },
       {
+        "value": "sql",
+        "type": "folder"
+      },
+      {
+        "value": ".html",
+        "type": "suffix"
+      },
+      {
         "value": ".gitignore",
         "type": "file"
       }
