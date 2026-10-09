@@ -354,12 +354,13 @@
   </div>
 
   <h3>确认下载完整</h3>
-  <p>打开解压出来的文件夹，应该能看到这些内容。特别是 <code>miniprogram_npm</code> 这个文件夹，<strong>一定要在</strong>：</p>
-  <pre><code>app.js                app.json              app.wxss
-custom-tab-bar/       pages/                utils/
-miniprogram_npm/   <span class="cmt">← 云 SDK 构建产物，缺了会连不上后端</span>
-pc-tools/             sql/                  package.json
-project.config.json   README.md</code></pre>
+  <p>打开解压出来的文件夹，应该能看到这些内容。小程序代码都在 <code>miniprogram</code> 子文件夹里，<strong>别把它单独拖出来</strong>：</p>
+  <pre><code>miniprogram/        <span class="cmt">← 小程序本体，工具导入的是它的上一层</span>
+  ├── app.js  app.json  app.wxss
+  ├── pages/  utils/  custom-tab-bar/
+  └── miniprogram_npm/   <span class="cmt">← 云 SDK 构建产物，缺了会连不上后端</span>
+pc-tools/             sql/                  docs/
+package.json          project.config.json   README.md</code></pre>
   <div class="box tip">
     <span class="bt">没有看到 <code>miniprogram_npm</code>？</span>
     <p>那是「隐藏文件夹」被折叠了，不碍事。真的缺了也不要紧 —— <a href="#c3">第 3 章第 3 步</a>的「构建 npm」会把它重新生成出来。</p>
@@ -377,7 +378,7 @@ project.config.json   README.md</code></pre>
       <p>打开微信开发者工具 → 扫码登录 → 左侧选「<strong>小程序</strong>」→ 点「<strong>+</strong>」新建。</p>
       <p>在新建面板里填四项：</p>
       <ul>
-        <li><strong>目录</strong>：点右边文件夹图标，选中你解压出来的那个文件夹（<strong>注意选文件夹本身，不是它的上一级</strong>）。</li>
+        <li><strong>目录</strong>：点右边文件夹图标，选中<strong>仓库根目录</strong> —— 就是能直接看到 <code>project.config.json</code> 和 <code>miniprogram</code> 文件夹的那一层（<strong>不是</strong>里面的 <code>miniprogram</code>）。</li>
         <li><strong>AppID</strong>：填你在<a href="#c1">第 1 章</a>拿到的 AppID。下面「测试号」不建议选，测试号无法发布。</li>
         <li><strong>项目名称</strong>：随便填，比如 <code>仓库物品管理</code>。</li>
         <li><strong>后端服务</strong>：选「<strong>不使用云服务</strong>」（我们用的是自己的工作台云服务，不是微信云开发）。</li>
@@ -385,7 +386,7 @@ project.config.json   README.md</code></pre>
       <p>点「确定」。</p>
       <div class="box tip">
         <span class="bt">它提示「当前目录不是小程序项目目录」？</span>
-        <p>说明你选错层级了，往上或往下退一层。正确的那一层里直接就能看到 <code>app.json</code> 文件。</p>
+        <p>说明你选错层级了，往上或往下退一层。正确的那一层里直接就能看到 <code>project.config.json</code> 这个文件，代码在它旁边的 <code>miniprogram</code> 文件夹里。</p>
       </div>
     </div>
   </div>
@@ -410,7 +411,7 @@ project.config.json   README.md</code></pre>
       <p>等右下角弹出「<strong>构建成功</strong>」的小提示。</p>
       <div class="box ok">
         <span class="bt">这一步在干什么？</span>
-        <p>把 <code>node_modules</code> 里的云服务 SDK 编译成小程序能用的形式，输出到 <code>miniprogram_npm</code>。仓库里已经预置了一份构建产物，所以<strong>正常情况下不构建也能跑</strong>；但如果你之后升级了 SDK（改了 <code>package.json</code>），就必须重新构建。</p>
+        <p>把 <code>node_modules</code> 里的云服务 SDK 编译成小程序能用的形式，输出到 <code>miniprogram/miniprogram_npm</code>（这个关系已经写在 <code>project.config.json</code> 的 <code>packNpmRelationList</code> 里，不用手动配）。仓库里已经预置了一份构建产物，所以<strong>正常情况下不构建也能跑</strong>；但如果你之后升级了 SDK（改了 <code>package.json</code>），就必须重新构建。</p>
       </div>
       <div class="box warn">
         <span class="bt">报「找不到 node_modules」？</span>
@@ -478,7 +479,7 @@ project.config.json   README.md</code></pre>
   <div class="step">
     <div class="step-head"><span class="step-no">1</span><span class="step-title">什么都不用做</span></div>
     <div class="step-body">
-      <p>代码里已经内置了这套云服务的连接信息，在 <code>utils/cloud.js</code>：</p>
+      <p>代码里已经内置了这套云服务的连接信息，在 <code>miniprogram/utils/cloud.js</code>：</p>
       <pre><code>const publicConfig = {
   endpoint: 'https://mp-api.app.workbuddy.host',
   publishableKey: 'wbpk_V5TDHdOmlEdRT5Esp5xvPo_...'
@@ -510,14 +511,14 @@ project.config.json   README.md</code></pre>
   <div class="step">
     <div class="step-head"><span class="step-no">2</span><span class="step-title">把连接信息填进代码</span></div>
     <div class="step-body">
-      <p>打开 <code>utils/cloud.js</code>，把 <code>publicConfig</code> 里的两个值换成你自己那套，保存：</p>
+      <p>打开 <code>miniprogram/utils/cloud.js</code>，把 <code>publicConfig</code> 里的两个值换成你自己那套，保存：</p>
       <pre><code>const publicConfig = {
   endpoint: '<span class="cmt">你的 endpoint</span>',
   publishableKey: '<span class="cmt">你的 publishableKey</span>',
 }</code></pre>
       <div class="box tip">
         <span class="bt">全项目只有这一处需要改</span>
-        <p>所有页面都通过 <code>utils/cloud.js</code> 的 <code>getCloud()</code> 访问后端，换环境只改这一个文件，别去页面里改。</p>
+        <p>所有页面都通过 <code>miniprogram/utils/cloud.js</code> 的 <code>getCloud()</code> 访问后端，换环境只改这一个文件，别去页面里改。</p>
       </div>
     </div>
   </div>
@@ -571,7 +572,7 @@ WHERE table_schema='public' ORDER BY table_name;</code></pre>
     <p>所以自建库有两种走法：</p>
     <ul>
       <li><strong>只做评估 / 迁移数据</strong>：<code>sql/01</code> 和 <code>sql/02</code> 是<strong>标准 PostgreSQL 14+ 脚本</strong>，可以直接在任何 PG 实例（Supabase、阿里云 RDS、本机 Docker）上跑通。用它来验证数据模型、迁移历史数据都行。</li>
-      <li><strong>真的要换后端</strong>：需要另写一层数据访问，把 <code>utils/api.js</code> 里对 <code>getDB()</code> 的调用替换成你自己的 HTTP 接口（比如 Supabase 的 REST 或自建 API）。工作量不小，建议先完成方案 B 跑通业务，再考虑迁移。</li>
+      <li><strong>真的要换后端</strong>：需要另写一层数据访问，把 <code>miniprogram/utils/api.js</code> 里对 <code>getDB()</code> 的调用替换成你自己的 HTTP 接口（比如 Supabase 的 REST 或自建 API）。工作量不小，建议先完成方案 B 跑通业务，再考虑迁移。</li>
     </ul>
   </div>
   <p>如果只是想在本机验证 SQL：</p>
@@ -643,7 +644,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
         </tbody>
       </table>
       </div>
-      <p>页面上看到的按钮、能进的页面，全部由 <code>utils/roles.js</code> 一份配置驱动 —— 想调权限只改这一个文件，不用去每个页面改。</p>
+      <p>页面上看到的按钮、能进的页面，全部由 <code>miniprogram/utils/roles.js</code> 一份配置驱动 —— 想调权限只改这一个文件，不用去每个页面改。</p>
     </div>
   </div>
 </section>
@@ -659,7 +660,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       <p>在解压出来的文件夹里，双击 <code>pc-tools/index.html</code>，会用默认浏览器打开。</p>
       <div class="box danger">
         <span class="bt">不要单独把这个文件拷到别处！</span>
-        <p>它依赖上一级目录的 <code>utils/qr.js</code>（二维码编码器）。拷走单独打开会变成一张空白页。要发给别人，把整个文件夹打包发。</p>
+        <p>它依赖 <code>../miniprogram/utils/qr.js</code>（二维码编码器）。拷走单独打开会变成一张空白页。要发给别人，把整个文件夹打包发。</p>
       </div>
     </div>
   </div>
@@ -772,7 +773,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
     <p>
       ① <strong>改掉演示密码</strong>：管理员账号必须换成强密码，人员管理里把不需要的账号停用或删除。<br>
       ② <strong>清掉演示数据</strong>：物品、流水如果不需要，在界面上删除或停用。<br>
-      ③ <strong>确认后端不是你借来的</strong>：<code>utils/cloud.js</code> 里必须是<strong>你自己</strong>的 <code>publishableKey</code>（方案 B），别把别人的环境发布给全公司用。
+      ③ <strong>确认后端不是你借来的</strong>：<code>miniprogram/utils/cloud.js</code> 里必须是<strong>你自己</strong>的 <code>publishableKey</code>（方案 B），别把别人的环境发布给全公司用。
     </p>
   </div>
 </section>
@@ -789,7 +790,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       <tr>
         <td>模拟器一片空白，控制台红字提示找不到模块</td>
         <td>没执行「构建 npm」，<code>miniprogram_npm</code> 缺失</td>
-        <td>顶部菜单 <strong>工具 → 构建 npm</strong>。如果报「找不到 node_modules」，先装 Node.js 并在项目目录执行 <code>npm install</code>。</td>
+        <td>顶部菜单 <strong>工具 → 构建 npm</strong>。如果报「找不到 node_modules」，先装 Node.js，并在<strong>仓库根目录</strong>（有 <code>package.json</code> 的那一层）执行 <code>npm install</code>。</td>
       </tr>
       <tr>
         <td>提示「该项目不属于你 / 请使用自己的 AppID」</td>
@@ -799,7 +800,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       <tr>
         <td>登录时提示网络错误 / 连接失败</td>
         <td>后端没配、或 <code>publishableKey</code> 填错</td>
-        <td>检查 <code>utils/cloud.js</code> 里的 <code>endpoint</code> 和 <code>publishableKey</code>；确认<a href="#c4">第 4 章</a>的 SQL 已经执行过。</td>
+        <td>检查 <code>miniprogram/utils/cloud.js</code> 里的 <code>endpoint</code> 和 <code>publishableKey</code>；确认<a href="#c4">第 4 章</a>的 SQL 已经执行过。</td>
       </tr>
       <tr>
         <td>登录提示「账号或密码错误」</td>
@@ -819,7 +820,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       <tr>
         <td>管理员在详情页看不到出入库按钮</td>
         <td>设计如此：管理员不参与出入库</td>
-        <td>用主管或员工账号操作。若确实要管理员扫码，去 <code>utils/roles.js</code> 给 admin 加上 <code>stock.change</code> 能力。</td>
+        <td>用主管或员工账号操作。若确实要管理员扫码，去 <code>miniprogram/utils/roles.js</code> 给 admin 加上 <code>stock.change</code> 能力。</td>
       </tr>
       <tr>
         <td>员工登录后底部没有「扫码」这项</td>
@@ -854,7 +855,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       <tr>
         <td>提示「请填写姓名」但我在填的是物品名称</td>
         <td>（已在代码中修复）两个错误码文案串了</td>
-        <td>更新到最新代码。<code>utils/util.js</code> 的错误映射里 <code>ITEM_NAME_REQUIRED</code> 必须排在 <code>NAME_REQUIRED</code> 前面。</td>
+        <td>更新到最新代码。<code>miniprogram/utils/util.js</code> 的错误映射里 <code>ITEM_NAME_REQUIRED</code> 必须排在 <code>NAME_REQUIRED</code> 前面。</td>
       </tr>
       <tr>
         <td>点了登录按钮，看起来是灰的却能点进去</td>
@@ -873,7 +874,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       </tr>
       <tr>
         <td>双击 <code>pc-tools/index.html</code> 是空白页</td>
-        <td>文件被单独拷走了，找不到 <code>../utils/qr.js</code></td>
+        <td>文件被单独拷走了，找不到 <code>../miniprogram/utils/qr.js</code></td>
         <td>放回项目里的原位置打开，或把整个文件夹一起拷贝。</td>
       </tr>
       <tr>
@@ -899,34 +900,37 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
   <h2 class="ch"><span class="num">A</span>附录：目录结构速查</h2>
   <p class="ch-sub">想改什么，先知道它在哪。</p>
 
-  <pre><code>├── app.js / app.json / app.wxss      小程序入口、页面清单、全局样式
-├── custom-tab-bar/                   自定义底部导航（纯 CSS 画的图标，无图片资源）
-├── pages/
-│   ├── login/                        登录页（启动页，每次打开都从这里开始）
-│   ├── index/                        首页 —— 按身份渲染三套完全不同的后台
-│   ├── items/  detail/  edit/        物品列表 / 详情 / 建档改档
-│   ├── scan/  stock/                 扫码 / 出入库数量操作
-│   ├── records/                      出入库流水
-│   ├── import/                       批量导入（粘贴表格一次建好档案）
-│   ├── staff/  staff-edit/           人员管理 / 账号详情与审批
-│   └── my/  profile/                 我的 / 账号安全
-├── utils/
-│   ├── roles.js                      ★ 角色与权限的唯一真源，改权限只改这里
-│   ├── auth.js  session.js  rpc.js   登录态、内存令牌、接口封装
-│   ├── api.js                        数据访问层（页面只调它，不直接碰 SDK）
-│   ├── cloud.js                      ★ 云服务连接配置，换环境只改这里
-│   ├── qr.js                         自己实现的二维码编码器（零依赖）
-│   └── page.js  tabbar.js  util.js   页面公共逻辑、导航、工具函数
-├── miniprogram_npm/                  云 SDK 构建产物（「构建 npm」的输出）
+  <pre><code>├── miniprogram/                      小程序本体（工具导入的是仓库根，不是这里）
+│   ├── app.js / app.json / app.wxss  入口、页面清单、全局样式
+│   ├── custom-tab-bar/               自定义底部导航（纯 CSS 画的图标，无图片资源）
+│   ├── pages/
+│   │   ├── login/                    登录页（启动页，每次打开都从这里开始）
+│   │   ├── index/                    首页 —— 按身份渲染三套完全不同的后台
+│   │   ├── items/  detail/  edit/    物品列表 / 详情 / 建档改档
+│   │   ├── scan/  stock/             扫码 / 出入库数量操作
+│   │   ├── records/                  出入库流水
+│   │   ├── import/                   批量导入（粘贴表格一次建好档案）
+│   │   ├── staff/  staff-edit/       人员管理 / 账号详情与审批
+│   │   └── my/  profile/             我的 / 账号安全
+│   ├── utils/
+│   │   ├── roles.js                  ★ 角色与权限的唯一真源，改权限只改这里
+│   │   ├── auth.js  session.js  rpc.js  登录态、内存令牌、接口封装
+│   │   ├── api.js                    数据访问层（页面只调它，不直接碰 SDK）
+│   │   ├── cloud.js                  ★ 云服务连接配置，换环境只改这里
+│   │   ├── photo.js                  位置照片：拍摄/选图 → 上传 → 签名链接
+│   │   ├── qr.js                     自己实现的二维码编码器（零依赖）
+│   │   └── page.js  tabbar.js  util.js  页面公共逻辑、导航、工具函数
+│   └── miniprogram_npm/              云 SDK 构建产物（「构建 npm」的输出）
 ├── pc-tools/index.html               ★ 电脑端离线打码工具
 ├── sql/                              ★ 后端脚本，按 01→02→03→04 顺序执行
-├── docs/                             文档（本指南）
-└── project.config.json               项目配置（AppID、打包忽略规则）</code></pre>
+├── docs/                             文档与本演示材料（本指南就在这）
+├── project.config.json               项目配置（AppID、miniprogramRoot、打包忽略规则）
+└── package.json                      云 SDK 依赖（构建产物输出到 miniprogram/）</code></pre>
 
   <p>带 ★ 的四个位置，是日常最可能碰到的：</p>
   <ul>
-    <li><code>utils/roles.js</code> —— 想改「谁能做什么」</li>
-    <li><code>utils/cloud.js</code> —— 想换数据库环境</li>
+    <li><code>miniprogram/utils/roles.js</code> —— 想改「谁能做什么」</li>
+    <li><code>miniprogram/utils/cloud.js</code> —— 想换数据库环境</li>
     <li><code>pc-tools/index.html</code> —— 要打印二维码标签</li>
     <li><code>sql/</code> —— 要重建或迁移后端</li>
   </ul>
@@ -940,7 +944,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
   <ul class="checklist">
     <li>管理员密码改成强密码（12 位以上，含大小写数字符号）</li>
     <li>人员管理里清掉不需要的演示账号，或全部停用</li>
-    <li><code>utils/cloud.js</code> 里是自己的 <code>publishableKey</code>，不是借来的环境</li>
+    <li><code>miniprogram/utils/cloud.js</code> 里是自己的 <code>publishableKey</code>，不是借来的环境</li>
     <li>确认演示数据（物品、流水）已清理干净</li>
     <li>给仓库主管做一次 15 分钟的培训：怎么扫码、怎么审批、怎么找回停用物品</li>
   </ul>
@@ -957,7 +961,7 @@ psql "postgresql://postgres:postgres@localhost:5432/postgres" -f sql/04-demo-dat
       </tr>
       <tr>
         <td><strong>第二层：角色</strong></td>
-        <td><code>utils/roles.js</code> 控制界面上显示什么</td>
+        <td><code>miniprogram/utils/roles.js</code> 控制界面上显示什么</td>
         <td>普通用户看不到不该看的按钮</td>
       </tr>
       <tr>

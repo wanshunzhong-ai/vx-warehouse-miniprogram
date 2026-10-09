@@ -62,7 +62,7 @@
 | 改身份 / 删除账号 | ✅ | ❌ | ❌ |
 | 导出记录 | ✅ | ✅ | ❌ |
 
-底部导航、标题、主题色、首页内容、按钮可见性全部由 `utils/roles.js` 一份配置驱动。
+底部导航、标题、主题色、首页内容、按钮可见性全部由 `miniprogram/utils/roles.js` 一份配置驱动。
 
 「扫码即建档」（`item.quickcreate`）是出入库链路的延伸，所以员工也有；它**不等于**「建档」——
 员工仍然进不了新建物品页，也删不了档、停不了用。
@@ -96,29 +96,37 @@
 ## 目录结构
 
 ```
-├── app.js / app.json / app.wxss    小程序入口与全局样式
-├── custom-tab-bar/                 自定义底部导航（纯 CSS 画的图标，无图片资源）
-├── pages/
-│   ├── login/                      账号密码登录
-│   ├── index/                      首页（按身份渲染三套不同的后台）
-│   ├── items/  detail/  edit/      物品列表 / 详情 / 建档改档
-│   ├── scan/  stock/               扫码 / 出入库操作
-│   ├── records/                    出入库流水
-│   ├── import/                     批量导入
-│   ├── staff/  staff-edit/         人员管理 / 账号详情与审批
-│   ├── my/  profile/               我的 / 账号安全
-├── utils/
-│   ├── roles.js                    角色与权限的唯一真源
-│   ├── auth.js  session.js  rpc.js 登录态、内存令牌、RPC 封装
-│   ├── api.js                      数据访问层
-│   ├── cloud.js                    云 SDK 懒加载入口
-│   ├── qr.js                       自己实现的二维码编码器（无依赖）
-│   └── page.js  tabbar.js  util.js
-├── miniprogram_npm/                云 SDK 构建产物（见下方「构建 npm」）
+├── miniprogram/                    小程序本体（project.config.json 的 miniprogramRoot 指向它）
+│   ├── app.js / app.json / app.wxss  入口与全局样式
+│   ├── custom-tab-bar/             自定义底部导航（纯 CSS 画的图标，无图片资源）
+│   ├── pages/
+│   │   ├── login/                  账号密码登录
+│   │   ├── index/                  首页（按身份渲染三套不同的后台）
+│   │   ├── items/  detail/  edit/  物品列表 / 详情 / 建档改档
+│   │   ├── scan/  stock/           扫码 / 出入库操作
+│   │   ├── records/                出入库流水
+│   │   ├── import/                 批量导入
+│   │   ├── staff/  staff-edit/     人员管理 / 账号详情与审批
+│   │   └── my/  profile/           我的 / 账号安全
+│   ├── utils/
+│   │   ├── roles.js                角色与权限的唯一真源
+│   │   ├── auth.js  session.js  rpc.js  登录态、内存令牌、RPC 封装
+│   │   ├── api.js                  数据访问层
+│   │   ├── cloud.js                云 SDK 懒加载入口
+│   │   ├── qr.js                   自己实现的二维码编码器（无依赖）
+│   │   ├── photo.js                位置照片：拍摄/选图 → 压缩 → 上传 → 签名链接
+│   │   └── page.js  tabbar.js  util.js
+│   └── miniprogram_npm/            云 SDK 构建产物（见下方「构建 npm」）
 ├── pc-tools/index.html             电脑端离线标签工具
 ├── sql/                            后端建库脚本（01→02→03→04 顺序执行）
-├── docs/部署指南.html               零基础部署手册（含排错表）
-└── project.config.json
+├── docs/                           对外文档与演示材料
+│   ├── 技术栈与功能介绍.md / .docx   技术栈 + 功能 + 权限矩阵（汇报底稿）
+│   ├── 汇报口播稿.md                8–10 分钟口播稿
+│   ├── 仓库物品管理小程序介绍.pptx     界面介绍 PPT（15 页，带演讲者备注）
+│   └── 部署指南.html                零基础部署手册（含排错表）
+├── project.config.json             工程配置（必须留在根：工具链在这里解析 miniprogramRoot）
+├── package.json                    云 SDK 依赖（留在根，构建产物输出到 miniprogram/）
+└── README.md
 ```
 
 ## 部署
@@ -130,17 +138,18 @@
 
 简版（有基础的话）：
 
-1. 微信开发者工具导入本目录（小程序根目录就是仓库根目录），把 `project.config.json` 的
-   `appid` 换成自己的。
+1. 微信开发者工具导入**本仓库根目录**（小程序源码根由 `project.config.json` 的
+   `miniprogramRoot` 指向 `miniprogram/`，不用手动改），把 `appid` 换成自己的。
 2. 安装依赖并构建 npm：
    ```bash
    npm install
    ```
-   然后在开发者工具里执行「工具 → 构建 npm」，生成 `miniprogram_npm/`（仓库里已包含一份构建产物，
-   升级 SDK 后需要重新构建）。
+   然后在开发者工具里执行「工具 → 构建 npm」，产物会输出到 `miniprogram/miniprogram_npm/`
+   （`project.config.json` 里已用 `packNpmManually` + `packNpmRelationList` 配好这个关系；
+   仓库里已包含一份构建产物，升级 SDK 后需要重新构建）。
 3. 编译预览。首次登录会提示修改初始密码（仅针对审批通过的新账号）。
 
-云环境配置集中在 `utils/cloud.js` 的 `publicConfig`（endpoint + publishableKey），换环境只改这里。
+云环境配置集中在 `miniprogram/utils/cloud.js` 的 `publicConfig`（endpoint + publishableKey），换环境只改这里。
 新建自己的云环境时，按 `sql/01-schema.sql` → `02-functions.sql` → `03-bootstrap-admin.sql`
 （先改里面的初始密码，否则脚本会拒绝执行）→ 可选 `04-demo-data.sql` 的顺序建库。
 
@@ -174,7 +183,7 @@
 ## 电脑端工具
 
 直接双击打开 `pc-tools/index.html` 即可（纯前端离线，不依赖后端）。
-注意它依赖 `../utils/qr.js`，**不能单独把这个文件拷走**。
+注意它依赖 `../miniprogram/utils/qr.js`，**不能单独把这个文件拷走**。
 
 流程：粘贴 Excel → 生成编号 + 二维码标签 → 打印贴码 → 扫码入库。
 

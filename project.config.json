@@ -2,7 +2,7 @@
   "appid": "wx5d9f3fcfada93f13",
   "projectname": "vx-warehouse",
   "description": "内部仓库物品管理：扫码进出库",
-  "miniprogramRoot": "./",
+  "miniprogramRoot": "miniprogram/",
   "compileType": "miniprogram",
   "setting": {
     "urlCheck": false,
@@ -10,8 +10,13 @@
     "enhance": true,
     "postcss": true,
     "minified": true,
-    "packNpmManually": false,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./miniprogram/"
+      }
+    ],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -30,36 +35,16 @@
   "packOptions": {
     "ignore": [
       {
-        "value": "pc-tools",
-        "type": "folder"
-      },
-      {
-        "value": ".workbuddy",
-        "type": "folder"
-      },
-      {
         "value": "node_modules",
         "type": "folder"
       },
       {
-        "value": ".wbapp",
-        "type": "prefix"
+        "value": "project.private.config.json",
+        "type": "file"
       },
       {
         "value": ".md",
         "type": "suffix"
-      },
-      {
-        "value": "sql",
-        "type": "folder"
-      },
-      {
-        "value": ".html",
-        "type": "suffix"
-      },
-      {
-        "value": ".gitignore",
-        "type": "file"
       }
     ],
     "include": []
