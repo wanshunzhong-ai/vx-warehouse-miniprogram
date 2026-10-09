@@ -89,9 +89,15 @@ CREATE TABLE IF NOT EXISTS public.items (
   updated_at       timestamptz NOT NULL DEFAULT now(),
   created_by_id    bigint,
   created_by_name  text,
-  updated_by_name  text
+  updated_by_name  text,
+  -- 位置照片：存云端存储的对象路径（shared/<uid>/items/<id>-<ts>.jpg），
+  -- 不存 URL、不存 base64 —— 访问时由客户端换签名链接，链接会过期而路径不会。
+  photo            text
 );
 COMMENT ON TABLE public.items IS '仓库物品档案表：code 为物品编号，同时作为二维码内容';
+
+-- 已有库升级用（新建库执行上面那条 CREATE TABLE 时已包含该列，这里是幂等的）
+ALTER TABLE public.items ADD COLUMN IF NOT EXISTS photo text;
 
 -- 账号。密码只存 bcrypt 哈希，永不存明文
 CREATE TABLE IF NOT EXISTS public.staff (

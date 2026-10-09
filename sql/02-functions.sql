@@ -378,6 +378,37 @@ CREATE OR REPLACE FUNCTION public.staff_delete_item(p_token text, p_id bigint)
  SET search_path TO 'public', 'pg_temp'
 AS $function$ DECLARE v_me staff%ROWTYPE; v_item items%ROWTYPE; BEGIN v_me := staff_require(p_token, 'admin'); SELECT * INTO v_item FROM items WHERE id = p_id FOR UPDATE; IF NOT FOUND THEN RAISE EXCEPTION 'ITEM_NOT_FOUND'; END IF; DELETE FROM items WHERE id = v_item.id; RETURN json_build_object('ok', true, 'code', v_item.code, 'name', v_item.name); END $function$;
 
+-- 位置照片：给物品挂一张「它在货架的哪个位置」的实拍图（p_photo 传 NULL 表示清除）。
+-- 这是"现场信息"而不是账目信息：谁在现场谁拍，所以三种身份都能改，用 staff_auth 即可；
+-- 它动不了 qty，也就不影响库存准确性。
+-- 只接受云端存储的对象路径：必须以 shared/ 开头且长度可控，
+-- 避免被塞进任意外链或超长字符串（客户端拿到的签名 URL 是一次性的，不该被存下来）。
+CREATE OR REPLACE FUNCTION public.staff_item_photo(p_token text, p_id bigint, p_photo text)
+ RETURNS json
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+DECLARE
+  v_me staff%ROWTYPE;
+  v_photo text;
+  v_item items%ROWTYPE;
+BEGIN
+  v_me := staff_auth(p_token);
+  IF p_id IS NULL OR p_id <= 0 THEN RAISE EXCEPTION 'ITEM_NOT_FOUND'; END IF;
+
+  v_photo := NULLIF(btrim(COALESCE(p_photo, '')), '');
+  IF v_photo IS NOT NULL AND (length(v_photo) > 512 OR left(v_photo, 7) <> 'shared/') THEN
+    RAISE EXCEPTION 'INVALID_PHOTO';
+  END IF;
+
+  UPDATE items SET photo = v_photo, updated_at = now(), updated_by_name = v_me.name
+   WHERE id = p_id RETURNING * INTO v_item;
+  IF NOT FOUND THEN RAISE EXCEPTION 'ITEM_NOT_FOUND'; END IF;
+
+  RETURN json_build_object('id', v_item.id, 'code', v_item.code, 'photo', v_item.photo);
+END $function$;
+
 
 -- =============================================================================
 -- 六、出入库（唯一的库存写入口）
@@ -556,3 +587,4 @@ GRANT EXECUTE ON FUNCTION public.staff_auth(text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.staff_require(text, text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.staff_code_family(text, text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.staff_scan_create_in(text,text,text,text,text,text,text,integer,integer,text) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.staff_item_photo(text, bigint, text) TO anon, authenticated;

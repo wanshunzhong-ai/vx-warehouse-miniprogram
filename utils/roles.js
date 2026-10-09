@@ -51,6 +51,9 @@ const ROLE_INFO = {
  *  - item.quickcreate 是「扫码建档」专用通道：扫到的码还没档案时，现场填个名称就
  *    建档 + 入库。它是出入库链路的延伸，所以员工也有；管理员照旧不参与。
  *    它**不等于** item.create —— 员工仍然进不了「新建物品」页，也删不了档。
+ *  - item.photo 是「给物品拍一张位置照片」：它记录的是现场事实（这件东西在货架哪一层），
+ *    不是账目信息，也动不了库存，所以三种身份都给 —— 谁在现场谁拍。
+ *    真正影响账目的能力（建档 / 停用 / 删除 / 出入库）照旧分开管。
  */
 const CAPS = {
   admin: [
@@ -60,6 +63,7 @@ const CAPS = {
     'item.archive',
     'item.delete',
     'item.import',
+    'item.photo',
     'staff.add',
     'staff.review',
     'staff.manage',
@@ -73,13 +77,14 @@ const CAPS = {
     'item.archive',
     'item.import',
     'item.quickcreate',
+    'item.photo',
     'stock.change',
     'staff.add',
     'staff.manage',
     'record.export',
     'account.self'
   ],
-  staff: ['item.view', 'stock.change', 'item.quickcreate', 'account.self']
+  staff: ['item.view', 'stock.change', 'item.quickcreate', 'item.photo', 'account.self']
 }
 
 /** tabBar 里可用的页签（key 必须与 app.json 的 tabBar 顺序无关，只作标识） */

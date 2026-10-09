@@ -88,11 +88,13 @@
           <text class="ic-qty-unit">{{item.unit || '个'}}</text>
         </view>
       </view>
-      <view class="ic-tags" wx:if="{{item.location || item.category || item.isLow || item.isArchived}}">
+      <view class="ic-tags" wx:if="{{item.location || item.category || item.isLow || item.isArchived || item.hasPhoto}}">
         <text wx:if="{{item.isArchived}}" class="tag tag-gray">已停用</text>
         <text wx:if="{{item.location}}" class="tag tag-gray">{{item.location}}</text>
         <text wx:if="{{item.category}}" class="tag tag-blue">{{item.category}}</text>
         <text wx:if="{{item.isLow}}" class="tag tag-orange">库存偏低</text>
+        <!-- 拍了位置照片的做个记号：想知道具体摆在哪儿，点进去看图 -->
+        <text wx:if="{{item.hasPhoto}}" class="tag tag-purple">位置图</text>
       </view>
     </view>
 

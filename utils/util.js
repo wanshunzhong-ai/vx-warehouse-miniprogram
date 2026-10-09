@@ -88,6 +88,9 @@ const ERROR_MAP = [
   [/ITEM_NOT_FOUND/, '仓库里没有这个编号的物品'],
   [/ITEM_ARCHIVED/, '该物品已停用，不能出入库'],
   [/ITEM_CODE_TAKEN/, '该物品编号已存在，换一个吧'],
+  [/INVALID_PHOTO/, '照片地址不合法，请重新上传'],
+  [/PHOTO_PERMISSION_DENIED/, '没有相机/相册权限，请在设置里允许后重试'],
+  [/PHOTO_TOO_LARGE/, '这张图太大了，换一张或压缩后再试'],
   [/CODE_REQUIRED/, '缺少物品编号，请重新扫码'],
   [/CODE_TOO_LONG/, '物品编号太长了（上限 106 个字符）'],
   [/INSUFFICIENT_STOCK/, '库存不足，无法出库'],
@@ -181,6 +184,9 @@ function decorateItem(it) {
   it.statusLabel = roles.statusLabel(it.status)
   it.initial = it.name ? String(it.name).charAt(0) : '#'
   it.qtyText = String(qty) + (it.unit || '')
+  // 列表页只标一个「有位置照片」的小角标，图片留到详情页再加载：
+  // 列表一次二三十条，每条都拉一张图会很慢，也没必要。
+  it.hasPhoto = !!it.photo
   return it
 }
 

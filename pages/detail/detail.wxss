@@ -197,6 +197,114 @@
   line-height: 1.5;
 }
 
+/* ---------- 位置照片 ---------- */
+
+/* 用 padding 撑出固定比例，图没下完也不会让卡片跳高度 */
+.photo-box {
+  position: relative;
+  width: 100%;
+  padding-top: 72%;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #f2f5fa;
+}
+
+.photo-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 压一层渐变底，保证提示字在任何照片底色上都读得清 */
+.photo-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 48rpx 20rpx 16rpx;
+  font-size: 22rpx;
+  color: #ffffff;
+  text-align: center;
+  background: linear-gradient(to top, rgba(10, 14, 22, 0.62), rgba(10, 14, 22, 0));
+}
+
+.photo-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.photo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 24rpx 4rpx;
+}
+
+/* 相机图标：项目不带图片资源，图标一律用 CSS 画 */
+.pe-cam {
+  position: relative;
+  width: 100rpx;
+  height: 74rpx;
+  border: 4rpx solid #c9d2e0;
+  border-radius: 16rpx;
+  margin-bottom: 26rpx;
+}
+
+/* 顶部取景凸起：无下边框、不填色，让机身那道横线自然接上 */
+.pe-cam::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: -24rpx;
+  width: 38rpx;
+  height: 24rpx;
+  margin-left: -19rpx;
+  border: 4rpx solid #c9d2e0;
+  border-bottom: none;
+  border-radius: 10rpx 10rpx 0 0;
+}
+
+.pe-lens {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36rpx;
+  height: 36rpx;
+  margin: -18rpx 0 0 -18rpx;
+  border: 4rpx solid #c9d2e0;
+  border-radius: 50%;
+}
+
+.pe-lens::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10rpx;
+  height: 10rpx;
+  margin: -5rpx 0 0 -5rpx;
+  border-radius: 50%;
+  background: #c9d2e0;
+}
+
+.pe-tip {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #151922;
+  margin-bottom: 12rpx;
+}
+
+.pe-sub {
+  font-size: 25rpx;
+  color: #8a9099;
+  text-align: center;
+  line-height: 1.6;
+}
+
 /* ---------- 记录 ---------- */
 
 .rec-dot {

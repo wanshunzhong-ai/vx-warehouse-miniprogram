@@ -34,6 +34,50 @@
         出入库由主管或员工在现场扫码完成，这里只做监控与档案维护。
       </view>
 
+      <!-- 位置照片：这件东西具体在哪儿，一张实拍图最直观 -->
+      <view class="card">
+        <view class="card-title">
+          <text>位置照片</text>
+          <text wx:if="{{photoUrl && photoTimeText}}" class="t-dim f-sm">{{photoTimeText}}拍的</text>
+        </view>
+
+        <view wx:if="{{photoLoading}}" class="photo-empty">
+          <view class="spinner"></view>
+          <view class="pe-sub">正在取照片…</view>
+        </view>
+
+        <block wx:elif="{{photoUrl}}">
+          <view class="photo-box" bindtap="previewPhoto" hover-class="hover">
+            <image class="photo-img" src="{{photoUrl}}" mode="aspectFill"></image>
+            <view class="photo-hint">点击看大图</view>
+          </view>
+        </block>
+
+        <block wx:else>
+          <view class="photo-empty">
+            <!-- 有路径但换不出链接：多半是网络抖动，重进这一页会重试 -->
+            <block wx:if="{{item.photo}}">
+              <view class="pe-tip">照片暂时取不到</view>
+              <view class="pe-sub">网络恢复后重新进这一页就会加载出来</view>
+            </block>
+            <block wx:else>
+              <view class="pe-cam"><view class="pe-lens"></view></view>
+              <view class="pe-tip">还没拍位置照片</view>
+              <view class="pe-sub">对着货架拍一张，下次谁都能照着找到它</view>
+            </block>
+          </view>
+        </block>
+
+        <!-- 操作行放在分支外：链接取不到时也得能更换或删除 -->
+        <view wx:if="{{caps.item_photo && item.photo}}" class="photo-actions">
+          <view class="btn btn-ghost grow" bindtap="onPhoto" hover-class="hover">更换照片</view>
+          <view class="btn btn-plain grow" bindtap="onRemovePhoto" hover-class="hover">删除照片</view>
+        </view>
+        <view wx:elif="{{caps.item_photo}}" class="photo-actions">
+          <view class="btn btn-in grow" bindtap="onPhoto" hover-class="hover">拍照 / 选图上传</view>
+        </view>
+      </view>
+
       <!-- 二维码 -->
       <view class="card">
         <view class="card-title">

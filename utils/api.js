@@ -12,7 +12,7 @@ const rpc = require('./rpc')
 const util = require('./util')
 
 const ITEM_COLUMNS =
-  'id,code,name,spec,category,unit,location,qty,min_qty,note,status,created_by_name,updated_by_name,created_at,updated_at'
+  'id,code,name,spec,category,unit,location,qty,min_qty,note,status,photo,created_by_name,updated_by_name,created_at,updated_at'
 
 /* ---------------- 物品（只读） ---------------- */
 
@@ -125,6 +125,14 @@ async function saveItem(payload) {
 /** 停用 / 恢复物品（停用后不可出入库，历史记录保留） */
 async function archiveItem(id, archived) {
   return rpc.call('staff_archive_item', { p_id: id, p_archived: !!archived })
+}
+
+/**
+ * 记录 / 清除物品的位置照片
+ * photo 传云端存储的对象路径；传 null 表示清除（照片已删除或换新）
+ */
+async function setItemPhoto(id, photo) {
+  return rpc.call('staff_item_photo', { p_id: id, p_photo: photo || null })
 }
 
 /** 删除物品（仅管理员） */
@@ -316,6 +324,7 @@ module.exports = {
   exportItems: exportItems,
   saveItem: saveItem,
   archiveItem: archiveItem,
+  setItemPhoto: setItemPhoto,
   deleteItem: deleteItem,
   importItems: importItems,
   scanCreateIn: scanCreateIn,
